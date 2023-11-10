@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>15.6. Subword Embedding &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="15.7. Word Similarity and Analogy" href="similarity-analogy.html" />
+    <link rel="prev" title="15.5. Word Embedding with Global Vectors (GloVe)" href="glove.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">15. </span>Natural Language Processing: Pretraining</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">15.6. </span>Subword Embedding</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_natural-language-processing-pretraining/subword-embedding.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Natural Language Processing: Pretraining</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">15. Natural Language Processing: Pretraining</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="subword-embedding">
+<span id="sec-fasttext"></span><h1><span class="section-number">15.6. </span>Subword Embedding<a class="headerlink" href="#subword-embedding" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_natural-language-processing-pretraining/subword-embedding.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>In English, words such as “helps”, “helped”, and “helping” are inflected
+forms of the same word “help”. The relationship between “dog” and “dogs”
+is the same as that between “cat” and “cats”, and the relationship
+between “boy” and “boyfriend” is the same as that between “girl” and
+“girlfriend”. In other languages such as French and Spanish, many verbs
+have over 40 inflected forms, while in Finnish, a noun may have up to 15
+cases. In linguistics, morphology studies word formation and word
+relationships. However, the internal structure of words was neither
+explored in word2vec nor in GloVe.</p>
+<div class="section" id="the-fasttext-model">
+<h2><span class="section-number">15.6.1. </span>The fastText Model<a class="headerlink" href="#the-fasttext-model" title="Permalink to this heading">¶</a></h2>
+<p>Recall how words are represented in word2vec. In both the skip-gram
+model and the continuous bag-of-words model, different inflected forms
+of the same word are directly represented by different vectors without
+shared parameters. To use morphological information, the <em>fastText</em>
+model proposed a <em>subword embedding</em> approach, where a subword is a
+character <span class="math notranslate nohighlight">\(n\)</span>-gram <span id="id1">(<a class="reference internal" href="../chapter_references/zreferences.html#id21" title="Bojanowski, P., Grave, E., Joulin, A., &amp; Mikolov, T. (2017). Enriching word vectors with subword information. Transactions of the Association for Computational Linguistics, 5, 135–146.">Bojanowski <em>et al.</em>, 2017</a>)</span>.
+Instead of learning word-level vector representations, fastText can be
+considered as the subword-level skip-gram, where each <em>center word</em> is
+represented by the sum of its subword vectors.</p>
+<p>Let’s illustrate how to obtain subwords for each center word in fastText
+using the word “where”. First, add special characters “&lt;” and “&gt;” at the
+beginning and end of the word to distinguish prefixes and suffixes from
+other subwords. Then, extract character <span class="math notranslate nohighlight">\(n\)</span>-grams from the word.
+For example, when <span class="math notranslate nohighlight">\(n=3\)</span>, we obtain all subwords of length 3:
+“&lt;wh”, “whe”, “her”, “ere”, “re&gt;”, and the special subword “&lt;where&gt;”.</p>
+<p>In fastText, for any word <span class="math notranslate nohighlight">\(w\)</span>, denote by <span class="math notranslate nohighlight">\(\mathcal{G}_w\)</span> the
+union of all its subwords of length between 3 and 6 and its special
+subword. The vocabulary is the union of the subwords of all words.
+Letting <span class="math notranslate nohighlight">\(\mathbf{z}_g\)</span> be the vector of subword <span class="math notranslate nohighlight">\(g\)</span> in the
+dictionary, the vector <span class="math notranslate nohighlight">\(\mathbf{v}_w\)</span> for word <span class="math notranslate nohighlight">\(w\)</span> as a
+center word in the skip-gram model is the sum of its subword vectors:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-natural-language-processing-pretraining-subword-embedding-0">
+<span class="eqno">(15.6.1)<a class="headerlink" href="#equation-chapter-natural-language-processing-pretraining-subword-embedding-0" title="Permalink to this equation">¶</a></span>\[\mathbf{v}_w = \sum_{g\in\mathcal{G}_w} \mathbf{z}_g.\]</div>
+<p>The rest of fastText is the same as the skip-gram model. Compared with
+the skip-gram model, the vocabulary in fastText is larger, resulting in
+more model parameters. Besides, to calculate the representation of a
+word, all its subword vectors have to be summed, leading to higher
+computational complexity. However, thanks to shared parameters from
+subwords among words with similar structures, rare words and even
+out-of-vocabulary words may obtain better vector representations in
+fastText.</p>
+</div>
+<div class="section" id="byte-pair-encoding">
+<span id="subsec-byte-pair-encoding"></span><h2><span class="section-number">15.6.2. </span>Byte Pair Encoding<a class="headerlink" href="#byte-pair-encoding" title="Permalink to this heading">¶</a></h2>
+<p>In fastText, all the extracted subwords have to be of the specified
+lengths, such as <span class="math notranslate nohighlight">\(3\)</span> to <span class="math notranslate nohighlight">\(6\)</span>, thus the vocabulary size cannot
+be predefined. To allow for variable-length subwords in a fixed-size
+vocabulary, we can apply a compression algorithm called <em>byte pair
+encoding</em> (BPE) to extract subwords
+<span id="id2">(<a class="reference internal" href="../chapter_references/zreferences.html#id254" title="Sennrich, R., Haddow, B., &amp; Birch, A. (2015). Neural machine translation of rare words with subword units. ArXiv:1508.07909.">Sennrich <em>et al.</em>, 2015</a>)</span>.</p>
+<p>Byte pair encoding performs a statistical analysis of the training
+dataset to discover common symbols within a word, such as consecutive
+characters of arbitrary length. Starting from symbols of length 1, byte
+pair encoding iteratively merges the most frequent pair of consecutive
+symbols to produce new longer symbols. Note that for efficiency, pairs
+crossing word boundaries are not considered. In the end, we can use such
+symbols as subwords to segment words. Byte pair encoding and its
+variants has been used for input representations in popular natural
+language processing pretraining models such as GPT-2
+<span id="id3">(<a class="reference internal" href="../chapter_references/zreferences.html#id223" title="Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., &amp; Sutskever, I. (2019). Language models are unsupervised multitask learners. OpenAI Blog, 1(8), 9.">Radford <em>et al.</em>, 2019</a>)</span> and RoBERTa
+<span id="id4">(<a class="reference internal" href="../chapter_references/zreferences.html#id177" title="Liu, Y., Ott, M., Goyal, N., Du, J., Joshi, M., Chen, D., … Stoyanov, V. (2019). RoBERTa: a robustly optimized BERT pretraining approach. ArXiv:1907.11692.">Liu <em>et al.</em>, 2019</a>)</span>. In the following, we will illustrate
+how byte pair encoding works.</p>
+<p>First, we initialize the vocabulary of symbols as all the English
+lowercase characters, a special end-of-word symbol <code class="docutils literal notranslate"><span class="pre">'_'</span></code>, and a
+special unknown symbol <code class="docutils literal notranslate"><span class="pre">'[UNK]'</span></code>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;[UNK]&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="n">symbols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;[UNK]&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></div><p>Since we do not consider symbol pairs that cross boundaries of words, we
+only need a dictionary <code class="docutils literal notranslate"><span class="pre">raw_token_freqs</span></code> that maps words to their
+frequencies (number of occurrences) in a dataset. Note that the special
+symbol <code class="docutils literal notranslate"><span class="pre">'_'</span></code> is appended to each word so that we can easily recover a
+word sequence (e.g., “a taller man”) from a sequence of output symbols (
+e.g., “a_ tall er_ man”). Since we start the merging process from a
+vocabulary of only single characters and special symbols, space is
+inserted between every pair of consecutive characters within each word
+(keys of the dictionary <code class="docutils literal notranslate"><span class="pre">token_freqs</span></code>). In other words, space is the
+delimiter between symbols within a word.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raw_token_freqs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fast_&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;faster_&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;tall_&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;taller_&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="n">token_freqs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">raw_token_freqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">token_freqs</span><span class="p">[</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">token</span><span class="p">))]</span> <span class="o">=</span> <span class="n">raw_token_freqs</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+<span class="n">token_freqs</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">raw_token_freqs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fast_&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;faster_&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;tall_&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;taller_&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="n">token_freqs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">raw_token_freqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">token_freqs</span><span class="p">[</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">token</span><span class="p">))]</span> <span class="o">=</span> <span class="n">raw_token_freqs</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+<span class="n">token_freqs</span>
+</pre></div>
+</div>
+</div></div><p>We define the following <code class="docutils literal notranslate"><span class="pre">get_max_freq_pair</span></code> function that returns the
+most frequent pair of consecutive symbols within a word, where words
+come from keys of the input dictionary <code class="docutils literal notranslate"><span class="pre">token_freqs</span></code>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_max_freq_pair</span><span class="p">(</span><span class="n">token_freqs</span><span class="p">):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">token_freqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">symbols</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Key of `pairs` is a tuple of two consecutive symbols</span>
+            <span class="n">pairs</span><span class="p">[</span><span class="n">symbols</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">symbols</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">freq</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">pairs</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>  <span class="c1"># Key of `pairs` with the max value</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_max_freq_pair</span><span class="p">(</span><span class="n">token_freqs</span><span class="p">):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">token_freqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">symbols</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Key of `pairs` is a tuple of two consecutive symbols</span>
+            <span class="n">pairs</span><span class="p">[</span><span class="n">symbols</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">symbols</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">freq</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">pairs</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>  <span class="c1"># Key of `pairs` with the max value</span>
+</pre></div>
+</div>
+</div></div><p>As a greedy approach based on frequency of consecutive symbols, byte
+pair encoding will use the following <code class="docutils literal notranslate"><span class="pre">merge_symbols</span></code> function to merge
+the most frequent pair of consecutive symbols to produce new symbols.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-7-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-7-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-7-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">merge_symbols</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">,</span> <span class="n">token_freqs</span><span class="p">,</span> <span class="n">symbols</span><span class="p">):</span>
+    <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">))</span>
+    <span class="n">new_token_freqs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">token_freqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">),</span>
+                                  <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">))</span>
+        <span class="n">new_token_freqs</span><span class="p">[</span><span class="n">new_token</span><span class="p">]</span> <span class="o">=</span> <span class="n">token_freqs</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">new_token_freqs</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-7-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">merge_symbols</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">,</span> <span class="n">token_freqs</span><span class="p">,</span> <span class="n">symbols</span><span class="p">):</span>
+    <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">))</span>
+    <span class="n">new_token_freqs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">freq</span> <span class="ow">in</span> <span class="n">token_freqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">new_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">),</span>
+                                  <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">))</span>
+        <span class="n">new_token_freqs</span><span class="p">[</span><span class="n">new_token</span><span class="p">]</span> <span class="o">=</span> <span class="n">token_freqs</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">new_token_freqs</span>
+</pre></div>
+</div>
+</div></div><p>Now we iteratively perform the byte pair encoding algorithm over the
+keys of the dictionary <code class="docutils literal notranslate"><span class="pre">token_freqs</span></code>. In the first iteration, the most
+frequent pair of consecutive symbols are <code class="docutils literal notranslate"><span class="pre">'t'</span></code> and <code class="docutils literal notranslate"><span class="pre">'a'</span></code>, thus byte
+pair encoding merges them to produce a new symbol <code class="docutils literal notranslate"><span class="pre">'ta'</span></code>. In the
+second iteration, byte pair encoding continues to merge <code class="docutils literal notranslate"><span class="pre">'ta'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'l'</span></code> to result in another new symbol <code class="docutils literal notranslate"><span class="pre">'tal'</span></code>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num_merges</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_merges</span><span class="p">):</span>
+    <span class="n">max_freq_pair</span> <span class="o">=</span> <span class="n">get_max_freq_pair</span><span class="p">(</span><span class="n">token_freqs</span><span class="p">)</span>
+    <span class="n">token_freqs</span> <span class="o">=</span> <span class="n">merge_symbols</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">,</span> <span class="n">token_freqs</span><span class="p">,</span> <span class="n">symbols</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;merge #</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">,</span> <span class="n">max_freq_pair</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num_merges</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_merges</span><span class="p">):</span>
+    <span class="n">max_freq_pair</span> <span class="o">=</span> <span class="n">get_max_freq_pair</span><span class="p">(</span><span class="n">token_freqs</span><span class="p">)</span>
+    <span class="n">token_freqs</span> <span class="o">=</span> <span class="n">merge_symbols</span><span class="p">(</span><span class="n">max_freq_pair</span><span class="p">,</span> <span class="n">token_freqs</span><span class="p">,</span> <span class="n">symbols</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;merge #</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">:&#39;</span><span class="p">,</span> <span class="n">max_freq_pair</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>After 10 iterations of byte pair encoding, we can see that list
+<code class="docutils literal notranslate"><span class="pre">symbols</span></code> now contains 10 more symbols that are iteratively merged
+from other symbols.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>For the same dataset specified in the keys of the dictionary
+<code class="docutils literal notranslate"><span class="pre">raw_token_freqs</span></code>, each word in the dataset is now segmented by
+subwords “fast_”, “fast”, “er_”, “tall_”, and “tall” as a result of
+the byte pair encoding algorithm. For instance, words “faster_” and
+“taller_” are segmented as “fast er_” and “tall er_”, respectively.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">token_freqs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">token_freqs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div></div><p>Note that the result of byte pair encoding depends on the dataset being
+used. We can also use the subwords learned from one dataset to segment
+words of another dataset. As a greedy approach, the following
+<code class="docutils literal notranslate"><span class="pre">segment_BPE</span></code> function tries to break words into the longest possible
+subwords from the input argument <code class="docutils literal notranslate"><span class="pre">symbols</span></code>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-15-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-15-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-15-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">segment_BPE</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">symbols</span><span class="p">):</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="n">cur_output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Segment token with the longest possible subwords from symbols</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">token</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">:</span>
+                <span class="n">cur_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">])</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">end</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+            <span class="n">cur_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;[UNK]&#39;</span><span class="p">)</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cur_output</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">outputs</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-15-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">segment_BPE</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">symbols</span><span class="p">):</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="n">cur_output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Segment token with the longest possible subwords from symbols</span>
+        <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">token</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">]</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">:</span>
+                <span class="n">cur_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">[</span><span class="n">start</span><span class="p">:</span> <span class="n">end</span><span class="p">])</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">end</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+            <span class="n">cur_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;[UNK]&#39;</span><span class="p">)</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cur_output</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">outputs</span>
+</pre></div>
+</div>
+</div></div><p>In the following, we use the subwords in list <code class="docutils literal notranslate"><span class="pre">symbols</span></code>, which is
+learned from the aforementioned dataset, to segment <code class="docutils literal notranslate"><span class="pre">tokens</span></code> that
+represent another dataset.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-17-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-17-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-17-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tallest_&#39;</span><span class="p">,</span> <span class="s1">&#39;fatter_&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">segment_BPE</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">symbols</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-17-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tallest_&#39;</span><span class="p">,</span> <span class="s1">&#39;fatter_&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">segment_BPE</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">symbols</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="summary">
+<h2><span class="section-number">15.6.3. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The fastText model proposes a subword embedding approach. Based on
+the skip-gram model in word2vec, it represents a center word as the
+sum of its subword vectors.</p></li>
+<li><p>Byte pair encoding performs a statistical analysis of the training
+dataset to discover common symbols within a word. As a greedy
+approach, byte pair encoding iteratively merges the most frequent
+pair of consecutive symbols.</p></li>
+<li><p>Subword embedding may improve the quality of representations of rare
+words and out-of-dictionary words.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">15.6.4. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>As an example, there are about <span class="math notranslate nohighlight">\(3\times 10^8\)</span> possible
+<span class="math notranslate nohighlight">\(6\)</span>-grams in English. What is the issue when there are too many
+subwords? How to address the issue? Hint: refer to the end of Section
+3.2 of the fastText paper <span id="id5">(<a class="reference internal" href="../chapter_references/zreferences.html#id21" title="Bojanowski, P., Grave, E., Joulin, A., &amp; Mikolov, T. (2017). Enriching word vectors with subword information. Transactions of the Association for Computational Linguistics, 5, 135–146.">Bojanowski <em>et al.</em>, 2017</a>)</span>.</p></li>
+<li><p>How to design a subword embedding model based on the continuous
+bag-of-words model?</p></li>
+<li><p>To get a vocabulary of size <span class="math notranslate nohighlight">\(m\)</span>, how many merging operations
+are needed when the initial symbol vocabulary size is <span class="math notranslate nohighlight">\(n\)</span>?</p></li>
+<li><p>How to extend the idea of byte pair encoding to extract phrases?</p></li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-19-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-19-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a></div><div class="mdl-tabs__panel is-active" id="pytorch-19-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/4587">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-19-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/386">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">15.6. Subword Embedding</a><ul>
+<li><a class="reference internal" href="#the-fasttext-model">15.6.1. The fastText Model</a></li>
+<li><a class="reference internal" href="#byte-pair-encoding">15.6.2. Byte Pair Encoding</a></li>
+<li><a class="reference internal" href="#summary">15.6.3. Summary</a></li>
+<li><a class="reference internal" href="#exercises">15.6.4. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="glove.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>15.5. Word Embedding with Global Vectors (GloVe)</div>
+         </div>
+     </a>
+     <a id="button-next" href="similarity-analogy.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>15.7. Word Similarity and Analogy</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

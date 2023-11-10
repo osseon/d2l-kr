@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>9.1. Working with Sequences &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="9.2. Converting Raw Text into Sequence Data" href="text-sequence.html" />
+    <link rel="prev" title="9. Recurrent Neural Networks" href="index.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">9. </span>Recurrent Neural Networks</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">9.1. </span>Working with Sequences</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_recurrent-neural-networks/sequence.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Recurrent Neural Networks</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">9. Recurrent Neural Networks</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="working-with-sequences">
+<span id="sec-sequence"></span><h1><span class="section-number">9.1. </span>Working with Sequences<a class="headerlink" href="#working-with-sequences" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_recurrent-neural-networks/sequence.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>Up until now, we have focused on models whose inputs consisted of a
+single feature vector <span class="math notranslate nohighlight">\(\mathbf{x} \in \mathbb{R}^d\)</span>. The main
+change of perspective when developing models capable of processing
+sequences is that we now focus on inputs that consist of an ordered list
+of feature vectors <span class="math notranslate nohighlight">\(\mathbf{x}_1, \dots, \mathbf{x}_T\)</span>, where each
+feature vector <span class="math notranslate nohighlight">\(\mathbf{x}_t\)</span> is indexed by a time step
+<span class="math notranslate nohighlight">\(t \in \mathbb{Z}^+\)</span> lying in <span class="math notranslate nohighlight">\(\mathbb{R}^d\)</span>.</p>
+<p>Some datasets consist of a single massive sequence. Consider, for
+example, the extremely long streams of sensor readings that might be
+available to climate scientists. In such cases, we might create training
+datasets by randomly sampling subsequences of some predetermined length.
+More often, our data arrives as a collection of sequences. Consider the
+following examples: (i) a collection of documents, each represented as
+its own sequence of words, and each having its own length <span class="math notranslate nohighlight">\(T_i\)</span>;
+(ii) sequence representation of patient stays in the hospital, where
+each stay consists of a number of events and the sequence length depends
+roughly on the length of the stay.</p>
+<p>Previously, when dealing with individual inputs, we assumed that they
+were sampled independently from the same underlying distribution
+<span class="math notranslate nohighlight">\(P(X)\)</span>. While we still assume that entire sequences (e.g., entire
+documents or patient trajectories) are sampled independently, we cannot
+assume that the data arriving at each time step are independent of each
+other. For example, the words that likely to appear later in a document
+depend heavily on words occurring earlier in the document. The medicine
+a patient is likely to receive on the 10th day of a hospital visit
+depends heavily on what transpired in the previous nine days.</p>
+<p>This should come as no surprise. If we did not believe that the elements
+in a sequence were related, we would not have bothered to model them as
+a sequence in the first place. Consider the usefulness of the auto-fill
+features that are popular on search tools and modern email clients. They
+are useful precisely because it is often possible to predict
+(imperfectly, but better than random guessing) what the likely
+continuations of a sequence might be, given some initial prefix. For
+most sequence models, we do not require independence, or even
+stationarity, of our sequences. Instead, we require only that the
+sequences themselves are sampled from some fixed underlying distribution
+over entire sequences.</p>
+<p>This flexible approach allows for such phenomena as (i) documents
+looking significantly different at the beginning than at the end; or
+(ii) patient status evolving either towards recovery or towards death
+over the course of a hospital stay; or (iii) customer taste evolving in
+predictable ways over the course of continued interaction with a
+recommender system.</p>
+<p>We sometimes wish to predict a fixed target <span class="math notranslate nohighlight">\(y\)</span> given sequentially
+structured input (e.g., sentiment classification based on a movie
+review). At other times, we wish to predict a sequentially structured
+target (<span class="math notranslate nohighlight">\(y_1, \ldots, y_T\)</span>) given a fixed input (e.g., image
+captioning). Still other times, our goal is to predict sequentially
+structured targets based on sequentially structured inputs (e.g.,
+machine translation or video captioning). Such sequence-to-sequence
+tasks take two forms: (i) <em>aligned</em>: where the input at each time step
+aligns with a corresponding target (e.g., part of speech tagging); (ii)
+<em>unaligned</em>: where the input and target do not necessarily exhibit a
+step-for-step correspondence (e.g., machine translation).</p>
+<p>Before we worry about handling targets of any kind, we can tackle the
+most straightforward problem: unsupervised density modeling (also called
+<em>sequence modeling</em>). Here, given a collection of sequences, our goal is
+to estimate the probability mass function that tells us how likely we
+are to see any given sequence, i.e.,
+<span class="math notranslate nohighlight">\(p(\mathbf{x}_1, \ldots, \mathbf{x}_T)\)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-1-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-1-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">torch</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">autograd</span><span class="p">,</span> <span class="n">gluon</span><span class="p">,</span> <span class="n">init</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">npx</span>
+<span class="kn">from</span> <span class="nn">mxnet.gluon</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">mxnet</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">npx</span><span class="o">.</span><span class="n">set_np</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">jnp</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">jax</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div></div><div class="section" id="autoregressive-models">
+<h2><span class="section-number">9.1.1. </span>Autoregressive Models<a class="headerlink" href="#autoregressive-models" title="Permalink to this heading">¶</a></h2>
+<p>Before introducing specialized neural networks designed to handle
+sequentially structured data, let’s take a look at some actual sequence
+data and build up some basic intuitions and statistical tools. In
+particular, we will focus on stock price data from the FTSE 100 index
+(<a class="reference internal" href="#fig-ftse100"><span class="std std-numref">Fig. 9.1.1</span></a>). At each <em>time step</em>
+<span class="math notranslate nohighlight">\(t \in \mathbb{Z}^+\)</span>, we observe the price, <span class="math notranslate nohighlight">\(x_t\)</span>, of the
+index at that time.</p>
+<div class="figure align-default" id="id3">
+<span id="fig-ftse100"></span><a class="reference internal image-reference" href="../_images/ftse100.png"><img alt="../_images/ftse100.png" src="../_images/ftse100.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9.1.1 </span><span class="caption-text">FTSE 100 index over about 30 years.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>Now suppose that a trader would like to make short-term trades,
+strategically getting into or out of the index, depending on whether
+they believe that it will rise or decline in the subsequent time step.
+Absent any other features (news, financial reporting data, etc.), the
+only available signal for predicting the subsequent value is the history
+of prices to date. The trader is thus interested in knowing the
+probability distribution</p>
+<div class="math notranslate nohighlight" id="equation-chapter-recurrent-neural-networks-sequence-0">
+<span class="eqno">(9.1.1)<a class="headerlink" href="#equation-chapter-recurrent-neural-networks-sequence-0" title="Permalink to this equation">¶</a></span>\[P(x_t \mid x_{t-1}, \ldots, x_1)\]</div>
+<p>over prices that the index might take in the subsequent time step. While
+estimating the entire distribution over a continuously valued random
+variable can be difficult, the trader would be happy to focus on a few
+key statistics of the distribution, particularly the expected value and
+the variance. One simple strategy for estimating the conditional
+expectation</p>
+<div class="math notranslate nohighlight" id="equation-chapter-recurrent-neural-networks-sequence-1">
+<span class="eqno">(9.1.2)<a class="headerlink" href="#equation-chapter-recurrent-neural-networks-sequence-1" title="Permalink to this equation">¶</a></span>\[\mathbb{E}[(x_t \mid x_{t-1}, \ldots, x_1)],\]</div>
+<p>would be to apply a linear regression model (recall
+<a class="reference internal" href="../chapter_linear-regression/linear-regression.html#sec-linear-regression"><span class="std std-numref">Section 3.1</span></a>). Such models that regress the value
+of a signal on the previous values of that same signal are naturally
+called <em>autoregressive models</em>. There is just one major problem: the
+number of inputs, <span class="math notranslate nohighlight">\(x_{t-1}, \ldots, x_1\)</span> varies, depending on
+<span class="math notranslate nohighlight">\(t\)</span>. In other words, the number of inputs increases with the
+amount of data that we encounter. Thus if we want to treat our
+historical data as a training set, we are left with the problem that
+each example has a different number of features. Much of what follows in
+this chapter will revolve around techniques for overcoming these
+challenges when engaging in such <em>autoregressive</em> modeling problems
+where the object of interest is <span class="math notranslate nohighlight">\(P(x_t \mid x_{t-1}, \ldots, x_1)\)</span>
+or some statistic(s) of this distribution.</p>
+<p>A few strategies recur frequently. First of all, we might believe that
+although long sequences <span class="math notranslate nohighlight">\(x_{t-1}, \ldots, x_1\)</span> are available, it
+may not be necessary to look back so far in the history when predicting
+the near future. In this case we might content ourselves to condition on
+some window of length <span class="math notranslate nohighlight">\(\tau\)</span> and only use
+<span class="math notranslate nohighlight">\(x_{t-1}, \ldots, x_{t-\tau}\)</span> observations. The immediate benefit
+is that now the number of arguments is always the same, at least for
+<span class="math notranslate nohighlight">\(t &gt; \tau\)</span>. This allows us to train any linear model or deep
+network that requires fixed-length vectors as inputs. Second, we might
+develop models that maintain some summary <span class="math notranslate nohighlight">\(h_t\)</span> of the past
+observations (see <a class="reference internal" href="#fig-sequence-model"><span class="std std-numref">Fig. 9.1.2</span></a>) and at the same time
+update <span class="math notranslate nohighlight">\(h_t\)</span> in addition to the prediction <span class="math notranslate nohighlight">\(\hat{x}_t\)</span>. This
+leads to models that estimate not only <span class="math notranslate nohighlight">\(x_t\)</span> with
+<span class="math notranslate nohighlight">\(\hat{x}_t = P(x_t \mid h_{t})\)</span> but also updates of the form
+<span class="math notranslate nohighlight">\(h_t = g(h_{t-1}, x_{t-1})\)</span>. Since <span class="math notranslate nohighlight">\(h_t\)</span> is never observed,
+these models are also called <em>latent autoregressive models</em>.</p>
+<div class="figure align-default" id="id4">
+<span id="fig-sequence-model"></span><img alt="../_images/sequence-model.svg" src="../_images/sequence-model.svg" /><p class="caption"><span class="caption-number">Fig. 9.1.2 </span><span class="caption-text">A latent autoregressive model.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>To construct training data from historical data, one typically creates
+examples by sampling windows randomly. In general, we do not expect time
+to stand still. However, we often assume that while the specific values
+of <span class="math notranslate nohighlight">\(x_t\)</span> might change, the dynamics according to which each
+subsequent observation is generated given the previous observations do
+not. Statisticians call dynamics that do not change <em>stationary</em>.</p>
+</div>
+<div class="section" id="sequence-models">
+<h2><span class="section-number">9.1.2. </span>Sequence Models<a class="headerlink" href="#sequence-models" title="Permalink to this heading">¶</a></h2>
+<p>Sometimes, especially when working with language, we wish to estimate
+the joint probability of an entire sequence. This is a common task when
+working with sequences composed of discrete <em>tokens</em>, such as words.
+Generally, these estimated functions are called <em>sequence models</em> and
+for natural language data, they are called <em>language models</em>. The field
+of sequence modeling has been driven so much by natural language
+processing, that we often describe sequence models as “language models”,
+even when dealing with non-language data. Language models prove useful
+for all sorts of reasons. Sometimes we want to evaluate the likelihood
+of sentences. For example, we might wish to compare the naturalness of
+two candidate outputs generated by a machine translation system or by a
+speech recognition system. But language modeling gives us not only the
+capacity to <em>evaluate</em> likelihood, but the ability to <em>sample</em>
+sequences, and even to optimize for the most likely sequences.</p>
+<p>While language modeling might not, at first glance, look like an
+autoregressive problem, we can reduce language modeling to
+autoregressive prediction by decomposing the joint density of a sequence
+<span class="math notranslate nohighlight">\(p(x_1, \ldots, x_T)\)</span> into the product of conditional densities in
+a left-to-right fashion by applying the chain rule of probability:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-recurrent-neural-networks-sequence-2">
+<span class="eqno">(9.1.3)<a class="headerlink" href="#equation-chapter-recurrent-neural-networks-sequence-2" title="Permalink to this equation">¶</a></span>\[P(x_1, \ldots, x_T) = P(x_1) \prod_{t=2}^T P(x_t \mid x_{t-1}, \ldots, x_1).\]</div>
+<p>Note that if we are working with discrete signals such as words, then
+the autoregressive model must be a probabilistic classifier, outputting
+a full probability distribution over the vocabulary for whatever word
+will come next, given the leftwards context.</p>
+<div class="section" id="markov-models">
+<span id="subsec-markov-models"></span><h3><span class="section-number">9.1.2.1. </span>Markov Models<a class="headerlink" href="#markov-models" title="Permalink to this heading">¶</a></h3>
+<p>Now suppose that we wish to employ the strategy mentioned above, where
+we condition only on the <span class="math notranslate nohighlight">\(\tau\)</span> previous time steps, i.e.,
+<span class="math notranslate nohighlight">\(x_{t-1}, \ldots, x_{t-\tau}\)</span>, rather than the entire sequence
+history <span class="math notranslate nohighlight">\(x_{t-1}, \ldots, x_1\)</span>. Whenever we can throw away the
+history beyond the previous <span class="math notranslate nohighlight">\(\tau\)</span> steps without any loss in
+predictive power, we say that the sequence satisfies a <em>Markov
+condition</em>, i.e., <em>that the future is conditionally independent of the
+past, given the recent history</em>. When <span class="math notranslate nohighlight">\(\tau = 1\)</span>, we say that the
+data is characterized by a <em>first-order Markov model</em>, and when
+<span class="math notranslate nohighlight">\(\tau = k\)</span>, we say that the data is characterized by a
+<span class="math notranslate nohighlight">\(k^{\textrm{th}}\)</span>-order Markov model. For when the first-order
+Markov condition holds (<span class="math notranslate nohighlight">\(\tau = 1\)</span>) the factorization of our joint
+probability becomes a product of probabilities of each word given the
+previous <em>word</em>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-recurrent-neural-networks-sequence-3">
+<span class="eqno">(9.1.4)<a class="headerlink" href="#equation-chapter-recurrent-neural-networks-sequence-3" title="Permalink to this equation">¶</a></span>\[P(x_1, \ldots, x_T) = P(x_1) \prod_{t=2}^T P(x_t \mid x_{t-1}).\]</div>
+<p>We often find it useful to work with models that proceed as though a
+Markov condition were satisfied, even when we know that this is only
+<em>approximately</em> true. With real text documents we continue to gain
+information as we include more and more leftwards context. But these
+gains diminish rapidly. Thus, sometimes we compromise, obviating
+computational and statistical difficulties by training models whose
+validity depends on a <span class="math notranslate nohighlight">\(k^{\textrm{th}}\)</span>-order Markov condition.
+Even today’s massive RNN- and Transformer-based language models seldom
+incorporate more than thousands of words of context.</p>
+<p>With discrete data, a true Markov model simply counts the number of
+times that each word has occurred in each context, producing the
+relative frequency estimate of <span class="math notranslate nohighlight">\(P(x_t \mid x_{t-1})\)</span>. Whenever the
+data assumes only discrete values (as in language), the most likely
+sequence of words can be computed efficiently using dynamic programming.</p>
+</div>
+<div class="section" id="the-order-of-decoding">
+<h3><span class="section-number">9.1.2.2. </span>The Order of Decoding<a class="headerlink" href="#the-order-of-decoding" title="Permalink to this heading">¶</a></h3>
+<p>You may be wondering why we represented the factorization of a text
+sequence <span class="math notranslate nohighlight">\(P(x_1, \ldots, x_T)\)</span> as a left-to-right chain of
+conditional probabilities. Why not right-to-left or some other,
+seemingly random order? In principle, there is nothing wrong with
+unfolding <span class="math notranslate nohighlight">\(P(x_1, \ldots, x_T)\)</span> in reverse order. The result is a
+valid factorization:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-recurrent-neural-networks-sequence-4">
+<span class="eqno">(9.1.5)<a class="headerlink" href="#equation-chapter-recurrent-neural-networks-sequence-4" title="Permalink to this equation">¶</a></span>\[P(x_1, \ldots, x_T) = P(x_T) \prod_{t=T-1}^1 P(x_t \mid x_{t+1}, \ldots, x_T).\]</div>
+<p>However, there are many reasons why factorizing text in the same
+direction in which we read it (left-to-right for most languages, but
+right-to-left for Arabic and Hebrew) is preferred for the task of
+language modeling. First, this is just a more natural direction for us
+to think about. After all we all read text every day, and this process
+is guided by our ability to anticipate which words and phrases are
+likely to come next. Just think of how many times you have completed
+someone else’s sentence. Thus, even if we had no other reason to prefer
+such in-order decodings, they would be useful if only because we have
+better intuitions for what should be likely when predicting in this
+order.</p>
+<p>Second, by factorizing in order, we can assign probabilities to
+arbitrarily long sequences using the same language model. To convert a
+probability over steps <span class="math notranslate nohighlight">\(1\)</span> through <span class="math notranslate nohighlight">\(t\)</span> into one that extends
+to word <span class="math notranslate nohighlight">\(t+1\)</span> we simply multiply by the conditional probability of
+the additional token given the previous ones:
+<span class="math notranslate nohighlight">\(P(x_{t+1}, \ldots, x_1) = P(x_{t}, \ldots, x_1) \cdot P(x_{t+1} \mid x_{t}, \ldots, x_1)\)</span>.</p>
+<p>Third, we have stronger predictive models for predicting adjacent words
+than words at arbitrary other locations. While all orders of
+factorization are valid, they do not necessarily all represent equally
+easy predictive modeling problems. This is true not only for language,
+but for other kinds of data as well, e.g., when the data is causally
+structured. For example, we believe that future events cannot influence
+the past. Hence, if we change <span class="math notranslate nohighlight">\(x_t\)</span>, we may be able to influence
+what happens for <span class="math notranslate nohighlight">\(x_{t+1}\)</span> going forward but not the converse.
+That is, if we change <span class="math notranslate nohighlight">\(x_t\)</span>, the distribution over past events
+will not change. In some contexts, this makes it easier to predict
+<span class="math notranslate nohighlight">\(P(x_{t+1} \mid x_t)\)</span> than to predict <span class="math notranslate nohighlight">\(P(x_t \mid x_{t+1})\)</span>.
+For instance, in some cases, we can find
+<span class="math notranslate nohighlight">\(x_{t+1} = f(x_t) + \epsilon\)</span> for some additive noise
+<span class="math notranslate nohighlight">\(\epsilon\)</span>, whereas the converse is not true
+<span id="id1">(<a class="reference internal" href="../chapter_references/zreferences.html#id119" title="Hoyer, P. O., Janzing, D., Mooij, J. M., Peters, J., &amp; Schölkopf, B. (2009). Nonlinear causal discovery with additive noise models. Advances in Neural Information Processing Systems (pp. 689–696).">Hoyer <em>et al.</em>, 2009</a>)</span>. This is great news, since it is
+typically the forward direction that we are interested in estimating.
+The book by <span id="id2">Peters <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id214" title="Peters, J., Janzing, D., &amp; Schölkopf, B. (2017). Elements of Causal Inference: Foundations and Learning Algorithms. MIT Press.">2017</a>)</span> contains more on
+this topic. We barely scratch the surface of it.</p>
+</div>
+</div>
+<div class="section" id="training">
+<h2><span class="section-number">9.1.3. </span>Training<a class="headerlink" href="#training" title="Permalink to this heading">¶</a></h2>
+<p>Before we focus our attention on text data, let’s first try this out
+with some continuous-valued synthetic data.</p>
+<p>Here, our 1000 synthetic data will follow the trigonometric <code class="docutils literal notranslate"><span class="pre">sin</span></code>
+function, applied to 0.01 times the time step. To make the problem a
+little more interesting, we corrupt each sample with additive noise.
+From this sequence we extract training examples, each consisting of
+features and a label.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-3-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-3-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">DataModule</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_train</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">DataModule</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_train</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-3-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">DataModule</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_train</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">get_key</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">+</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">key</span><span class="p">,</span>
+                                                               <span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-3-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">DataModule</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_train</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">([</span><span class="n">T</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.2</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div><p>To begin, we try a model that acts as if the data satisfied a
+<span class="math notranslate nohighlight">\(\tau^{\textrm{th}}\)</span>-order Markov condition, and thus predicts
+<span class="math notranslate nohighlight">\(x_t\)</span> using only the past <span class="math notranslate nohighlight">\(\tau\)</span> observations. Thus for each
+time step we have an example with label <span class="math notranslate nohighlight">\(y = x_t\)</span> and features
+<span class="math notranslate nohighlight">\(\mathbf{x}_t = [x_{t-\tau}, \ldots, x_{t-1}]\)</span>. The astute reader
+might have noticed that this results in <span class="math notranslate nohighlight">\(1000-\tau\)</span> examples,
+since we lack sufficient history for <span class="math notranslate nohighlight">\(y_1, \ldots, y_\tau\)</span>. While
+we could pad the first <span class="math notranslate nohighlight">\(\tau\)</span> sequences with zeros, to keep things
+simple, we drop them for now. The resulting dataset contains
+<span class="math notranslate nohighlight">\(T - \tau\)</span> examples, where each input to the model has sequence
+length <span class="math notranslate nohighlight">\(\tau\)</span>. We create a data iterator on the first 600
+examples, covering a period of the sin function.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-5-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-5-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">Data</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">)]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">)</span> <span class="k">if</span> <span class="n">train</span> <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tensorloader</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">],</span> <span class="n">train</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">Data</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">)]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">)</span> <span class="k">if</span> <span class="n">train</span> <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tensorloader</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">],</span> <span class="n">train</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">Data</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">)]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">)</span> <span class="k">if</span> <span class="n">train</span> <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tensorloader</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">],</span> <span class="n">train</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">Data</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">)]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">)</span> <span class="k">if</span> <span class="n">train</span> <span class="k">else</span> <span class="nb">slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_train</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tensorloader</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">],</span> <span class="n">train</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>In this example our model will be a standard linear regression.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="prediction">
+<h2><span class="section-number">9.1.4. </span>Prediction<a class="headerlink" href="#prediction" title="Permalink to this heading">¶</a></h2>
+<p>To evaluate our model, we first check how well it performs at
+one-step-ahead prediction.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-9-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-9-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">onestep_preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">onestep_preds</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;1-step preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">onestep_preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">onestep_preds</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;1-step preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-9-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">onestep_preds</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">},</span> <span class="n">data</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">onestep_preds</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;1-step preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-9-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">onestep_preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">onestep_preds</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="s1">&#39;1-step preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div><p>These predictions look good, even near the end at <span class="math notranslate nohighlight">\(t=1000\)</span>.</p>
+<p>But what if we only observed sequence data up until time step 604
+(<code class="docutils literal notranslate"><span class="pre">n_train</span> <span class="pre">+</span> <span class="pre">tau</span></code>) and wished to make predictions several steps into
+the future? Unfortunately, we cannot directly compute the one-step-ahead
+prediction for time step 609, because we do not know the corresponding
+inputs, having seen only up to <span class="math notranslate nohighlight">\(x_{604}\)</span>. We can address this
+problem by plugging in our earlier predictions as inputs to our model
+for making subsequent predictions, projecting forward, one step at a
+time, until reaching the desired time step:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-recurrent-neural-networks-sequence-5">
+<span class="eqno">(9.1.6)<a class="headerlink" href="#equation-chapter-recurrent-neural-networks-sequence-5" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\hat{x}_{605} &amp;= f(x_{601}, x_{602}, x_{603}, x_{604}), \\
+\hat{x}_{606} &amp;= f(x_{602}, x_{603}, x_{604}, \hat{x}_{605}), \\
+\hat{x}_{607} &amp;= f(x_{603}, x_{604}, \hat{x}_{605}, \hat{x}_{606}),\\
+\hat{x}_{608} &amp;= f(x_{604}, \hat{x}_{605}, \hat{x}_{606}, \hat{x}_{607}),\\
+\hat{x}_{609} &amp;= f(\hat{x}_{605}, \hat{x}_{606}, \hat{x}_{607}, \hat{x}_{608}),\\
+&amp;\vdots\end{aligned}\end{split}\]</div>
+<p>Generally, for an observed sequence <span class="math notranslate nohighlight">\(x_1, \ldots, x_t\)</span>, its
+predicted output <span class="math notranslate nohighlight">\(\hat{x}_{t+k}\)</span> at time step <span class="math notranslate nohighlight">\(t+k\)</span> is
+called the <span class="math notranslate nohighlight">\(k\)</span><em>-step-ahead prediction</em>. Since we have observed
+up to <span class="math notranslate nohighlight">\(x_{604}\)</span>, its <span class="math notranslate nohighlight">\(k\)</span>-step-ahead prediction is
+<span class="math notranslate nohighlight">\(\hat{x}_{604+k}\)</span>. In other words, we will have to keep on using
+our own predictions to make multistep-ahead predictions. Let’s see how
+well this goes.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-11-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-11-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">multistep_preds</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+        <span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">multistep_preds</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span>
+         <span class="p">[</span><span class="n">onestep_preds</span><span class="p">,</span> <span class="n">multistep_preds</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1-step preds&#39;</span><span class="p">,</span> <span class="s1">&#39;multistep preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">multistep_preds</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+        <span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+<span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">multistep_preds</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span>
+         <span class="p">[</span><span class="n">onestep_preds</span><span class="p">,</span> <span class="n">multistep_preds</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1-step preds&#39;</span><span class="p">,</span> <span class="s1">&#39;multistep preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-11-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">multistep_preds</span><span class="o">.</span><span class="n">at</span><span class="p">[:]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">},</span>
+                       <span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">multistep_preds</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span>
+         <span class="p">[</span><span class="n">onestep_preds</span><span class="p">,</span> <span class="n">multistep_preds</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1-step preds&#39;</span><span class="p">,</span> <span class="s1">&#39;multistep preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-11-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">multistep_preds</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+<span class="n">multistep_preds</span><span class="p">[:]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">model</span><span class="p">(</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">multistep_preds</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span> <span class="p">:</span> <span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))),</span> <span class="p">()))</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:],</span> <span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span>
+         <span class="p">[</span><span class="n">onestep_preds</span><span class="p">,</span> <span class="n">multistep_preds</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">num_train</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1-step preds&#39;</span><span class="p">,</span> <span class="s1">&#39;multistep preds&#39;</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div><p>Unfortunately, in this case we fail spectacularly. The predictions decay
+to a constant pretty quickly after a few steps. Why did the algorithm
+perform so much worse when predicting further into the future?
+Ultimately, this is down to the fact that errors build up. Let’s say
+that after step 1 we have some error <span class="math notranslate nohighlight">\(\epsilon_1 = \bar\epsilon\)</span>.
+Now the <em>input</em> for step 2 is perturbed by <span class="math notranslate nohighlight">\(\epsilon_1\)</span>, hence we
+suffer some error in the order of
+<span class="math notranslate nohighlight">\(\epsilon_2 = \bar\epsilon + c \epsilon_1\)</span> for some constant
+<span class="math notranslate nohighlight">\(c\)</span>, and so on. The predictions can diverge rapidly from the true
+observations. You may already be familiar with this common phenomenon.
+For instance, weather forecasts for the next 24 hours tend to be pretty
+accurate but beyond that, accuracy declines rapidly. We will discuss
+methods for improving this throughout this chapter and beyond.</p>
+<p>Let’s take a closer look at the difficulties in <span class="math notranslate nohighlight">\(k\)</span>-step-ahead
+predictions by computing predictions on the entire sequence for
+<span class="math notranslate nohighlight">\(k = 1, 4, 16, 64\)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-13-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-13-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">k_step_pred</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">):</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># The (i+tau)-th element stores the (i+1)-step-ahead predictions</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">features</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">k_step_pred</span><span class="p">(</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:],</span>
+         <span class="p">[</span><span class="n">preds</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">-step preds&#39;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">k_step_pred</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">):</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># The (i+tau)-th element stores the (i+1)-step-ahead predictions</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">features</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">k_step_pred</span><span class="p">(</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:],</span>
+         <span class="p">[</span><span class="n">preds</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">-step preds&#39;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-13-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">k_step_pred</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">):</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># The (i+tau)-th element stores the (i+1)-step-ahead predictions</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">({</span><span class="s1">&#39;params&#39;</span><span class="p">:</span> <span class="n">trainer</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">params</span><span class="p">},</span>
+                            <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preds</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">features</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">k_step_pred</span><span class="p">(</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:],</span>
+         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">preds</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">-step preds&#39;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">k_step_pred</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">):</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">T</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">-</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># The (i+tau)-th element stores the (i+1)-step-ahead predictions</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">features</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="p">:]</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">k_step_pred</span><span class="p">(</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">tau</span><span class="o">+</span><span class="n">steps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:],</span>
+         <span class="p">[</span><span class="n">preds</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">-step preds&#39;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div><p>This clearly illustrates how the quality of the prediction changes as we
+try to predict further into the future. While the 4-step-ahead
+predictions still look good, anything beyond that is almost useless.</p>
+</div>
+<div class="section" id="summary">
+<h2><span class="section-number">9.1.5. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<p>There is quite a difference in difficulty between interpolation and
+extrapolation. Consequently, if you have a sequence, always respect the
+temporal order of the data when training, i.e., never train on future
+data. Given this kind of data, sequence models require specialized
+statistical tools for estimation. Two popular choices are autoregressive
+models and latent-variable autoregressive models. For causal models
+(e.g., time going forward), estimating the forward direction is
+typically a lot easier than the reverse direction. For an observed
+sequence up to time step <span class="math notranslate nohighlight">\(t\)</span>, its predicted output at time step
+<span class="math notranslate nohighlight">\(t+k\)</span> is the <span class="math notranslate nohighlight">\(k\)</span><em>-step-ahead prediction</em>. As we predict
+further in time by increasing <span class="math notranslate nohighlight">\(k\)</span>, the errors accumulate and the
+quality of the prediction degrades, often dramatically.</p>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">9.1.6. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Improve the model in the experiment of this section.</p>
+<ol class="arabic simple">
+<li><p>Incorporate more than the past four observations? How many do you
+really need?</p></li>
+<li><p>How many past observations would you need if there was no noise?
+Hint: you can write <span class="math notranslate nohighlight">\(\sin\)</span> and <span class="math notranslate nohighlight">\(\cos\)</span> as a
+differential equation.</p></li>
+<li><p>Can you incorporate older observations while keeping the total
+number of features constant? Does this improve accuracy? Why?</p></li>
+<li><p>Change the neural network architecture and evaluate the
+performance. You may train the new model with more epochs. What do
+you observe?</p></li>
+</ol>
+</li>
+<li><p>An investor wants to find a good security to buy. They look at past
+returns to decide which one is likely to do well. What could possibly
+go wrong with this strategy?</p></li>
+<li><p>Does causality also apply to text? To which extent?</p></li>
+<li><p>Give an example for when a latent autoregressive model might be
+needed to capture the dynamic of the data.</p></li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-15-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-15-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-15-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-15-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-15-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/114">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-15-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/113">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="jax-15-2"><p><a class="reference external" href="https://discuss.d2l.ai/t/18010">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="tensorflow-15-3"><p><a class="reference external" href="https://discuss.d2l.ai/t/1048">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">9.1. Working with Sequences</a><ul>
+<li><a class="reference internal" href="#autoregressive-models">9.1.1. Autoregressive Models</a></li>
+<li><a class="reference internal" href="#sequence-models">9.1.2. Sequence Models</a><ul>
+<li><a class="reference internal" href="#markov-models">9.1.2.1. Markov Models</a></li>
+<li><a class="reference internal" href="#the-order-of-decoding">9.1.2.2. The Order of Decoding</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#training">9.1.3. Training</a></li>
+<li><a class="reference internal" href="#prediction">9.1.4. Prediction</a></li>
+<li><a class="reference internal" href="#summary">9.1.5. Summary</a></li>
+<li><a class="reference internal" href="#exercises">9.1.6. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="index.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>9. Recurrent Neural Networks</div>
+         </div>
+     </a>
+     <a id="button-next" href="text-sequence.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>9.2. Converting Raw Text into Sequence Data</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,285 @@
+
+.. _sec_d2l:
+
+The ``d2l`` API Document
+========================
+
+
+This section displays classes and functions (sorted alphabetically) in
+the ``d2l`` package, showing where they are defined in the book so you
+can find more detailed implementations and explanations. See also the
+source code on the `GitHub
+repository <https://github.com/d2l-ai/d2l-en/tree/master/d2l>`__.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-1-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-1-0">
+
+
+
+.. currentmodule:: d2l.torch
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-1-1">
+
+
+
+.. currentmodule:: d2l.mxnet
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-1-2">
+
+
+
+.. currentmodule:: d2l.torch
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+Classes
+-------
+
+
+
+.. autoclass:: AdditiveAttention
+   :members:
+   
+
+.. autoclass:: AddNorm
+   :members:
+
+
+.. autoclass:: AttentionDecoder
+   :members: 
+
+
+.. autoclass:: Classifier
+   :members: 
+   
+
+.. autoclass:: DataModule
+   :members: 
+   
+
+.. autoclass:: Decoder
+   :members: 
+   
+
+.. autoclass:: DotProductAttention
+   :members:
+   
+
+.. autoclass:: Encoder
+   :members:
+   
+
+.. autoclass:: EncoderDecoder
+   :members:
+   
+
+.. autoclass:: FashionMNIST
+   :members: 
+   
+
+.. autoclass:: GRU
+   :members: 
+   
+
+.. autoclass:: HyperParameters
+   :members: 
+   
+
+.. autoclass:: LeNet
+   :members: 
+   
+
+.. autoclass:: LinearRegression
+   :members: 
+   
+
+.. autoclass:: LinearRegressionScratch
+   :members: 
+   
+
+.. autoclass:: Module
+   :members: 
+   
+
+.. autoclass:: MTFraEng
+   :members: 
+   
+
+.. autoclass:: MultiHeadAttention
+   :members:
+   
+
+.. autoclass:: PositionalEncoding
+   :members:
+   
+
+.. autoclass:: PositionWiseFFN
+   :members:
+   
+
+.. autoclass:: ProgressBoard
+   :members: 
+   
+
+.. autoclass:: Residual
+   :members: 
+   
+
+.. autoclass:: ResNeXtBlock
+   :members:
+   
+
+.. autoclass:: RNN
+   :members: 
+   
+
+.. autoclass:: RNNLM
+   :members:
+   
+
+.. autoclass:: RNNLMScratch
+   :members:
+   
+
+.. autoclass:: RNNScratch
+   :members: 
+   
+
+.. autoclass:: Seq2Seq
+   :members:  
+   
+
+.. autoclass:: Seq2SeqEncoder
+   :members:
+   
+
+.. autoclass:: SGD
+   :members: 
+   
+
+.. autoclass:: SoftmaxRegression
+   :members: 
+
+
+.. autoclass:: SyntheticRegressionData
+   :members: 
+
+
+.. autoclass:: TimeMachine
+   :members: 
+
+
+.. autoclass:: Trainer
+   :members: 
+
+
+.. autoclass:: TransformerEncoder
+   :members:
+
+
+.. autoclass:: TransformerEncoderBlock
+   :members:
+
+
+.. autoclass:: Vocab
+   :members:
+
+Functions
+---------
+
+
+
+.. autofunction:: add_to_class
+
+
+.. autofunction:: bleu
+
+
+.. autofunction:: check_len
+
+
+.. autofunction:: check_shape
+
+
+.. autofunction:: corr2d
+
+
+.. autofunction:: cpu
+
+
+.. autofunction:: gpu
+
+
+.. autofunction:: init_cnn
+
+
+.. autofunction:: init_seq2seq
+
+
+.. autofunction:: masked_softmax
+
+
+.. autofunction:: num_gpus
+
+
+.. autofunction:: plot
+
+
+.. autofunction:: set_axes
+
+
+.. autofunction:: set_figsize
+
+
+.. autofunction:: show_heatmaps
+
+
+.. autofunction:: show_list_len_pair_hist
+
+
+.. autofunction:: try_all_gpus
+
+
+.. autofunction:: try_gpu
+
+
+.. autofunction:: use_svg_display

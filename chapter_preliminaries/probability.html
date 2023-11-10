@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>2.6. Probability and Statistics &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.7. Documentation" href="lookup-api.html" />
+    <link rel="prev" title="2.5. Automatic Differentiation" href="autograd.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">2. </span>Preliminaries</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">2.6. </span>Probability and Statistics</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_preliminaries/probability.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. Preliminaries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. Preliminaries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="probability-and-statistics">
+<span id="sec-prob"></span><h1><span class="section-number">2.6. </span>Probability and Statistics<a class="headerlink" href="#probability-and-statistics" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_preliminaries/probability.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_preliminaries/probability.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_preliminaries/probability.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_preliminaries/probability.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_preliminaries/probability.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_preliminaries/probability.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_preliminaries/probability.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_preliminaries/probability.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>One way or another, machine learning is all about uncertainty. In
+supervised learning, we want to predict something unknown (the <em>target</em>)
+given something known (the <em>features</em>). Depending on our objective, we
+might attempt to predict the most likely value of the target. Or we
+might predict the value with the smallest expected distance from the
+target. And sometimes we wish not only to predict a specific value but
+to <em>quantify our uncertainty</em>. For example, given some features
+describing a patient, we might want to know <em>how likely</em> they are to
+suffer a heart attack in the next year. In unsupervised learning, we
+often care about uncertainty. To determine whether a set of measurements
+are anomalous, it helps to know how likely one is to observe values in a
+population of interest. Furthermore, in reinforcement learning, we wish
+to develop agents that act intelligently in various environments. This
+requires reasoning about how an environment might be expected to change
+and what rewards one might expect to encounter in response to each of
+the available actions.</p>
+<p><em>Probability</em> is the mathematical field concerned with reasoning under
+uncertainty. Given a probabilistic model of some process, we can reason
+about the likelihood of various events. The use of probabilities to
+describe the frequencies of repeatable events (like coin tosses) is
+fairly uncontroversial. In fact, <em>frequentist</em> scholars adhere to an
+interpretation of probability that applies <em>only</em> to such repeatable
+events. By contrast <em>Bayesian</em> scholars use the language of probability
+more broadly to formalize reasoning under uncertainty. Bayesian
+probability is characterized by two unique features: (i) assigning
+degrees of belief to non-repeatable events, e.g., what is the
+<em>probability</em> that a dam will collapse?; and (ii) subjectivity. While
+Bayesian probability provides unambiguous rules for how one should
+update their beliefs in light of new evidence, it allows for different
+individuals to start off with different <em>prior</em> beliefs. <em>Statistics</em>
+helps us to reason backwards, starting off with collection and
+organization of data and backing out to what inferences we might draw
+about the process that generated the data. Whenever we analyze a
+dataset, hunting for patterns that we hope might characterize a broader
+population, we are employing statistical thinking. Many courses, majors,
+theses, careers, departments, companies, and institutions have been
+devoted to the study of probability and statistics. While this section
+only scratches the surface, we will provide the foundation that you need
+to begin building models.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-1-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-1-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.distributions.multinomial</span> <span class="kn">import</span> <span class="n">Multinomial</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">torch</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">np</span><span class="p">,</span> <span class="n">npx</span>
+<span class="kn">from</span> <span class="nn">mxnet.numpy.random</span> <span class="kn">import</span> <span class="n">multinomial</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">mxnet</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">npx</span><span class="o">.</span><span class="n">set_np</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">jnp</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">jax</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow_probability</span> <span class="kn">import</span> <span class="n">distributions</span> <span class="k">as</span> <span class="n">tfd</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div></div><div class="section" id="a-simple-example-tossing-coins">
+<h2><span class="section-number">2.6.1. </span>A Simple Example: Tossing Coins<a class="headerlink" href="#a-simple-example-tossing-coins" title="Permalink to this heading">¶</a></h2>
+<p>Imagine that we plan to toss a coin and want to quantify how likely we
+are to see heads (vs. tails). If the coin is <em>fair</em>, then both outcomes
+(heads and tails), are equally likely. Moreover if we plan to toss the
+coin <span class="math notranslate nohighlight">\(n\)</span> times then the fraction of heads that we <em>expect</em> to see
+should exactly match the <em>expected</em> fraction of tails. One intuitive way
+to see this is by symmetry: for every possible outcome with
+<span class="math notranslate nohighlight">\(n_\textrm{h}\)</span> heads and <span class="math notranslate nohighlight">\(n_\textrm{t} = (n - n_\textrm{h})\)</span>
+tails, there is an equally likely outcome with <span class="math notranslate nohighlight">\(n_\textrm{t}\)</span>
+heads and <span class="math notranslate nohighlight">\(n_\textrm{h}\)</span> tails. Note that this is only possible if
+on average we expect to see <span class="math notranslate nohighlight">\(1/2\)</span> of tosses come up heads and
+<span class="math notranslate nohighlight">\(1/2\)</span> come up tails. Of course, if you conduct this experiment
+many times with <span class="math notranslate nohighlight">\(n=1000000\)</span> tosses each, you might never see a
+trial where <span class="math notranslate nohighlight">\(n_\textrm{h} = n_\textrm{t}\)</span> exactly.</p>
+<p>Formally, the quantity <span class="math notranslate nohighlight">\(1/2\)</span> is called a <em>probability</em> and here it
+captures the certainty with which any given toss will come up heads.
+Probabilities assign scores between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(1\)</span> to outcomes
+of interest, called <em>events</em>. Here the event of interest is
+<span class="math notranslate nohighlight">\(\textrm{heads}\)</span> and we denote the corresponding probability
+<span class="math notranslate nohighlight">\(P(\textrm{heads})\)</span>. A probability of <span class="math notranslate nohighlight">\(1\)</span> indicates absolute
+certainty (imagine a trick coin where both sides were heads) and a
+probability of <span class="math notranslate nohighlight">\(0\)</span> indicates impossibility (e.g., if both sides
+were tails). The frequencies <span class="math notranslate nohighlight">\(n_\textrm{h}/n\)</span> and
+<span class="math notranslate nohighlight">\(n_\textrm{t}/n\)</span> are not probabilities but rather <em>statistics</em>.
+Probabilities are <em>theoretical</em> quantities that underly the data
+generating process. Here, the probability <span class="math notranslate nohighlight">\(1/2\)</span> is a property of
+the coin itself. By contrast, statistics are <em>empirical</em> quantities that
+are computed as functions of the observed data. Our interests in
+probabilistic and statistical quantities are inextricably intertwined.
+We often design special statistics called <em>estimators</em> that, given a
+dataset, produce <em>estimates</em> of model parameters such as probabilities.
+Moreover, when those estimators satisfy a nice property called
+<em>consistency</em>, our estimates will converge to the corresponding
+probability. In turn, these inferred probabilities tell about the likely
+statistical properties of data from the same population that we might
+encounter in the future.</p>
+<p>Suppose that we stumbled upon a real coin for which we did not know the
+true <span class="math notranslate nohighlight">\(P(\textrm{heads})\)</span>. To investigate this quantity with
+statistical methods, we need to (i) collect some data; and (ii) design
+an estimator. Data acquisition here is easy; we can toss the coin many
+times and record all the outcomes. Formally, drawing realizations from
+some underlying random process is called <em>sampling</em>. As you might have
+guessed, one natural estimator is the ratio of the number of observed
+<em>heads</em> to the total number of tosses.</p>
+<p>Now, suppose that the coin was in fact fair, i.e.,
+<span class="math notranslate nohighlight">\(P(\textrm{heads}) = 0.5\)</span>. To simulate tosses of a fair coin, we
+can invoke any random number generator. There are some easy ways to draw
+samples of an event with probability <span class="math notranslate nohighlight">\(0.5\)</span>. For example Python’s
+<code class="docutils literal notranslate"><span class="pre">random.random</span></code> yields numbers in the interval <span class="math notranslate nohighlight">\([0,1]\)</span> where the
+probability of lying in any sub-interval <span class="math notranslate nohighlight">\([a, b] \subset [0,1]\)</span> is
+equal to <span class="math notranslate nohighlight">\(b-a\)</span>. Thus we can get out <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> with
+probability <code class="docutils literal notranslate"><span class="pre">0.5</span></code> each by testing whether the returned float number is
+greater than <code class="docutils literal notranslate"><span class="pre">0.5</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num_tosses</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">heads</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_tosses</span><span class="p">)])</span>
+<span class="n">tails</span> <span class="o">=</span> <span class="n">num_tosses</span> <span class="o">-</span> <span class="n">heads</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;heads, tails: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">heads</span><span class="p">,</span> <span class="n">tails</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>More generally, we can simulate multiple draws from any variable with a
+finite number of possible outcomes (like the toss of a coin or roll of a
+die) by calling the multinomial function, setting the first argument to
+the number of draws and the second as a list of probabilities associated
+with each of the possible outcomes. To simulate ten tosses of a fair
+coin, we assign probability vector <code class="docutils literal notranslate"><span class="pre">[0.5,</span> <span class="pre">0.5]</span></code>, interpreting index 0
+as heads and index 1 as tails. The function returns a vector with length
+equal to the number of possible outcomes (here, 2), where the first
+component tells us the number of occurrences of heads and the second
+component tells us the number of occurrences of tails.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-5-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-5-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fair_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">Multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fair_probs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fair_probs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="c1"># jax.random does not have multinomial distribution implemented</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fair_probs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">tfd</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div><p>Each time you run this sampling process, you will receive a new random
+value that may differ from the previous outcome. Dividing by the number
+of tosses gives us the <em>frequency</em> of each outcome in our data. Note
+that these frequencies, just like the probabilities that they are
+intended to estimate, sum to <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-7-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-7-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-7-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-7-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-7-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="o">/</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-7-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-7-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-7-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tfd</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="o">/</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</div></div><p>Here, even though our simulated coin is fair (we ourselves set the
+probabilities <code class="docutils literal notranslate"><span class="pre">[0.5,</span> <span class="pre">0.5]</span></code>), the counts of heads and tails may not be
+identical. That is because we only drew a relatively small number of
+samples. If we did not implement the simulation ourselves, and only saw
+the outcome, how would we know if the coin were slightly unfair or if
+the possible deviation from <span class="math notranslate nohighlight">\(1/2\)</span> was just an artifact of the
+small sample size? Let’s see what happens when we simulate 10,000
+tosses.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-9-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-9-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">Multinomial</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">/</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">multinomial</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">counts</span> <span class="o">/</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-9-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">counts</span> <span class="o">/</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-9-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">tfd</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">/</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+</div></div><p>In general, for averages of repeated events (like coin tosses), as the
+number of repetitions grows, our estimates are guaranteed to converge to
+the true underlying probabilities. The mathematical formulation of this
+phenomenon is called the <em>law of large numbers</em> and the <em>central limit
+theorem</em> tells us that in many situations, as the sample size <span class="math notranslate nohighlight">\(n\)</span>
+grows, these errors should go down at a rate of <span class="math notranslate nohighlight">\((1/\sqrt{n})\)</span>.
+Let’s get some more intuition by studying how our estimate evolves as we
+grow the number of tosses from 1 to 10,000.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-11-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-11-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">Multinomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">((</span><span class="mi">10000</span><span class="p">,))</span>
+<span class="n">cum_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">cum_counts</span> <span class="o">/</span> <span class="n">cum_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">estimates</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">((</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=heads)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=tails)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Samples&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Estimated probability&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">multinomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">cum_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">cum_counts</span> <span class="o">/</span> <span class="n">cum_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">((</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=heads)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=tails)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Samples&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Estimated probability&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-11-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">cum_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">cum_counts</span> <span class="o">/</span> <span class="n">cum_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">((</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=heads)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=tails)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Samples&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Estimated probability&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-11-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">counts</span> <span class="o">=</span> <span class="n">tfd</span><span class="o">.</span><span class="n">Multinomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">fair_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">cum_counts</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">cum_counts</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">cum_counts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">estimates</span> <span class="o">=</span> <span class="n">estimates</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">((</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=heads)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">estimates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;P(coin=tails)&quot;</span><span class="p">))</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Samples&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Estimated probability&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div></div><p>Each solid curve corresponds to one of the two values of the coin and
+gives our estimated probability that the coin turns up that value after
+each group of experiments. The dashed black line gives the true
+underlying probability. As we get more data by conducting more
+experiments, the curves converge towards the true probability. You might
+already begin to see the shape of some of the more advanced questions
+that preoccupy statisticians: How quickly does this convergence happen?
+If we had already tested many coins manufactured at the same plant, how
+might we incorporate this information?</p>
+</div>
+<div class="section" id="a-more-formal-treatment">
+<h2><span class="section-number">2.6.2. </span>A More Formal Treatment<a class="headerlink" href="#a-more-formal-treatment" title="Permalink to this heading">¶</a></h2>
+<p>We have already gotten pretty far: posing a probabilistic model,
+generating synthetic data, running a statistical estimator, empirically
+assessing convergence, and reporting error metrics (checking the
+deviation). However, to go much further, we will need to be more
+precise.</p>
+<p>When dealing with randomness, we denote the set of possible outcomes
+<span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and call it the <em>sample space</em> or <em>outcome space</em>.
+Here, each element is a distinct possible <em>outcome</em>. In the case of
+rolling a single coin,
+<span class="math notranslate nohighlight">\(\mathcal{S} = \{\textrm{heads}, \textrm{tails}\}\)</span>. For a single
+die, <span class="math notranslate nohighlight">\(\mathcal{S} = \{1, 2, 3, 4, 5, 6\}\)</span>. When flipping two
+coins, possible outcomes are
+<span class="math notranslate nohighlight">\(\{(\textrm{heads}, \textrm{heads}), (\textrm{heads}, \textrm{tails}), (\textrm{tails}, \textrm{heads}), (\textrm{tails}, \textrm{tails})\}\)</span>.
+<em>Events</em> are subsets of the sample space. For instance, the event “the
+first coin toss comes up heads” corresponds to the set
+<span class="math notranslate nohighlight">\(\{(\textrm{heads}, \textrm{heads}), (\textrm{heads}, \textrm{tails})\}\)</span>.
+Whenever the outcome <span class="math notranslate nohighlight">\(z\)</span> of a random experiment satisfies
+<span class="math notranslate nohighlight">\(z \in \mathcal{A}\)</span>, then event <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> has occurred.
+For a single roll of a die, we could define the events “seeing a
+<span class="math notranslate nohighlight">\(5\)</span>” (<span class="math notranslate nohighlight">\(\mathcal{A} = \{5\}\)</span>) and “seeing an odd number”
+(<span class="math notranslate nohighlight">\(\mathcal{B} = \{1, 3, 5\}\)</span>). In this case, if the die came up
+<span class="math notranslate nohighlight">\(5\)</span>, we would say that both <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> and
+<span class="math notranslate nohighlight">\(\mathcal{B}\)</span> occurred. On the other hand, if <span class="math notranslate nohighlight">\(z = 3\)</span>, then
+<span class="math notranslate nohighlight">\(\mathcal{A}\)</span> did not occur but <span class="math notranslate nohighlight">\(\mathcal{B}\)</span> did.</p>
+<p>A <em>probability</em> function maps events onto real values
+<span class="math notranslate nohighlight">\({P: \mathcal{A} \subseteq \mathcal{S} \rightarrow [0,1]}\)</span>. The
+probability, denoted <span class="math notranslate nohighlight">\(P(\mathcal{A})\)</span>, of an event
+<span class="math notranslate nohighlight">\(\mathcal{A}\)</span> in the given sample space <span class="math notranslate nohighlight">\(\mathcal{S}\)</span>, has
+the following properties:</p>
+<ul class="simple">
+<li><p>The probability of any event <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> is a nonnegative
+real number, i.e., <span class="math notranslate nohighlight">\(P(\mathcal{A}) \geq 0\)</span>;</p></li>
+<li><p>The probability of the entire sample space is <span class="math notranslate nohighlight">\(1\)</span>, i.e.,
+<span class="math notranslate nohighlight">\(P(\mathcal{S}) = 1\)</span>;</p></li>
+<li><p>For any countable sequence of events
+<span class="math notranslate nohighlight">\(\mathcal{A}_1, \mathcal{A}_2, \ldots\)</span> that are <em>mutually
+exclusive</em> (i.e.,
+<span class="math notranslate nohighlight">\(\mathcal{A}_i \cap \mathcal{A}_j = \emptyset\)</span> for all
+<span class="math notranslate nohighlight">\(i \neq j\)</span>), the probability that any of them happens is equal
+to the sum of their individual probabilities, i.e.,
+<span class="math notranslate nohighlight">\(P(\bigcup_{i=1}^{\infty} \mathcal{A}_i) = \sum_{i=1}^{\infty} P(\mathcal{A}_i)\)</span>.</p></li>
+</ul>
+<p>These axioms of probability theory, proposed by
+<span id="id1">Kolmogorov (<a class="reference internal" href="../chapter_references/zreferences.html#id151" title="Kolmogorov, A. (1933). Sulla determinazione empirica di una legge di distribuzione. Inst. Ital. Attuari, Giorn., 4, 83–91.">1933</a>)</span>, can be applied to rapidly derive a number of
+important consequences. For instance, it follows immediately that the
+probability of any event <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> <em>or</em> its complement
+<span class="math notranslate nohighlight">\(\mathcal{A}'\)</span> occurring is 1 (because
+<span class="math notranslate nohighlight">\(\mathcal{A} \cup \mathcal{A}' = \mathcal{S}\)</span>). We can also prove
+that <span class="math notranslate nohighlight">\(P(\emptyset) = 0\)</span> because
+<span class="math notranslate nohighlight">\(1 = P(\mathcal{S} \cup \mathcal{S}') = P(\mathcal{S} \cup \emptyset) = P(\mathcal{S}) + P(\emptyset) = 1 + P(\emptyset)\)</span>.
+Consequently, the probability of any event <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> <em>and</em> its
+complement <span class="math notranslate nohighlight">\(\mathcal{A}'\)</span> occurring simultaneously is
+<span class="math notranslate nohighlight">\(P(\mathcal{A} \cap \mathcal{A}') = 0\)</span>. Informally, this tells us
+that impossible events have zero probability of occurring.</p>
+</div>
+<div class="section" id="random-variables">
+<h2><span class="section-number">2.6.3. </span>Random Variables<a class="headerlink" href="#random-variables" title="Permalink to this heading">¶</a></h2>
+<p>When we spoke about events like the roll of a die coming up odds or the
+first coin toss coming up heads, we were invoking the idea of a <em>random
+variable</em>. Formally, random variables are mappings from an underlying
+sample space to a set of (possibly many) values. You might wonder how a
+random variable is different from the sample space, since both are
+collections of outcomes. Importantly, random variables can be much
+coarser than the raw sample space. We can define a binary random
+variable like “greater than 0.5” even when the underlying sample space
+is infinite, e.g., points on the line segment between <span class="math notranslate nohighlight">\(0\)</span> and
+<span class="math notranslate nohighlight">\(1\)</span>. Additionally, multiple random variables can share the same
+underlying sample space. For example “whether my home alarm goes off”
+and “whether my house was burgled” are both binary random variables that
+share an underlying sample space. Consequently, knowing the value taken
+by one random variable can tell us something about the likely value of
+another random variable. Knowing that the alarm went off, we might
+suspect that the house was likely burgled.</p>
+<p>Every value taken by a random variable corresponds to a subset of the
+underlying sample space. Thus the occurrence where the random variable
+<span class="math notranslate nohighlight">\(X\)</span> takes value <span class="math notranslate nohighlight">\(v\)</span>, denoted by <span class="math notranslate nohighlight">\(X=v\)</span>, is an <em>event</em>
+and <span class="math notranslate nohighlight">\(P(X=v)\)</span> denotes its probability. Sometimes this notation can
+get clunky, and we can abuse notation when the context is clear. For
+example, we might use <span class="math notranslate nohighlight">\(P(X)\)</span> to refer broadly to the
+<em>distribution</em> of <span class="math notranslate nohighlight">\(X\)</span>, i.e., the function that tells us the
+probability that <span class="math notranslate nohighlight">\(X\)</span> takes any given value. Other times we write
+expressions like <span class="math notranslate nohighlight">\(P(X,Y) = P(X) P(Y)\)</span>, as a shorthand to express a
+statement that is true for all of the values that the random variables
+<span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> can take, i.e., for all <span class="math notranslate nohighlight">\(i,j\)</span> it holds
+that <span class="math notranslate nohighlight">\(P(X=i \textrm{ and } Y=j) = P(X=i)P(Y=j)\)</span>. Other times, we
+abuse notation by writing <span class="math notranslate nohighlight">\(P(v)\)</span> when the random variable is clear
+from the context. Since an event in probability theory is a set of
+outcomes from the sample space, we can specify a range of values for a
+random variable to take. For example, <span class="math notranslate nohighlight">\(P(1 \leq X \leq 3)\)</span> denotes
+the probability of the event <span class="math notranslate nohighlight">\(\{1 \leq X \leq 3\}\)</span>.</p>
+<p>Note that there is a subtle difference between <em>discrete</em> random
+variables, like flips of a coin or tosses of a die, and <em>continuous</em>
+ones, like the weight and the height of a person sampled at random from
+the population. In this case we seldom really care about someone’s exact
+height. Moreover, if we took precise enough measurements, we would find
+that no two people on the planet have the exact same height. In fact,
+with fine enough measurements, you would never have the same height when
+you wake up and when you go to sleep. There is little point in asking
+about the exact probability that someone is 1.801392782910287192 meters
+tall. Instead, we typically care more about being able to say whether
+someone’s height falls into a given interval, say between 1.79 and 1.81
+meters. In these cases we work with probability <em>densities</em>. The height
+of exactly 1.80 meters has no probability, but nonzero density. To work
+out the probability assigned to an interval, we must take an <em>integral</em>
+of the density over that interval.</p>
+</div>
+<div class="section" id="multiple-random-variables">
+<h2><span class="section-number">2.6.4. </span>Multiple Random Variables<a class="headerlink" href="#multiple-random-variables" title="Permalink to this heading">¶</a></h2>
+<p>You might have noticed that we could not even make it through the
+previous section without making statements involving interactions among
+multiple random variables (recall that <span class="math notranslate nohighlight">\(P(X,Y) = P(X) P(Y)\)</span>). Most
+of machine learning is concerned with such relationships. Here, the
+sample space would be the population of interest, say customers who
+transact with a business, photographs on the Internet, or proteins known
+to biologists. Each random variable would represent the (unknown) value
+of a different attribute. Whenever we sample an individual from the
+population, we observe a realization of each of the random variables.
+Because the values taken by random variables correspond to subsets of
+the sample space that could be overlapping, partially overlapping, or
+entirely disjoint, knowing the value taken by one random variable can
+cause us to update our beliefs about which values of another random
+variable are likely. If a patient walks into a hospital and we observe
+that they are having trouble breathing and have lost their sense of
+smell, then we believe that they are more likely to have COVID-19 than
+we might if they had no trouble breathing and a perfectly ordinary sense
+of smell.</p>
+<p>When working with multiple random variables, we can construct events
+corresponding to every combination of values that the variables can
+jointly take. The probability function that assigns probabilities to
+each of these combinations (e.g. <span class="math notranslate nohighlight">\(A=a\)</span> and <span class="math notranslate nohighlight">\(B=b\)</span>) is called
+the <em>joint probability</em> function and simply returns the probability
+assigned to the intersection of the corresponding subsets of the sample
+space. The <em>joint probability</em> assigned to the event where random
+variables <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> take values <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>,
+respectively, is denoted <span class="math notranslate nohighlight">\(P(A = a, B = b)\)</span>, where the comma
+indicates “and”. Note that for any values <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, it
+follows that</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-0">
+<span class="eqno">(2.6.1)<a class="headerlink" href="#equation-chapter-preliminaries-probability-0" title="Permalink to this equation">¶</a></span>\[P(A=a, B=b) \leq P(A=a) \textrm{ and } P(A=a, B=b) \leq P(B = b),\]</div>
+<p>since for <span class="math notranslate nohighlight">\(A=a\)</span> and <span class="math notranslate nohighlight">\(B=b\)</span> to happen, <span class="math notranslate nohighlight">\(A=a\)</span> has to
+happen <em>and</em> <span class="math notranslate nohighlight">\(B=b\)</span> also has to happen. Interestingly, the joint
+probability tells us all that we can know about these random variables
+in a probabilistic sense, and can be used to derive many other useful
+quantities, including recovering the individual distributions
+<span class="math notranslate nohighlight">\(P(A)\)</span> and <span class="math notranslate nohighlight">\(P(B)\)</span>. To recover <span class="math notranslate nohighlight">\(P(A=a)\)</span> we simply sum
+up <span class="math notranslate nohighlight">\(P(A=a, B=v)\)</span> over all values <span class="math notranslate nohighlight">\(v\)</span> that the random
+variable <span class="math notranslate nohighlight">\(B\)</span> can take: <span class="math notranslate nohighlight">\(P(A=a) = \sum_v P(A=a, B=v)\)</span>.</p>
+<p>The ratio <span class="math notranslate nohighlight">\(\frac{P(A=a, B=b)}{P(A=a)} \leq 1\)</span> turns out to be
+extremely important. It is called the <em>conditional probability</em>, and is
+denoted via the “<span class="math notranslate nohighlight">\(\mid\)</span>” symbol:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-1">
+<span class="eqno">(2.6.2)<a class="headerlink" href="#equation-chapter-preliminaries-probability-1" title="Permalink to this equation">¶</a></span>\[P(B=b \mid A=a) = P(A=a,B=b)/P(A=a).\]</div>
+<p>It tells us the new probability associated with the event <span class="math notranslate nohighlight">\(B=b\)</span>,
+once we condition on the fact <span class="math notranslate nohighlight">\(A=a\)</span> took place. We can think of
+this conditional probability as restricting attention only to the subset
+of the sample space associated with <span class="math notranslate nohighlight">\(A=a\)</span> and then renormalizing
+so that all probabilities sum to 1. Conditional probabilities are in
+fact just ordinary probabilities and thus respect all of the axioms, as
+long as we condition all terms on the same event and thus restrict
+attention to the same sample space. For instance, for disjoint events
+<span class="math notranslate nohighlight">\(\mathcal{B}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{B}'\)</span>, we have that
+<span class="math notranslate nohighlight">\(P(\mathcal{B} \cup \mathcal{B}' \mid A = a) = P(\mathcal{B} \mid A = a) + P(\mathcal{B}' \mid A = a)\)</span>.</p>
+<p>Using the definition of conditional probabilities, we can derive the
+famous result called <em>Bayes’ theorem</em>. By construction, we have that
+<span class="math notranslate nohighlight">\(P(A, B) = P(B\mid A) P(A)\)</span> and <span class="math notranslate nohighlight">\(P(A, B) = P(A\mid B) P(B)\)</span>.
+Combining both equations yields
+<span class="math notranslate nohighlight">\(P(B\mid A) P(A) = P(A\mid B) P(B)\)</span> and hence</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-2">
+<span class="eqno">(2.6.3)<a class="headerlink" href="#equation-chapter-preliminaries-probability-2" title="Permalink to this equation">¶</a></span>\[P(A \mid B) = \frac{P(B\mid A) P(A)}{P(B)}.\]</div>
+<p>This simple equation has profound implications because it allows us to
+reverse the order of conditioning. If we know how to estimate
+<span class="math notranslate nohighlight">\(P(B\mid A)\)</span>, <span class="math notranslate nohighlight">\(P(A)\)</span>, and <span class="math notranslate nohighlight">\(P(B)\)</span>, then we can estimate
+<span class="math notranslate nohighlight">\(P(A\mid B)\)</span>. We often find it easier to estimate one term
+directly but not the other and Bayes’ theorem can come to the rescue
+here. For instance, if we know the prevalence of symptoms for a given
+disease, and the overall prevalences of the disease and symptoms,
+respectively, we can determine how likely someone is to have the disease
+based on their symptoms. In some cases we might not have direct access
+to <span class="math notranslate nohighlight">\(P(B)\)</span>, such as the prevalence of symptoms. In this case a
+simplified version of Bayes’ theorem comes in handy:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-3">
+<span class="eqno">(2.6.4)<a class="headerlink" href="#equation-chapter-preliminaries-probability-3" title="Permalink to this equation">¶</a></span>\[P(A \mid B) \propto P(B \mid A) P(A).\]</div>
+<p>Since we know that <span class="math notranslate nohighlight">\(P(A \mid B)\)</span> must be normalized to <span class="math notranslate nohighlight">\(1\)</span>,
+i.e., <span class="math notranslate nohighlight">\(\sum_a P(A=a \mid B) = 1\)</span>, we can use it to compute</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-4">
+<span class="eqno">(2.6.5)<a class="headerlink" href="#equation-chapter-preliminaries-probability-4" title="Permalink to this equation">¶</a></span>\[P(A \mid B) = \frac{P(B \mid A) P(A)}{\sum_a P(B \mid A=a) P(A = a)}.\]</div>
+<p>In Bayesian statistics, we think of an observer as possessing some
+(subjective) prior beliefs about the plausibility of the available
+hypotheses encoded in the <em>prior</em> <span class="math notranslate nohighlight">\(P(H)\)</span>, and a <em>likelihood
+function</em> that says how likely one is to observe any value of the
+collected evidence for each of the hypotheses in the class
+<span class="math notranslate nohighlight">\(P(E \mid H)\)</span>. Bayes’ theorem is then interpreted as telling us
+how to update the initial <em>prior</em> <span class="math notranslate nohighlight">\(P(H)\)</span> in light of the available
+evidence <span class="math notranslate nohighlight">\(E\)</span> to produce <em>posterior</em> beliefs
+<span class="math notranslate nohighlight">\(P(H \mid E) = \frac{P(E \mid H) P(H)}{P(E)}\)</span>. Informally, this
+can be stated as “posterior equals prior times likelihood, divided by
+the evidence”. Now, because the evidence <span class="math notranslate nohighlight">\(P(E)\)</span> is the same for
+all hypotheses, we can get away with simply normalizing over the
+hypotheses.</p>
+<p>Note that <span class="math notranslate nohighlight">\(\sum_a P(A=a \mid B) = 1\)</span> also allows us to
+<em>marginalize</em> over random variables. That is, we can drop variables from
+a joint distribution such as <span class="math notranslate nohighlight">\(P(A, B)\)</span>. After all, we have that</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-5">
+<span class="eqno">(2.6.6)<a class="headerlink" href="#equation-chapter-preliminaries-probability-5" title="Permalink to this equation">¶</a></span>\[\sum_a P(B \mid A=a) P(A=a) = \sum_a P(B, A=a) = P(B).\]</div>
+<p>Independence is another fundamentally important concept that forms the
+backbone of many important ideas in statistics. In short, two variables
+are <em>independent</em> if conditioning on the value of <span class="math notranslate nohighlight">\(A\)</span> does not
+cause any change to the probability distribution associated with
+<span class="math notranslate nohighlight">\(B\)</span> and vice versa. More formally, independence, denoted
+<span class="math notranslate nohighlight">\(A \perp B\)</span>, requires that <span class="math notranslate nohighlight">\(P(A \mid B) = P(A)\)</span> and,
+consequently, that <span class="math notranslate nohighlight">\(P(A,B) = P(A \mid B) P(B) = P(A) P(B)\)</span>.
+Independence is often an appropriate assumption. For example, if the
+random variable <span class="math notranslate nohighlight">\(A\)</span> represents the outcome from tossing one fair
+coin and the random variable <span class="math notranslate nohighlight">\(B\)</span> represents the outcome from
+tossing another, then knowing whether <span class="math notranslate nohighlight">\(A\)</span> came up heads should not
+influence the probability of <span class="math notranslate nohighlight">\(B\)</span> coming up heads.</p>
+<p>Independence is especially useful when it holds among the successive
+draws of our data from some underlying distribution (allowing us to make
+strong statistical conclusions) or when it holds among various variables
+in our data, allowing us to work with simpler models that encode this
+independence structure. On the other hand, estimating the dependencies
+among random variables is often the very aim of learning. We care to
+estimate the probability of disease given symptoms specifically because
+we believe that diseases and symptoms are <em>not</em> independent.</p>
+<p>Note that because conditional probabilities are proper probabilities,
+the concepts of independence and dependence also apply to them. Two
+random variables <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are <em>conditionally independent</em>
+given a third variable <span class="math notranslate nohighlight">\(C\)</span> if and only if
+<span class="math notranslate nohighlight">\(P(A, B \mid C) = P(A \mid C)P(B \mid C)\)</span>. Interestingly, two
+variables can be independent in general but become dependent when
+conditioning on a third. This often occurs when the two random variables
+<span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> correspond to causes of some third variable
+<span class="math notranslate nohighlight">\(C\)</span>. For example, broken bones and lung cancer might be
+independent in the general population but if we condition on being in
+the hospital then we might find that broken bones are negatively
+correlated with lung cancer. That is because the broken bone <em>explains
+away</em> why some person is in the hospital and thus lowers the probability
+that they are hospitalized because of having lung cancer.</p>
+<p>And conversely, two dependent random variables can become independent
+upon conditioning on a third. This often happens when two otherwise
+unrelated events have a common cause. Shoe size and reading level are
+highly correlated among elementary school students, but this correlation
+disappears if we condition on age.</p>
+</div>
+<div class="section" id="an-example">
+<span id="subsec-probability-hiv-app"></span><h2><span class="section-number">2.6.5. </span>An Example<a class="headerlink" href="#an-example" title="Permalink to this heading">¶</a></h2>
+<p>Let’s put our skills to the test. Assume that a doctor administers an
+HIV test to a patient. This test is fairly accurate and fails only with
+1% probability if the patient is healthy but reported as diseased, i.e.,
+healthy patients test positive in 1% of cases. Moreover, it never fails
+to detect HIV if the patient actually has it. We use
+<span class="math notranslate nohighlight">\(D_1 \in \{0, 1\}\)</span> to indicate the diagnosis (<span class="math notranslate nohighlight">\(0\)</span> if
+negative and <span class="math notranslate nohighlight">\(1\)</span> if positive) and <span class="math notranslate nohighlight">\(H \in \{0, 1\}\)</span> to denote
+the HIV status.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Conditional probability</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(H=1\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(H=0\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(P(D_1 = 1 \mid H)\)</span></p></td>
+<td><p>1</p></td>
+<td><p>0.01</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(P(D_1 = 0 \mid H)\)</span></p></td>
+<td><p>0</p></td>
+<td><p>0.99</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note that the column sums are all 1 (but the row sums do not), since
+they are conditional probabilities. Let’s compute the probability of the
+patient having HIV if the test comes back positive, i.e.,
+<span class="math notranslate nohighlight">\(P(H = 1 \mid D_1 = 1)\)</span>. Intuitively this is going to depend on
+how common the disease is, since it affects the number of false alarms.
+Assume that the population is fairly free of the disease, e.g.,
+<span class="math notranslate nohighlight">\(P(H=1) = 0.0015\)</span>. To apply Bayes’ theorem, we need to apply
+marginalization to determine</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-6">
+<span class="eqno">(2.6.7)<a class="headerlink" href="#equation-chapter-preliminaries-probability-6" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+P(D_1 = 1)
+=&amp; P(D_1=1, H=0) + P(D_1=1, H=1)  \\
+=&amp; P(D_1=1 \mid H=0) P(H=0) + P(D_1=1 \mid H=1) P(H=1) \\
+=&amp; 0.011485.
+\end{aligned}\end{split}\]</div>
+<p>This leads us to</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-7">
+<span class="eqno">(2.6.8)<a class="headerlink" href="#equation-chapter-preliminaries-probability-7" title="Permalink to this equation">¶</a></span>\[P(H = 1 \mid D_1 = 1) = \frac{P(D_1=1 \mid H=1) P(H=1)}{P(D_1=1)} = 0.1306.\]</div>
+<p>In other words, there is only a 13.06% chance that the patient actually
+has HIV, despite the test being pretty accurate. As we can see,
+probability can be counterintuitive. What should a patient do upon
+receiving such terrifying news? Likely, the patient would ask the
+physician to administer another test to get clarity. The second test has
+different characteristics and it is not as good as the first one.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Conditional probability</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(H=1\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(H=0\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(P(D_2 = 1 \mid H)\)</span></p></td>
+<td><p>0.98</p></td>
+<td><p>0.03</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(P(D_2 = 0 \mid H)\)</span></p></td>
+<td><p>0.02</p></td>
+<td><p>0.97</p></td>
+</tr>
+</tbody>
+</table>
+<p>Unfortunately, the second test comes back positive, too. Let’s calculate
+the requisite probabilities to invoke Bayes’ theorem by assuming
+conditional independence:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-8">
+<span class="eqno">(2.6.9)<a class="headerlink" href="#equation-chapter-preliminaries-probability-8" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+P(D_1 = 1, D_2 = 1 \mid H = 0)
+&amp; = P(D_1 = 1 \mid H = 0) P(D_2 = 1 \mid H = 0)
+=&amp; 0.0003, \\
+P(D_1 = 1, D_2 = 1 \mid H = 1)
+&amp; = P(D_1 = 1 \mid H = 1) P(D_2 = 1 \mid H = 1)
+=&amp; 0.98.
+\end{aligned}\end{split}\]</div>
+<p>Now we can apply marginalization to obtain the probability that both
+tests come back positive:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-9">
+<span class="eqno">(2.6.10)<a class="headerlink" href="#equation-chapter-preliminaries-probability-9" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+&amp;P(D_1 = 1, D_2 = 1)\\
+&amp;= P(D_1 = 1, D_2 = 1, H = 0) + P(D_1 = 1, D_2 = 1, H = 1)  \\
+&amp;= P(D_1 = 1, D_2 = 1 \mid H = 0)P(H=0) + P(D_1 = 1, D_2 = 1 \mid H = 1)P(H=1)\\
+&amp;= 0.00176955.
+\end{aligned}\end{split}\]</div>
+<p>Finally, the probability of the patient having HIV given that both tests
+are positive is</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-10">
+<span class="eqno">(2.6.11)<a class="headerlink" href="#equation-chapter-preliminaries-probability-10" title="Permalink to this equation">¶</a></span>\[P(H = 1 \mid D_1 = 1, D_2 = 1)
+= \frac{P(D_1 = 1, D_2 = 1 \mid H=1) P(H=1)}{P(D_1 = 1, D_2 = 1)}
+= 0.8307.\]</div>
+<p>That is, the second test allowed us to gain much higher confidence that
+not all is well. Despite the second test being considerably less
+accurate than the first one, it still significantly improved our
+estimate. The assumption of both tests being conditionally independent
+of each other was crucial for our ability to generate a more accurate
+estimate. Take the extreme case where we run the same test twice. In
+this situation we would expect the same outcome both times, hence no
+additional insight is gained from running the same test again. The
+astute reader might have noticed that the diagnosis behaved like a
+classifier hiding in plain sight where our ability to decide whether a
+patient is healthy increases as we obtain more features (test outcomes).</p>
+</div>
+<div class="section" id="expectations">
+<h2><span class="section-number">2.6.6. </span>Expectations<a class="headerlink" href="#expectations" title="Permalink to this heading">¶</a></h2>
+<p>Often, making decisions requires not just looking at the probabilities
+assigned to individual events but composing them together into useful
+aggregates that can provide us with guidance. For example, when random
+variables take continuous scalar values, we often care about knowing
+what value to expect <em>on average</em>. This quantity is formally called an
+<em>expectation</em>. If we are making investments, the first quantity of
+interest might be the return we can expect, averaging over all the
+possible outcomes (and weighting by the appropriate probabilities). For
+instance, say that with 50% probability, an investment might fail
+altogether, with 40% probability it might provide a 2<span class="math notranslate nohighlight">\(\times\)</span>
+return, and with 10% probability it might provide a 10<span class="math notranslate nohighlight">\(\times\)</span>
+return 10<span class="math notranslate nohighlight">\(\times\)</span>. To calculate the expected return, we sum over
+all returns, multiplying each by the probability that they will occur.
+This yields the expectation
+<span class="math notranslate nohighlight">\(0.5 \cdot 0 + 0.4 \cdot 2 + 0.1 \cdot 10 = 1.8\)</span>. Hence the
+expected return is 1.8<span class="math notranslate nohighlight">\(\times\)</span>.</p>
+<p>In general, the <em>expectation</em> (or average) of the random variable
+<span class="math notranslate nohighlight">\(X\)</span> is defined as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-11">
+<span class="eqno">(2.6.12)<a class="headerlink" href="#equation-chapter-preliminaries-probability-11" title="Permalink to this equation">¶</a></span>\[E[X] = E_{x \sim P}[x] = \sum_{x} x P(X = x).\]</div>
+<p>Likewise, for densities we obtain <span class="math notranslate nohighlight">\(E[X] = \int x \;dp(x)\)</span>.
+Sometimes we are interested in the expected value of some function of
+<span class="math notranslate nohighlight">\(x\)</span>. We can calculate these expectations as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-12">
+<span class="eqno">(2.6.13)<a class="headerlink" href="#equation-chapter-preliminaries-probability-12" title="Permalink to this equation">¶</a></span>\[E_{x \sim P}[f(x)] = \sum_x f(x) P(x) \textrm{ and } E_{x \sim P}[f(x)] = \int f(x) p(x) \;dx\]</div>
+<p>for discrete probabilities and densities, respectively. Returning to the
+investment example from above, <span class="math notranslate nohighlight">\(f\)</span> might be the <em>utility</em>
+(happiness) associated with the return. Behavior economists have long
+noted that people associate greater disutility with losing money than
+the utility gained from earning one dollar relative to their baseline.
+Moreover, the value of money tends to be sub-linear. Possessing 100k
+dollars versus zero dollars can make the difference between paying the
+rent, eating well, and enjoying quality healthcare versus suffering
+through homelessness. On the other hand, the gains due to possessing
+200k versus 100k are less dramatic. Reasoning like this motivates the
+cliché that “the utility of money is logarithmic”.</p>
+<p>If the utility associated with a total loss were <span class="math notranslate nohighlight">\(-1\)</span>, and the
+utilities associated with returns of <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(2\)</span>, and
+<span class="math notranslate nohighlight">\(10\)</span> were <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(2\)</span> and <span class="math notranslate nohighlight">\(4\)</span>, respectively, then
+the expected happiness of investing would be
+<span class="math notranslate nohighlight">\(0.5 \cdot (-1) + 0.4 \cdot 2 + 0.1 \cdot 4 = 0.7\)</span> (an expected
+loss of utility of 30%). If indeed this were your utility function, you
+might be best off keeping the money in the bank.</p>
+<p>For financial decisions, we might also want to measure how <em>risky</em> an
+investment is. Here, we care not just about the expected value but how
+much the actual values tend to <em>vary</em> relative to this value. Note that
+we cannot just take the expectation of the difference between the actual
+and expected values. This is because the expectation of a difference is
+the difference of the expectations, i.e.,
+<span class="math notranslate nohighlight">\(E[X - E[X]] = E[X] - E[E[X]] = 0\)</span>. However, we can look at the
+expectation of any non-negative function of this difference. The
+<em>variance</em> of a random variable is calculated by looking at the expected
+value of the <em>squared</em> differences:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-13">
+<span class="eqno">(2.6.14)<a class="headerlink" href="#equation-chapter-preliminaries-probability-13" title="Permalink to this equation">¶</a></span>\[\textrm{Var}[X] = E\left[(X - E[X])^2\right] = E[X^2] - E[X]^2.\]</div>
+<p>Here the equality follows by expanding
+<span class="math notranslate nohighlight">\((X - E[X])^2 = X^2 - 2 X E[X] + E[X]^2\)</span> and taking expectations
+for each term. The square root of the variance is another useful
+quantity called the <em>standard deviation</em>. While this and the variance
+convey the same information (either can be calculated from the other),
+the standard deviation has the nice property that it is expressed in the
+same units as the original quantity represented by the random variable.</p>
+<p>Lastly, the variance of a function of a random variable is defined
+analogously as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-14">
+<span class="eqno">(2.6.15)<a class="headerlink" href="#equation-chapter-preliminaries-probability-14" title="Permalink to this equation">¶</a></span>\[\textrm{Var}_{x \sim P}[f(x)] = E_{x \sim P}[f^2(x)] - E_{x \sim P}[f(x)]^2.\]</div>
+<p>Returning to our investment example, we can now compute the variance of
+the investment. It is given by
+<span class="math notranslate nohighlight">\(0.5 \cdot 0 + 0.4 \cdot 2^2 + 0.1 \cdot 10^2 - 1.8^2 = 8.36\)</span>. For
+all intents and purposes this is a risky investment. Note that by
+mathematical convention mean and variance are often referenced as
+<span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma^2\)</span>. This is particularly the case whenever
+we use it to parametrize a Gaussian distribution.</p>
+<p>In the same way as we introduced expectations and variance for <em>scalar</em>
+random variables, we can do so for vector-valued ones. Expectations are
+easy, since we can apply them elementwise. For instance,
+<span class="math notranslate nohighlight">\(\boldsymbol{\mu} \stackrel{\textrm{def}}{=} E_{\mathbf{x} \sim P}[\mathbf{x}]\)</span>
+has coordinates <span class="math notranslate nohighlight">\(\mu_i = E_{\mathbf{x} \sim P}[x_i]\)</span>.
+<em>Covariances</em> are more complicated. We define them by taking
+expectations of the <em>outer product</em> of the difference between random
+variables and their mean:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-15">
+<span class="eqno">(2.6.16)<a class="headerlink" href="#equation-chapter-preliminaries-probability-15" title="Permalink to this equation">¶</a></span>\[\boldsymbol{\Sigma} \stackrel{\textrm{def}}{=} \textrm{Cov}_{\mathbf{x} \sim P}[\mathbf{x}] = E_{\mathbf{x} \sim P}\left[(\mathbf{x} - \boldsymbol{\mu}) (\mathbf{x} - \boldsymbol{\mu})^\top\right].\]</div>
+<p>This matrix <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> is referred to as the covariance
+matrix. An easy way to see its effect is to consider some vector
+<span class="math notranslate nohighlight">\(\mathbf{v}\)</span> of the same size as <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>. It follows
+that</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-probability-16">
+<span class="eqno">(2.6.17)<a class="headerlink" href="#equation-chapter-preliminaries-probability-16" title="Permalink to this equation">¶</a></span>\[\mathbf{v}^\top \boldsymbol{\Sigma} \mathbf{v} = E_{\mathbf{x} \sim P}\left[\mathbf{v}^\top(\mathbf{x} - \boldsymbol{\mu}) (\mathbf{x} - \boldsymbol{\mu})^\top \mathbf{v}\right] = \textrm{Var}_{x \sim P}[\mathbf{v}^\top \mathbf{x}].\]</div>
+<p>As such, <span class="math notranslate nohighlight">\(\boldsymbol{\Sigma}\)</span> allows us to compute the variance
+for any linear function of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> by a simple matrix
+multiplication. The off-diagonal elements tell us how correlated the
+coordinates are: a value of 0 means no correlation, where a larger
+positive value means that they are more strongly correlated.</p>
+</div>
+<div class="section" id="discussion">
+<h2><span class="section-number">2.6.7. </span>Discussion<a class="headerlink" href="#discussion" title="Permalink to this heading">¶</a></h2>
+<p>In machine learning, there are many things to be uncertain about! We can
+be uncertain about the value of a label given an input. We can be
+uncertain about the estimated value of a parameter. We can even be
+uncertain about whether data arriving at deployment is even from the
+same distribution as the training data.</p>
+<p>By <em>aleatoric uncertainty</em>, we mean uncertainty that is intrinsic to the
+problem, and due to genuine randomness unaccounted for by the observed
+variables. By <em>epistemic uncertainty</em>, we mean uncertainty over a
+model’s parameters, the sort of uncertainty that we can hope to reduce
+by collecting more data. We might have epistemic uncertainty concerning
+the probability that a coin turns up heads, but even once we know this
+probability, we are left with aleatoric uncertainty about the outcome of
+any future toss. No matter how long we watch someone tossing a fair
+coin, we will never be more or less than 50% certain that the next toss
+will come up heads. These terms come from mechanical modeling, (see
+e.g., <span id="id2">Der Kiureghian and Ditlevsen (<a class="reference internal" href="../chapter_references/zreferences.html#id56" title="Der Kiureghian, A., &amp; Ditlevsen, O. (2009). Aleatory or epistemic? does it matter? Structural Safety, 31(2), 105–112.">2009</a>)</span> for a review on this
+aspect of <a class="reference external" href="https://en.wikipedia.org/wiki/Uncertainty_quantification">uncertainty
+quantification</a>).
+It is worth noting, however, that these terms constitute a slight abuse
+of language. The term <em>epistemic</em> refers to anything concerning
+<em>knowledge</em> and thus, in the philosophical sense, all uncertainty is
+epistemic.</p>
+<p>We saw that sampling data from some unknown probability distribution can
+provide us with information that can be used to estimate the parameters
+of the data generating distribution. That said, the rate at which this
+is possible can be quite slow. In our coin tossing example (and many
+others) we can do no better than to design estimators that converge at a
+rate of <span class="math notranslate nohighlight">\(1/\sqrt{n}\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is the sample size (e.g.,
+the number of tosses). This means that by going from 10 to 1000
+observations (usually a very achievable task) we see a tenfold reduction
+of uncertainty, whereas the next 1000 observations help comparatively
+little, offering only a 1.41 times reduction. This is a persistent
+feature of machine learning: while there are often easy gains, it takes
+a very large amount of data, and often with it an enormous amount of
+computation, to make further gains. For an empirical review of this fact
+for large scale language models see
+<span id="id3">Revels <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id236" title="Revels, J., Lubin, M., &amp; Papamarkou, T. (2016). Forward-mode automatic differentiation in Julia. ArXiv:1607.07892.">2016</a>)</span>.</p>
+<p>We also sharpened our language and tools for statistical modeling. In
+the process of that we learned about conditional probabilities and about
+one of the most important equations in statistics—Bayes’ theorem. It is
+an effective tool for decoupling information conveyed by data through a
+likelihood term <span class="math notranslate nohighlight">\(P(B \mid A)\)</span> that addresses how well observations
+<span class="math notranslate nohighlight">\(B\)</span> match a choice of parameters <span class="math notranslate nohighlight">\(A\)</span>, and a prior
+probability <span class="math notranslate nohighlight">\(P(A)\)</span> which governs how plausible a particular choice
+of <span class="math notranslate nohighlight">\(A\)</span> was in the first place. In particular, we saw how this rule
+can be applied to assign probabilities to diagnoses, based on the
+efficacy of the test <em>and</em> the prevalence of the disease itself (i.e.,
+our prior).</p>
+<p>Lastly, we introduced a first set of nontrivial questions about the
+effect of a specific probability distribution, namely expectations and
+variances. While there are many more than just linear and quadratic
+expectations for a probability distribution, these two already provide a
+good deal of knowledge about the possible behavior of the distribution.
+For instance, <a class="reference external" href="https://en.wikipedia.org/wiki/Chebyshev%27s_inequality">Chebyshev’s
+inequality</a>
+states that <span class="math notranslate nohighlight">\(P(|X - \mu| \geq k \sigma) \leq 1/k^2\)</span>, where
+<span class="math notranslate nohighlight">\(\mu\)</span> is the expectation, <span class="math notranslate nohighlight">\(\sigma^2\)</span> is the variance of the
+distribution, and <span class="math notranslate nohighlight">\(k &gt; 1\)</span> is a confidence parameter of our
+choosing. It tells us that draws from a distribution lie with at least
+50% probability within a <span class="math notranslate nohighlight">\([-\sqrt{2} \sigma, \sqrt{2} \sigma]\)</span>
+interval centered on the expectation.</p>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">2.6.8. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Give an example where observing more data can reduce the amount of
+uncertainty about the outcome to an arbitrarily low level.</p></li>
+<li><p>Give an example where observing more data will only reduce the amount
+of uncertainty up to a point and then no further. Explain why this is
+the case and where you expect this point to occur.</p></li>
+<li><p>We empirically demonstrated convergence to the mean for the toss of a
+coin. Calculate the variance of the estimate of the probability that
+we see a head after drawing <span class="math notranslate nohighlight">\(n\)</span> samples.</p>
+<ol class="arabic simple">
+<li><p>How does the variance scale with the number of observations?</p></li>
+<li><p>Use Chebyshev’s inequality to bound the deviation from the
+expectation.</p></li>
+<li><p>How does it relate to the central limit theorem?</p></li>
+</ol>
+</li>
+<li><p>Assume that we draw <span class="math notranslate nohighlight">\(m\)</span> samples <span class="math notranslate nohighlight">\(x_i\)</span> from a probability
+distribution with zero mean and unit variance. Compute the averages
+<span class="math notranslate nohighlight">\(z_m \stackrel{\textrm{def}}{=} m^{-1} \sum_{i=1}^m x_i\)</span>. Can
+we apply Chebyshev’s inequality for every <span class="math notranslate nohighlight">\(z_m\)</span> independently?
+Why not?</p></li>
+<li><p>Given two events with probability <span class="math notranslate nohighlight">\(P(\mathcal{A})\)</span> and
+<span class="math notranslate nohighlight">\(P(\mathcal{B})\)</span>, compute upper and lower bounds on
+<span class="math notranslate nohighlight">\(P(\mathcal{A} \cup \mathcal{B})\)</span> and
+<span class="math notranslate nohighlight">\(P(\mathcal{A} \cap \mathcal{B})\)</span>. Hint: graph the situation
+using a <a class="reference external" href="https://en.wikipedia.org/wiki/Venn_diagram">Venn
+diagram</a>.</p></li>
+<li><p>Assume that we have a sequence of random variables, say <span class="math notranslate nohighlight">\(A\)</span>,
+<span class="math notranslate nohighlight">\(B\)</span>, and <span class="math notranslate nohighlight">\(C\)</span>, where <span class="math notranslate nohighlight">\(B\)</span> only depends on <span class="math notranslate nohighlight">\(A\)</span>,
+and <span class="math notranslate nohighlight">\(C\)</span> only depends on <span class="math notranslate nohighlight">\(B\)</span>, can you simplify the joint
+probability <span class="math notranslate nohighlight">\(P(A, B, C)\)</span>? Hint: this is a <a class="reference external" href="https://en.wikipedia.org/wiki/Markov_chain">Markov
+chain</a>.</p></li>
+<li><p>In <a class="reference internal" href="#subsec-probability-hiv-app"><span class="std std-numref">Section 2.6.5</span></a>, assume that the outcomes
+of the two tests are not independent. In particular assume that
+either test on its own has a false positive rate of 10% and a false
+negative rate of 1%. That is, assume that
+<span class="math notranslate nohighlight">\(P(D =1 \mid H=0) = 0.1\)</span> and that
+<span class="math notranslate nohighlight">\(P(D = 0 \mid H=1) = 0.01\)</span>. Moreover, assume that for
+<span class="math notranslate nohighlight">\(H = 1\)</span> (infected) the test outcomes are conditionally
+independent, i.e., that
+<span class="math notranslate nohighlight">\(P(D_1, D_2 \mid H=1) = P(D_1 \mid H=1) P(D_2 \mid H=1)\)</span> but
+that for healthy patients the outcomes are coupled via
+<span class="math notranslate nohighlight">\(P(D_1 = D_2 = 1 \mid H=0) = 0.02\)</span>.</p>
+<ol class="arabic simple">
+<li><p>Work out the joint probability table for <span class="math notranslate nohighlight">\(D_1\)</span> and
+<span class="math notranslate nohighlight">\(D_2\)</span>, given <span class="math notranslate nohighlight">\(H=0\)</span> based on the information you have
+so far.</p></li>
+<li><p>Derive the probability that the patient is diseased (<span class="math notranslate nohighlight">\(H=1\)</span>)
+after one test returns positive. You can assume the same baseline
+probability <span class="math notranslate nohighlight">\(P(H=1) = 0.0015\)</span> as before.</p></li>
+<li><p>Derive the probability that the patient is diseased (<span class="math notranslate nohighlight">\(H=1\)</span>)
+after both tests return positive.</p></li>
+</ol>
+</li>
+<li><p>Assume that you are an asset manager for an investment bank and you
+have a choice of stocks <span class="math notranslate nohighlight">\(s_i\)</span> to invest in. Your portfolio
+needs to add up to <span class="math notranslate nohighlight">\(1\)</span> with weights <span class="math notranslate nohighlight">\(\alpha_i\)</span> for each
+stock. The stocks have an average return
+<span class="math notranslate nohighlight">\(\boldsymbol{\mu} = E_{\mathbf{s} \sim P}[\mathbf{s}]\)</span> and
+covariance
+<span class="math notranslate nohighlight">\(\boldsymbol{\Sigma} = \textrm{Cov}_{\mathbf{s} \sim P}[\mathbf{s}]\)</span>.</p>
+<ol class="arabic simple">
+<li><p>Compute the expected return for a given portfolio
+<span class="math notranslate nohighlight">\(\boldsymbol{\alpha}\)</span>.</p></li>
+<li><p>If you wanted to maximize the return of the portfolio, how should
+you choose your investment?</p></li>
+<li><p>Compute the <em>variance</em> of the portfolio.</p></li>
+<li><p>Formulate an optimization problem of maximizing the return while
+keeping the variance constrained to an upper bound. This is the
+Nobel-Prize winning <a class="reference external" href="https://en.wikipedia.org/wiki/Markowitz_model">Markovitz
+portfolio</a>
+<span id="id4">(<a class="reference internal" href="../chapter_references/zreferences.html#id184" title="Mangram, M. E. (2013). A simplified perspective of the Markowitz portfolio theory. Global Journal of Business Research, 7(1), 59–70.">Mangram, 2013</a>)</span>. To solve it you will need a quadratic
+programming solver, something way beyond the scope of this book.</p></li>
+</ol>
+</li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-13-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-13-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/37">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/36">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="jax-13-2"><p><a class="reference external" href="https://discuss.d2l.ai/t/17971">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-3"><p><a class="reference external" href="https://discuss.d2l.ai/t/198">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">2.6. Probability and Statistics</a><ul>
+<li><a class="reference internal" href="#a-simple-example-tossing-coins">2.6.1. A Simple Example: Tossing Coins</a></li>
+<li><a class="reference internal" href="#a-more-formal-treatment">2.6.2. A More Formal Treatment</a></li>
+<li><a class="reference internal" href="#random-variables">2.6.3. Random Variables</a></li>
+<li><a class="reference internal" href="#multiple-random-variables">2.6.4. Multiple Random Variables</a></li>
+<li><a class="reference internal" href="#an-example">2.6.5. An Example</a></li>
+<li><a class="reference internal" href="#expectations">2.6.6. Expectations</a></li>
+<li><a class="reference internal" href="#discussion">2.6.7. Discussion</a></li>
+<li><a class="reference internal" href="#exercises">2.6.8. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="autograd.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>2.5. Automatic Differentiation</div>
+         </div>
+     </a>
+     <a id="button-next" href="lookup-api.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>2.7. Documentation</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

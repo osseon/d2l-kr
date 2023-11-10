@@ -1,0 +1,12 @@
+
+.. _chap_gans:
+
+Generative Adversarial Networks
+===============================
+
+
+.. toctree::
+   :maxdepth: 2
+
+   gan
+   dcgan

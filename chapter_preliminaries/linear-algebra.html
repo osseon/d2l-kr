@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>2.3. Linear Algebra &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.4. Calculus" href="calculus.html" />
+    <link rel="prev" title="2.2. Data Preprocessing" href="pandas.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">2. </span>Preliminaries</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">2.3. </span>Linear Algebra</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_preliminaries/linear-algebra.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. Preliminaries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. Preliminaries</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="linear-algebra">
+<span id="sec-linear-algebra"></span><h1><span class="section-number">2.3. </span>Linear Algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_preliminaries/linear-algebra.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>By now, we can load datasets into tensors and manipulate these tensors
+with basic mathematical operations. To start building sophisticated
+models, we will also need a few tools from linear algebra. This section
+offers a gentle introduction to the most essential concepts, starting
+from scalar arithmetic and ramping up to matrix multiplication.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-1-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-1-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">np</span><span class="p">,</span> <span class="n">npx</span>
+
+<span class="n">npx</span><span class="o">.</span><span class="n">set_np</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">jnp</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</pre></div>
+</div>
+</div></div><div class="section" id="scalars">
+<h2><span class="section-number">2.3.1. </span>Scalars<a class="headerlink" href="#scalars" title="Permalink to this heading">¶</a></h2>
+<p>Most everyday mathematics consists of manipulating numbers one at a
+time. Formally, we call these values <em>scalars</em>. For example, the
+temperature in Palo Alto is a balmy <span class="math notranslate nohighlight">\(72\)</span> degrees Fahrenheit. If
+you wanted to convert the temperature to Celsius you would evaluate the
+expression <span class="math notranslate nohighlight">\(c = \frac{5}{9}(f - 32)\)</span>, setting <span class="math notranslate nohighlight">\(f\)</span> to
+<span class="math notranslate nohighlight">\(72\)</span>. In this equation, the values <span class="math notranslate nohighlight">\(5\)</span>, <span class="math notranslate nohighlight">\(9\)</span>, and
+<span class="math notranslate nohighlight">\(32\)</span> are constant scalars. The variables <span class="math notranslate nohighlight">\(c\)</span> and <span class="math notranslate nohighlight">\(f\)</span>
+in general represent unknown scalars.</p>
+<p>We denote scalars by ordinary lower-cased letters (e.g., <span class="math notranslate nohighlight">\(x\)</span>,
+<span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span>) and the space of all (continuous)
+<em>real-valued</em> scalars by <span class="math notranslate nohighlight">\(\mathbb{R}\)</span>. For expedience, we will
+skip past rigorous definitions of <em>spaces</em>: just remember that the
+expression <span class="math notranslate nohighlight">\(x \in \mathbb{R}\)</span> is a formal way to say that
+<span class="math notranslate nohighlight">\(x\)</span> is a real-valued scalar. The symbol <span class="math notranslate nohighlight">\(\in\)</span> (pronounced
+“in”) denotes membership in a set. For example,
+<span class="math notranslate nohighlight">\(x, y \in \{0, 1\}\)</span> indicates that <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are
+variables that can only take values <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<p>Scalars are implemented as tensors that contain only one element. Below,
+we assign two scalars and perform the familiar addition, multiplication,
+division, and exponentiation operations.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-3-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-3-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="n">y</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">**</span> <span class="n">y</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-3-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="n">y</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-3-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="n">y</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="vectors">
+<h2><span class="section-number">2.3.2. </span>Vectors<a class="headerlink" href="#vectors" title="Permalink to this heading">¶</a></h2>
+<p>For current purposes, you can think of a vector as a fixed-length array
+of scalars. As with their code counterparts, we call these scalars the
+<em>elements</em> of the vector (synonyms include <em>entries</em> and <em>components</em>).
+When vectors represent examples from real-world datasets, their values
+hold some real-world significance. For example, if we were training a
+model to predict the risk of a loan defaulting, we might associate each
+applicant with a vector whose components correspond to quantities like
+their income, length of employment, or number of previous defaults. If
+we were studying the risk of heart attack, each vector might represent a
+patient and its components might correspond to their most recent vital
+signs, cholesterol levels, minutes of exercise per day, etc. We denote
+vectors by bold lowercase letters, (e.g., <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>,
+<span class="math notranslate nohighlight">\(\mathbf{y}\)</span>, and <span class="math notranslate nohighlight">\(\mathbf{z}\)</span>).</p>
+<p>Vectors are implemented as <span class="math notranslate nohighlight">\(1^{\textrm{st}}\)</span>-order tensors. In
+general, such tensors can have arbitrary lengths, subject to memory
+limitations. Caution: in Python, as in most programming languages,
+vector indices start at <span class="math notranslate nohighlight">\(0\)</span>, also known as <em>zero-based indexing</em>,
+whereas in linear algebra subscripts begin at <span class="math notranslate nohighlight">\(1\)</span> (one-based
+indexing).</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-5-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-5-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span>
+</pre></div>
+</div>
+</div></div><p>We can refer to an element of a vector by using a subscript. For
+example, <span class="math notranslate nohighlight">\(x_2\)</span> denotes the second element of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.
+Since <span class="math notranslate nohighlight">\(x_2\)</span> is a scalar, we do not bold it. By default, we
+visualize vectors by stacking their elements vertically:</p>
+<div class="math notranslate nohighlight" id="equation-eq-vec-def">
+<span class="eqno">(2.3.1)<a class="headerlink" href="#equation-eq-vec-def" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{x} =\begin{bmatrix}x_{1}  \\ \vdots  \\x_{n}\end{bmatrix}.\end{split}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(x_1, \ldots, x_n\)</span> are elements of the vector. Later on, we
+will distinguish between such <em>column vectors</em> and <em>row vectors</em> whose
+elements are stacked horizontally. Recall that we access a tensor’s
+elements via indexing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>To indicate that a vector contains <span class="math notranslate nohighlight">\(n\)</span> elements, we write
+<span class="math notranslate nohighlight">\(\mathbf{x} \in \mathbb{R}^n\)</span>. Formally, we call <span class="math notranslate nohighlight">\(n\)</span> the
+<em>dimensionality</em> of the vector. In code, this corresponds to the
+tensor’s length, accessible via Python’s built-in <code class="docutils literal notranslate"><span class="pre">len</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can also access the length via the <code class="docutils literal notranslate"><span class="pre">shape</span></code> attribute. The shape is
+a tuple that indicates a tensor’s length along each axis. Tensors with
+just one axis have shapes with just one element.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+<p>Oftentimes, the word “dimension” gets overloaded to mean both the number
+of axes and the length along a particular axis. To avoid this confusion,
+we use <em>order</em> to refer to the number of axes and <em>dimensionality</em>
+exclusively to refer to the number of components.</p>
+</div>
+<div class="section" id="matrices">
+<h2><span class="section-number">2.3.3. </span>Matrices<a class="headerlink" href="#matrices" title="Permalink to this heading">¶</a></h2>
+<p>Just as scalars are <span class="math notranslate nohighlight">\(0^{\textrm{th}}\)</span>-order tensors and vectors
+are <span class="math notranslate nohighlight">\(1^{\textrm{st}}\)</span>-order tensors, matrices are
+<span class="math notranslate nohighlight">\(2^{\textrm{nd}}\)</span>-order tensors. We denote matrices by bold
+capital letters (e.g., <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{Y}\)</span>, and
+<span class="math notranslate nohighlight">\(\mathbf{Z}\)</span>), and represent them in code by tensors with two
+axes. The expression <span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{m \times n}\)</span>
+indicates that a matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> contains <span class="math notranslate nohighlight">\(m \times n\)</span>
+real-valued scalars, arranged as <span class="math notranslate nohighlight">\(m\)</span> rows and <span class="math notranslate nohighlight">\(n\)</span> columns.
+When <span class="math notranslate nohighlight">\(m = n\)</span>, we say that a matrix is <em>square</em>. Visually, we can
+illustrate any matrix as a table. To refer to an individual element, we
+subscript both the row and column indices, e.g., <span class="math notranslate nohighlight">\(a_{ij}\)</span> is the
+value that belongs to <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>’s <span class="math notranslate nohighlight">\(i^{\textrm{th}}\)</span> row
+and <span class="math notranslate nohighlight">\(j^{\textrm{th}}\)</span> column:</p>
+<div class="math notranslate nohighlight" id="equation-eq-matrix-def">
+<span class="eqno">(2.3.2)<a class="headerlink" href="#equation-eq-matrix-def" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A}=\begin{bmatrix} a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1n} \\ a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2n} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mn} \\ \end{bmatrix}.\end{split}\]</div>
+<p>In code, we represent a matrix
+<span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{m \times n}\)</span> by a
+<span class="math notranslate nohighlight">\(2^{\textrm{nd}}\)</span>-order tensor with shape (<span class="math notranslate nohighlight">\(m\)</span>, <span class="math notranslate nohighlight">\(n\)</span>).
+We can convert any appropriately sized <span class="math notranslate nohighlight">\(m \times n\)</span> tensor into an
+<span class="math notranslate nohighlight">\(m \times n\)</span> matrix by passing the desired shape to <code class="docutils literal notranslate"><span class="pre">reshape</span></code>:</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-13-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-13-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-13-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">A</span>
+</pre></div>
+</div>
+</div></div><p>Sometimes we want to flip the axes. When we exchange a matrix’s rows and
+columns, the result is called its <em>transpose</em>. Formally, we signify a
+matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>’s transpose by <span class="math notranslate nohighlight">\(\mathbf{A}^\top\)</span> and
+if <span class="math notranslate nohighlight">\(\mathbf{B} = \mathbf{A}^\top\)</span>, then <span class="math notranslate nohighlight">\(b_{ij} = a_{ji}\)</span>
+for all <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>. Thus, the transpose of an
+<span class="math notranslate nohighlight">\(m \times n\)</span> matrix is an <span class="math notranslate nohighlight">\(n \times m\)</span> matrix:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-0">
+<span class="eqno">(2.3.3)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-0" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A}^\top =
+\begin{bmatrix}
+    a_{11} &amp; a_{21} &amp; \dots  &amp; a_{m1} \\
+    a_{12} &amp; a_{22} &amp; \dots  &amp; a_{m2} \\
+    \vdots &amp; \vdots &amp; \ddots  &amp; \vdots \\
+    a_{1n} &amp; a_{2n} &amp; \dots  &amp; a_{mn}
+\end{bmatrix}.\end{split}\]</div>
+<p>In code, we can access any matrix’s transpose as follows:</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-15-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-15-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-15-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-15-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-15-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-15-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-15-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-15-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Symmetric matrices are the subset of square matrices that are equal to
+their own transposes: <span class="math notranslate nohighlight">\(\mathbf{A} = \mathbf{A}^\top\)</span>. The
+following matrix is symmetric:</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-17-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-17-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-17-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-17-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-17-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="n">A</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-17-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="n">A</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-17-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="n">A</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-17-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="n">A</span> <span class="o">==</span> <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Matrices are useful for representing datasets. Typically, rows
+correspond to individual records and columns correspond to distinct
+attributes.</p>
+</div>
+<div class="section" id="tensors">
+<h2><span class="section-number">2.3.4. </span>Tensors<a class="headerlink" href="#tensors" title="Permalink to this heading">¶</a></h2>
+<p>While you can go far in your machine learning journey with only scalars,
+vectors, and matrices, eventually you may need to work with higher-order
+tensors. Tensors give us a generic way of describing extensions to
+<span class="math notranslate nohighlight">\(n^{\textrm{th}}\)</span>-order arrays. We call software objects of the
+<em>tensor class</em> “tensors” precisely because they too can have arbitrary
+numbers of axes. While it may be confusing to use the word <em>tensor</em> for
+both the mathematical object and its realization in code, our meaning
+should usually be clear from context. We denote general tensors by
+capital letters with a special font face (e.g., <span class="math notranslate nohighlight">\(\mathsf{X}\)</span>,
+<span class="math notranslate nohighlight">\(\mathsf{Y}\)</span>, and <span class="math notranslate nohighlight">\(\mathsf{Z}\)</span>) and their indexing mechanism
+(e.g., <span class="math notranslate nohighlight">\(x_{ijk}\)</span> and <span class="math notranslate nohighlight">\([\mathsf{X}]_{1, 2i-1, 3}\)</span>) follows
+naturally from that of matrices.</p>
+<p>Tensors will become more important when we start working with images.
+Each image arrives as a <span class="math notranslate nohighlight">\(3^{\textrm{rd}}\)</span>-order tensor with axes
+corresponding to the height, width, and <em>channel</em>. At each spatial
+location, the intensities of each color (red, green, and blue) are
+stacked along the channel. Furthermore, a collection of images is
+represented in code by a <span class="math notranslate nohighlight">\(4^{\textrm{th}}\)</span>-order tensor, where
+distinct images are indexed along the first axis. Higher-order tensors
+are constructed, as were vectors and matrices, by growing the number of
+shape components.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-19-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-19-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-19-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-19-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-19-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-19-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-19-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-19-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">24</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="basic-properties-of-tensor-arithmetic">
+<h2><span class="section-number">2.3.5. </span>Basic Properties of Tensor Arithmetic<a class="headerlink" href="#basic-properties-of-tensor-arithmetic" title="Permalink to this heading">¶</a></h2>
+<p>Scalars, vectors, matrices, and higher-order tensors all have some handy
+properties. For example, elementwise operations produce outputs that
+have the same shape as their operands.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-21-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-21-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-21-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-21-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-21-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>  <span class="c1"># Assign a copy of A to B by allocating new memory</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-21-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Assign a copy of A to B by allocating new memory</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-21-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">A</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-21-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">A</span>  <span class="c1"># No cloning of A to B by allocating new memory</span>
+<span class="n">A</span><span class="p">,</span> <span class="n">A</span> <span class="o">+</span> <span class="n">B</span>
+</pre></div>
+</div>
+</div></div><p>The elementwise product of two matrices is called their <em>Hadamard
+product</em> (denoted <span class="math notranslate nohighlight">\(\odot\)</span>). We can spell out the entries of the
+Hadamard product of two matrices
+<span class="math notranslate nohighlight">\(\mathbf{A}, \mathbf{B} \in \mathbb{R}^{m \times n}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-1">
+<span class="eqno">(2.3.4)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-1" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A} \odot \mathbf{B} =
+\begin{bmatrix}
+    a_{11}  b_{11} &amp; a_{12}  b_{12} &amp; \dots  &amp; a_{1n}  b_{1n} \\
+    a_{21}  b_{21} &amp; a_{22}  b_{22} &amp; \dots  &amp; a_{2n}  b_{2n} \\
+    \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+    a_{m1}  b_{m1} &amp; a_{m2}  b_{m2} &amp; \dots  &amp; a_{mn}  b_{mn}
+\end{bmatrix}.\end{split}\]</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">*</span> <span class="n">B</span>
+</pre></div>
+</div>
+<p>Adding or multiplying a scalar and a tensor produces a result with the
+same shape as the original tensor. Here, each element of the tensor is
+added to (or multiplied by) the scalar.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-25-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-25-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-25-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-25-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-25-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">+</span> <span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-25-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">+</span> <span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-25-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">+</span> <span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-25-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">24</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">a</span> <span class="o">+</span> <span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="reduction">
+<span id="subsec-lin-alg-reduction"></span><h2><span class="section-number">2.3.6. </span>Reduction<a class="headerlink" href="#reduction" title="Permalink to this heading">¶</a></h2>
+<p>Often, we wish to calculate the sum of a tensor’s elements. To express
+the sum of the elements in a vector <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> of length
+<span class="math notranslate nohighlight">\(n\)</span>, we write <span class="math notranslate nohighlight">\(\sum_{i=1}^n x_i\)</span>. There is a simple function
+for it:</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-27-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-27-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-27-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-27-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-27-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-27-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-27-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-27-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>To express sums over the elements of tensors of arbitrary shape, we
+simply sum over all its axes. For example, the sum of the elements of an
+<span class="math notranslate nohighlight">\(m \times n\)</span> matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> could be written
+<span class="math notranslate nohighlight">\(\sum_{i=1}^{m} \sum_{j=1}^{n} a_{ij}\)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-29-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-29-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-29-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-29-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-29-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-29-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-29-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-29-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>By default, invoking the sum function <em>reduces</em> a tensor along all of
+its axes, eventually producing a scalar. Our libraries also allow us to
+specify the axes along which the tensor should be reduced. To sum over
+all elements along the rows (axis 0), we specify <code class="docutils literal notranslate"><span class="pre">axis=0</span></code> in <code class="docutils literal notranslate"><span class="pre">sum</span></code>.
+Since the input matrix reduces along axis 0 to generate the output
+vector, this axis is missing from the shape of the output.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-31-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-31-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-31-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-31-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-31-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-31-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-31-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-31-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div></div><p>Specifying <code class="docutils literal notranslate"><span class="pre">axis=1</span></code> will reduce the column dimension (axis 1) by
+summing up elements of all the columns.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-33-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-33-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-33-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-33-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-33-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-33-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-33-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-33-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div></div><p>Reducing a matrix along both rows and columns via summation is
+equivalent to summing up all the elements of the matrix.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-35-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-35-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-35-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-35-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-35-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># Same as A.sum()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-35-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># Same as A.sum()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-35-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># Same as A.sum()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-35-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c1"># Same as tf.reduce_sum(A)</span>
+</pre></div>
+</div>
+</div></div><p>A related quantity is the <em>mean</em>, also called the <em>average</em>. We
+calculate the mean by dividing the sum by the total number of elements.
+Because computing the mean is so common, it gets a dedicated library
+function that works analogously to <code class="docutils literal notranslate"><span class="pre">sum</span></code>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-37-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-37-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-37-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-37-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-37-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-37-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-37-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-37-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div><p>Likewise, the function for calculating the mean can also reduce a tensor
+along specific axes.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-39-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-39-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-39-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-39-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-39-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-39-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-39-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-39-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="non-reduction-sum">
+<span id="subsec-lin-alg-non-reduction"></span><h2><span class="section-number">2.3.7. </span>Non-Reduction Sum<a class="headerlink" href="#non-reduction-sum" title="Permalink to this heading">¶</a></h2>
+<p>Sometimes it can be useful to keep the number of axes unchanged when
+invoking the function for calculating the sum or mean. This matters when
+we want to use the broadcast mechanism.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-41-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-41-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-41-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-41-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-41-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sum_A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sum_A</span><span class="p">,</span> <span class="n">sum_A</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-41-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sum_A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sum_A</span><span class="p">,</span> <span class="n">sum_A</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-41-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sum_A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sum_A</span><span class="p">,</span> <span class="n">sum_A</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-41-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sum_A</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sum_A</span><span class="p">,</span> <span class="n">sum_A</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div></div><p>For instance, since <code class="docutils literal notranslate"><span class="pre">sum_A</span></code> keeps its two axes after summing each row,
+we can divide <code class="docutils literal notranslate"><span class="pre">A</span></code> by <code class="docutils literal notranslate"><span class="pre">sum_A</span></code> with broadcasting to create a matrix
+where each row sums up to <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">/</span> <span class="n">sum_A</span>
+</pre></div>
+</div>
+<p>If we want to calculate the cumulative sum of elements of <code class="docutils literal notranslate"><span class="pre">A</span></code> along
+some axis, say <code class="docutils literal notranslate"><span class="pre">axis=0</span></code> (row by row), we can call the <code class="docutils literal notranslate"><span class="pre">cumsum</span></code>
+function. By design, this function does not reduce the input tensor
+along any axis.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-45-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-45-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-45-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-45-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-45-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-45-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-45-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-45-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="dot-products">
+<h2><span class="section-number">2.3.8. </span>Dot Products<a class="headerlink" href="#dot-products" title="Permalink to this heading">¶</a></h2>
+<p>So far, we have only performed elementwise operations, sums, and
+averages. And if this was all we could do, linear algebra would not
+deserve its own section. Fortunately, this is where things get more
+interesting. One of the most fundamental operations is the dot product.
+Given two vectors <span class="math notranslate nohighlight">\(\mathbf{x}, \mathbf{y} \in \mathbb{R}^d\)</span>, their
+<em>dot product</em> <span class="math notranslate nohighlight">\(\mathbf{x}^\top \mathbf{y}\)</span> (also known as <em>inner
+product</em>, <span class="math notranslate nohighlight">\(\langle \mathbf{x}, \mathbf{y} \rangle\)</span>) is a sum over
+the products of the elements at the same position:
+<span class="math notranslate nohighlight">\(\mathbf{x}^\top \mathbf{y} = \sum_{i=1}^{d} x_i y_i\)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-47-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-47-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-47-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-47-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-47-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-47-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-47-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-47-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Equivalently, we can calculate the dot product of two vectors by
+performing an elementwise multiplication followed by a sum:</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-49-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-49-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-49-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-49-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-49-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-49-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-49-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-49-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Dot products are useful in a wide range of contexts. For example, given
+some set of values, denoted by a vector
+<span class="math notranslate nohighlight">\(\mathbf{x} \in \mathbb{R}^n\)</span>, and a set of weights, denoted by
+<span class="math notranslate nohighlight">\(\mathbf{w} \in \mathbb{R}^n\)</span>, the weighted sum of the values in
+<span class="math notranslate nohighlight">\(\mathbf{x}\)</span> according to the weights <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> could be
+expressed as the dot product <span class="math notranslate nohighlight">\(\mathbf{x}^\top \mathbf{w}\)</span>. When
+the weights are nonnegative and sum to <span class="math notranslate nohighlight">\(1\)</span>, i.e.,
+<span class="math notranslate nohighlight">\(\left(\sum_{i=1}^{n} {w_i} = 1\right)\)</span>, the dot product expresses
+a <em>weighted average</em>. After normalizing two vectors to have unit length,
+the dot products express the cosine of the angle between them. Later in
+this section, we will formally introduce this notion of <em>length</em>.</p>
+</div>
+<div class="section" id="matrixvector-products">
+<h2><span class="section-number">2.3.9. </span>Matrix–Vector Products<a class="headerlink" href="#matrixvector-products" title="Permalink to this heading">¶</a></h2>
+<p>Now that we know how to calculate dot products, we can begin to
+understand the <em>product</em> between an <span class="math notranslate nohighlight">\(m \times n\)</span> matrix
+<span class="math notranslate nohighlight">\(\mathbf{A}\)</span> and an <span class="math notranslate nohighlight">\(n\)</span>-dimensional vector
+<span class="math notranslate nohighlight">\(\mathbf{x}\)</span>. To start off, we visualize our matrix in terms of
+its row vectors</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-2">
+<span class="eqno">(2.3.5)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-2" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A}=
+\begin{bmatrix}
+\mathbf{a}^\top_{1} \\
+\mathbf{a}^\top_{2} \\
+\vdots \\
+\mathbf{a}^\top_m \\
+\end{bmatrix},\end{split}\]</div>
+<p>where each <span class="math notranslate nohighlight">\(\mathbf{a}^\top_{i} \in \mathbb{R}^n\)</span> is a row vector
+representing the <span class="math notranslate nohighlight">\(i^\textrm{th}\)</span> row of the matrix
+<span class="math notranslate nohighlight">\(\mathbf{A}\)</span>.</p>
+<p>The matrix–vector product <span class="math notranslate nohighlight">\(\mathbf{A}\mathbf{x}\)</span> is simply a
+column vector of length <span class="math notranslate nohighlight">\(m\)</span>, whose <span class="math notranslate nohighlight">\(i^\textrm{th}\)</span> element
+is the dot product <span class="math notranslate nohighlight">\(\mathbf{a}^\top_i \mathbf{x}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-3">
+<span class="eqno">(2.3.6)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-3" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A}\mathbf{x}
+= \begin{bmatrix}
+\mathbf{a}^\top_{1} \\
+\mathbf{a}^\top_{2} \\
+\vdots \\
+\mathbf{a}^\top_m \\
+\end{bmatrix}\mathbf{x}
+= \begin{bmatrix}
+ \mathbf{a}^\top_{1} \mathbf{x}  \\
+ \mathbf{a}^\top_{2} \mathbf{x} \\
+\vdots\\
+ \mathbf{a}^\top_{m} \mathbf{x}\\
+\end{bmatrix}.\end{split}\]</div>
+<p>We can think of multiplication with a matrix
+<span class="math notranslate nohighlight">\(\mathbf{A}\in \mathbb{R}^{m \times n}\)</span> as a transformation that
+projects vectors from <span class="math notranslate nohighlight">\(\mathbb{R}^{n}\)</span> to <span class="math notranslate nohighlight">\(\mathbb{R}^{m}\)</span>.
+These transformations are remarkably useful. For example, we can
+represent rotations as multiplications by certain square matrices.
+Matrix–vector products also describe the key calculation involved in
+computing the outputs of each layer in a neural network given the
+outputs from the previous layer.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-51-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-51-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-51-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-51-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-51-0"><p>To express a matrix–vector product in code, we use the <code class="docutils literal notranslate"><span class="pre">mv</span></code> function.
+Note that the column dimension of <code class="docutils literal notranslate"><span class="pre">A</span></code> (its length along axis 1) must
+be the same as the dimension of <code class="docutils literal notranslate"><span class="pre">x</span></code> (its length). Python has a
+convenience operator <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> that can execute both matrix–vector and
+matrix–matrix products (depending on its arguments). Thus we can write
+<code class="docutils literal notranslate"><span class="pre">A&#64;x</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">A</span><span class="nd">@x</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-51-1"><p>To express a matrix–vector product in code, we use the same <code class="docutils literal notranslate"><span class="pre">dot</span></code>
+function. The operation is inferred based on the type of the arguments.
+Note that the column dimension of <code class="docutils literal notranslate"><span class="pre">A</span></code> (its length along axis 1) must
+be the same as the dimension of <code class="docutils literal notranslate"><span class="pre">x</span></code> (its length).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-51-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-51-3"><p>To express a matrix–vector product in code, we use the <code class="docutils literal notranslate"><span class="pre">matvec</span></code>
+function. Note that the column dimension of <code class="docutils literal notranslate"><span class="pre">A</span></code> (its length along axis
+1) must be the same as the dimension of <code class="docutils literal notranslate"><span class="pre">x</span></code> (its length).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matvec</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="matrixmatrix-multiplication">
+<h2><span class="section-number">2.3.10. </span>Matrix–Matrix Multiplication<a class="headerlink" href="#matrixmatrix-multiplication" title="Permalink to this heading">¶</a></h2>
+<p>Once you have gotten the hang of dot products and matrix–vector
+products, then <em>matrix–matrix multiplication</em> should be straightforward.</p>
+<p>Say that we have two matrices
+<span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{n \times k}\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{B} \in \mathbb{R}^{k \times m}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-4">
+<span class="eqno">(2.3.7)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-4" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A}=\begin{bmatrix}
+ a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1k} \\
+ a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2k} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+ a_{n1} &amp; a_{n2} &amp; \cdots &amp; a_{nk} \\
+\end{bmatrix},\quad
+\mathbf{B}=\begin{bmatrix}
+ b_{11} &amp; b_{12} &amp; \cdots &amp; b_{1m} \\
+ b_{21} &amp; b_{22} &amp; \cdots &amp; b_{2m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+ b_{k1} &amp; b_{k2} &amp; \cdots &amp; b_{km} \\
+\end{bmatrix}.\end{split}\]</div>
+<p>Let <span class="math notranslate nohighlight">\(\mathbf{a}^\top_{i} \in \mathbb{R}^k\)</span> denote the row vector
+representing the <span class="math notranslate nohighlight">\(i^\textrm{th}\)</span> row of the matrix
+<span class="math notranslate nohighlight">\(\mathbf{A}\)</span> and let <span class="math notranslate nohighlight">\(\mathbf{b}_{j} \in \mathbb{R}^k\)</span>
+denote the column vector from the <span class="math notranslate nohighlight">\(j^\textrm{th}\)</span> column of the
+matrix <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-5">
+<span class="eqno">(2.3.8)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-5" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{A}=
+\begin{bmatrix}
+\mathbf{a}^\top_{1} \\
+\mathbf{a}^\top_{2} \\
+\vdots \\
+\mathbf{a}^\top_n \\
+\end{bmatrix},
+\quad \mathbf{B}=\begin{bmatrix}
+ \mathbf{b}_{1} &amp; \mathbf{b}_{2} &amp; \cdots &amp; \mathbf{b}_{m} \\
+\end{bmatrix}.\end{split}\]</div>
+<p>To form the matrix product
+<span class="math notranslate nohighlight">\(\mathbf{C} \in \mathbb{R}^{n \times m}\)</span>, we simply compute each
+element <span class="math notranslate nohighlight">\(c_{ij}\)</span> as the dot product between the
+<span class="math notranslate nohighlight">\(i^{\textrm{th}}\)</span> row of <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> and the
+<span class="math notranslate nohighlight">\(j^{\textrm{th}}\)</span> column of <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>, i.e.,
+<span class="math notranslate nohighlight">\(\mathbf{a}^\top_i \mathbf{b}_j\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-6">
+<span class="eqno">(2.3.9)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-6" title="Permalink to this equation">¶</a></span>\[\begin{split}\mathbf{C} = \mathbf{AB} = \begin{bmatrix}
+\mathbf{a}^\top_{1} \\
+\mathbf{a}^\top_{2} \\
+\vdots \\
+\mathbf{a}^\top_n \\
+\end{bmatrix}
+\begin{bmatrix}
+ \mathbf{b}_{1} &amp; \mathbf{b}_{2} &amp; \cdots &amp; \mathbf{b}_{m} \\
+\end{bmatrix}
+= \begin{bmatrix}
+\mathbf{a}^\top_{1} \mathbf{b}_1 &amp; \mathbf{a}^\top_{1}\mathbf{b}_2&amp; \cdots &amp; \mathbf{a}^\top_{1} \mathbf{b}_m \\
+ \mathbf{a}^\top_{2}\mathbf{b}_1 &amp; \mathbf{a}^\top_{2} \mathbf{b}_2 &amp; \cdots &amp; \mathbf{a}^\top_{2} \mathbf{b}_m \\
+ \vdots &amp; \vdots &amp; \ddots &amp;\vdots\\
+\mathbf{a}^\top_{n} \mathbf{b}_1 &amp; \mathbf{a}^\top_{n}\mathbf{b}_2&amp; \cdots&amp; \mathbf{a}^\top_{n} \mathbf{b}_m
+\end{bmatrix}.\end{split}\]</div>
+<p>We can think of the matrix–matrix multiplication <span class="math notranslate nohighlight">\(\mathbf{AB}\)</span> as
+performing <span class="math notranslate nohighlight">\(m\)</span> matrix–vector products or <span class="math notranslate nohighlight">\(m \times n\)</span> dot
+products and stitching the results together to form an
+<span class="math notranslate nohighlight">\(n \times m\)</span> matrix. In the following snippet, we perform matrix
+multiplication on <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>. Here, <code class="docutils literal notranslate"><span class="pre">A</span></code> is a matrix with two rows
+and three columns, and <code class="docutils literal notranslate"><span class="pre">B</span></code> is a matrix with three rows and four
+columns. After multiplication, we obtain a matrix with two rows and four
+columns.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-53-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-53-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-53-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-53-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-53-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="n">A</span><span class="nd">@B</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-53-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-53-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">jnp</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-53-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>The term <em>matrix–matrix multiplication</em> is often simplified to <em>matrix
+multiplication</em>, and should not be confused with the Hadamard product.</p>
+</div>
+<div class="section" id="norms">
+<span id="subsec-lin-algebra-norms"></span><h2><span class="section-number">2.3.11. </span>Norms<a class="headerlink" href="#norms" title="Permalink to this heading">¶</a></h2>
+<p>Some of the most useful operators in linear algebra are <em>norms</em>.
+Informally, the norm of a vector tells us how <em>big</em> it is. For instance,
+the <span class="math notranslate nohighlight">\(\ell_2\)</span> norm measures the (Euclidean) length of a vector.
+Here, we are employing a notion of <em>size</em> that concerns the magnitude of
+a vector’s components (not its dimensionality).</p>
+<p>A norm is a function <span class="math notranslate nohighlight">\(\| \cdot \|\)</span> that maps a vector to a scalar
+and satisfies the following three properties:</p>
+<ol class="arabic">
+<li><p>Given any vector <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>, if we scale (all elements of)
+the vector by a scalar <span class="math notranslate nohighlight">\(\alpha \in \mathbb{R}\)</span>, its norm scales
+accordingly:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-7">
+<span class="eqno">(2.3.10)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-7" title="Permalink to this equation">¶</a></span>\[\|\alpha \mathbf{x}\| = |\alpha| \|\mathbf{x}\|.\]</div>
+</li>
+<li><p>For any vectors <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>: norms
+satisfy the triangle inequality:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-8">
+<span class="eqno">(2.3.11)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-8" title="Permalink to this equation">¶</a></span>\[\|\mathbf{x} + \mathbf{y}\| \leq \|\mathbf{x}\| + \|\mathbf{y}\|.\]</div>
+</li>
+<li><p>The norm of a vector is nonnegative and it only vanishes if the
+vector is zero:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-9">
+<span class="eqno">(2.3.12)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-9" title="Permalink to this equation">¶</a></span>\[\|\mathbf{x}\| &gt; 0 \textrm{ for all } \mathbf{x} \neq 0.\]</div>
+</li>
+</ol>
+<p>Many functions are valid norms and different norms encode different
+notions of size. The Euclidean norm that we all learned in elementary
+school geometry when calculating the hypotenuse of a right triangle is
+the square root of the sum of squares of a vector’s elements. Formally,
+this is called the <span class="math notranslate nohighlight">\(\ell_2\)</span> <em>norm</em> and expressed as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-10">
+<span class="eqno">(2.3.13)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-10" title="Permalink to this equation">¶</a></span>\[\|\mathbf{x}\|_2 = \sqrt{\sum_{i=1}^n x_i^2}.\]</div>
+<p>The method <code class="docutils literal notranslate"><span class="pre">norm</span></code> calculates the <span class="math notranslate nohighlight">\(\ell_2\)</span> norm.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-55-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-55-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-55-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-55-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-55-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">])</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-55-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-55-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">])</span>
+<span class="n">jnp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-55-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.0</span><span class="p">])</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>The <span class="math notranslate nohighlight">\(\ell_1\)</span> norm is also common and the associated measure is
+called the Manhattan distance. By definition, the <span class="math notranslate nohighlight">\(\ell_1\)</span> norm
+sums the absolute values of a vector’s elements:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-11">
+<span class="eqno">(2.3.14)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-11" title="Permalink to this equation">¶</a></span>\[\|\mathbf{x}\|_1 = \sum_{i=1}^n \left|x_i \right|.\]</div>
+<p>Compared to the <span class="math notranslate nohighlight">\(\ell_2\)</span> norm, it is less sensitive to outliers.
+To compute the <span class="math notranslate nohighlight">\(\ell_1\)</span> norm, we compose the absolute value with
+the sum operation.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-57-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-57-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-57-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-57-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-57-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-57-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-57-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">jnp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># same as jnp.abs(u).sum()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-57-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div><p>Both the <span class="math notranslate nohighlight">\(\ell_2\)</span> and <span class="math notranslate nohighlight">\(\ell_1\)</span> norms are special cases of
+the more general <span class="math notranslate nohighlight">\(\ell_p\)</span> <em>norms</em>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-12">
+<span class="eqno">(2.3.15)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-12" title="Permalink to this equation">¶</a></span>\[\|\mathbf{x}\|_p = \left(\sum_{i=1}^n \left|x_i \right|^p \right)^{1/p}.\]</div>
+<p>In the case of matrices, matters are more complicated. After all,
+matrices can be viewed both as collections of individual entries <em>and</em>
+as objects that operate on vectors and transform them into other
+vectors. For instance, we can ask by how much longer the matrix–vector
+product <span class="math notranslate nohighlight">\(\mathbf{X} \mathbf{v}\)</span> could be relative to
+<span class="math notranslate nohighlight">\(\mathbf{v}\)</span>. This line of thought leads to what is called the
+<em>spectral</em> norm. For now, we introduce the <em>Frobenius norm</em>, which is
+much easier to compute and defined as the square root of the sum of the
+squares of a matrix’s elements:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-preliminaries-linear-algebra-13">
+<span class="eqno">(2.3.16)<a class="headerlink" href="#equation-chapter-preliminaries-linear-algebra-13" title="Permalink to this equation">¶</a></span>\[\|\mathbf{X}\|_\textrm{F} = \sqrt{\sum_{i=1}^m \sum_{j=1}^n x_{ij}^2}.\]</div>
+<p>The Frobenius norm behaves as if it were an <span class="math notranslate nohighlight">\(\ell_2\)</span> norm of a
+matrix-shaped vector. Invoking the following function will calculate the
+Frobenius norm of a matrix.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-59-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-59-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-59-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-59-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-59-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-59-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-59-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">jnp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-59-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div><p>While we do not want to get too far ahead of ourselves, we already can
+plant some intuition about why these concepts are useful. In deep
+learning, we are often trying to solve optimization problems: <em>maximize</em>
+the probability assigned to observed data; <em>maximize</em> the revenue
+associated with a recommender model; <em>minimize</em> the distance between
+predictions and the ground truth observations; <em>minimize</em> the distance
+between representations of photos of the same person while <em>maximizing</em>
+the distance between representations of photos of different people.
+These distances, which constitute the objectives of deep learning
+algorithms, are often expressed as norms.</p>
+</div>
+<div class="section" id="discussion">
+<h2><span class="section-number">2.3.12. </span>Discussion<a class="headerlink" href="#discussion" title="Permalink to this heading">¶</a></h2>
+<p>In this section, we have reviewed all the linear algebra that you will
+need to understand a significant chunk of modern deep learning. There is
+a lot more to linear algebra, though, and much of it is useful for
+machine learning. For example, matrices can be decomposed into factors,
+and these decompositions can reveal low-dimensional structure in
+real-world datasets. There are entire subfields of machine learning that
+focus on using matrix decompositions and their generalizations to
+high-order tensors to discover structure in datasets and solve
+prediction problems. But this book focuses on deep learning. And we
+believe you will be more inclined to learn more mathematics once you
+have gotten your hands dirty applying machine learning to real datasets.
+So while we reserve the right to introduce more mathematics later on, we
+wrap up this section here.</p>
+<p>If you are eager to learn more linear algebra, there are many excellent
+books and online resources. For a more advanced crash course, consider
+checking out <span id="id1">Strang (<a class="reference internal" href="../chapter_references/zreferences.html#id266" title="Strang, G. (1993). Introduction to Linear Algebra. Wellesley–Cambridge Press.">1993</a>)</span>, <span id="id2">Kolter (<a class="reference internal" href="../chapter_references/zreferences.html#id152" title="Kolter, Z. (2008). Linear algebra review and reference. Available online: http://cs229.stanford.edu/section/cs229-linalg.pdf.">2008</a>)</span>, and
+<span id="id3">Petersen and Pedersen (<a class="reference internal" href="../chapter_references/zreferences.html#id216" title="Petersen, K. B., &amp; Pedersen, M. S. (2008). The Matrix Cookbook. Technical University of Denmark.">2008</a>)</span>.</p>
+<p>To recap:</p>
+<ul class="simple">
+<li><p>Scalars, vectors, matrices, and tensors are the basic mathematical
+objects used in linear algebra and have zero, one, two, and an
+arbitrary number of axes, respectively.</p></li>
+<li><p>Tensors can be sliced or reduced along specified axes via indexing,
+or operations such as <code class="docutils literal notranslate"><span class="pre">sum</span></code> and <code class="docutils literal notranslate"><span class="pre">mean</span></code>, respectively.</p></li>
+<li><p>Elementwise products are called Hadamard products. By contrast, dot
+products, matrix–vector products, and matrix–matrix products are not
+elementwise operations and in general return objects having shapes
+that are different from the the operands.</p></li>
+<li><p>Compared to Hadamard products, matrix–matrix products take
+considerably longer to compute (cubic rather than quadratic time).</p></li>
+<li><p>Norms capture various notions of the magnitude of a vector (or
+matrix), and are commonly applied to the difference of two vectors to
+measure their distance apart.</p></li>
+<li><p>Common vector norms include the <span class="math notranslate nohighlight">\(\ell_1\)</span> and <span class="math notranslate nohighlight">\(\ell_2\)</span>
+norms, and common matrix norms include the <em>spectral</em> and <em>Frobenius</em>
+norms.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">2.3.13. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Prove that the transpose of the transpose of a matrix is the matrix
+itself: <span class="math notranslate nohighlight">\((\mathbf{A}^\top)^\top = \mathbf{A}\)</span>.</p></li>
+<li><p>Given two matrices <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>, show
+that sum and transposition commute:
+<span class="math notranslate nohighlight">\(\mathbf{A}^\top + \mathbf{B}^\top = (\mathbf{A} + \mathbf{B})^\top\)</span>.</p></li>
+<li><p>Given any square matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span>, is
+<span class="math notranslate nohighlight">\(\mathbf{A} + \mathbf{A}^\top\)</span> always symmetric? Can you prove
+the result by using only the results of the previous two exercises?</p></li>
+<li><p>We defined the tensor <code class="docutils literal notranslate"><span class="pre">X</span></code> of shape (2, 3, 4) in this section. What
+is the output of <code class="docutils literal notranslate"><span class="pre">len(X)</span></code>? Write your answer without implementing
+any code, then check your answer using code.</p></li>
+<li><p>For a tensor <code class="docutils literal notranslate"><span class="pre">X</span></code> of arbitrary shape, does <code class="docutils literal notranslate"><span class="pre">len(X)</span></code> always
+correspond to the length of a certain axis of <code class="docutils literal notranslate"><span class="pre">X</span></code>? What is that
+axis?</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">/</span> <span class="pre">A.sum(axis=1)</span></code> and see what happens. Can you analyze the
+results?</p></li>
+<li><p>When traveling between two points in downtown Manhattan, what is the
+distance that you need to cover in terms of the coordinates, i.e.,
+in terms of avenues and streets? Can you travel diagonally?</p></li>
+<li><p>Consider a tensor of shape (2, 3, 4). What are the shapes of the
+summation outputs along axes 0, 1, and 2?</p></li>
+<li><p>Feed a tensor with three or more axes to the <code class="docutils literal notranslate"><span class="pre">linalg.norm</span></code>
+function and observe its output. What does this function compute for
+tensors of arbitrary shape?</p></li>
+<li><p>Consider three large matrices, say
+<span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{2^{10} \times 2^{16}}\)</span>,
+<span class="math notranslate nohighlight">\(\mathbf{B} \in \mathbb{R}^{2^{16} \times 2^{5}}\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{C} \in \mathbb{R}^{2^{5} \times 2^{14}}\)</span>, initialized
+with Gaussian random variables. You want to compute the product
+<span class="math notranslate nohighlight">\(\mathbf{A} \mathbf{B} \mathbf{C}\)</span>. Is there any difference in
+memory footprint and speed, depending on whether you compute
+<span class="math notranslate nohighlight">\((\mathbf{A} \mathbf{B}) \mathbf{C}\)</span> or
+<span class="math notranslate nohighlight">\(\mathbf{A} (\mathbf{B} \mathbf{C})\)</span>? Why?</p></li>
+<li><p>Consider three large matrices, say
+<span class="math notranslate nohighlight">\(\mathbf{A} \in \mathbb{R}^{2^{10} \times 2^{16}}\)</span>,
+<span class="math notranslate nohighlight">\(\mathbf{B} \in \mathbb{R}^{2^{16} \times 2^{5}}\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{C} \in \mathbb{R}^{2^{5} \times 2^{16}}\)</span>. Is there
+any difference in speed depending on whether you compute
+<span class="math notranslate nohighlight">\(\mathbf{A} \mathbf{B}\)</span> or <span class="math notranslate nohighlight">\(\mathbf{A} \mathbf{C}^\top\)</span>?
+Why? What changes if you initialize
+<span class="math notranslate nohighlight">\(\mathbf{C} = \mathbf{B}^\top\)</span> without cloning memory? Why?</p></li>
+<li><p>Consider three matrices, say
+<span class="math notranslate nohighlight">\(\mathbf{A}, \mathbf{B}, \mathbf{C} \in \mathbb{R}^{100 \times 200}\)</span>.
+Construct a tensor with three axes by stacking
+<span class="math notranslate nohighlight">\([\mathbf{A}, \mathbf{B}, \mathbf{C}]\)</span>. What is the
+dimensionality? Slice out the second coordinate of the third axis to
+recover <span class="math notranslate nohighlight">\(\mathbf{B}\)</span>. Check that your answer is correct.</p></li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-61-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-61-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-61-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-61-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-61-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/31">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-61-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/30">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="jax-61-2"><p><a class="reference external" href="https://discuss.d2l.ai/t/17968">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="tensorflow-61-3"><p><a class="reference external" href="https://discuss.d2l.ai/t/196">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">2.3. Linear Algebra</a><ul>
+<li><a class="reference internal" href="#scalars">2.3.1. Scalars</a></li>
+<li><a class="reference internal" href="#vectors">2.3.2. Vectors</a></li>
+<li><a class="reference internal" href="#matrices">2.3.3. Matrices</a></li>
+<li><a class="reference internal" href="#tensors">2.3.4. Tensors</a></li>
+<li><a class="reference internal" href="#basic-properties-of-tensor-arithmetic">2.3.5. Basic Properties of Tensor Arithmetic</a></li>
+<li><a class="reference internal" href="#reduction">2.3.6. Reduction</a></li>
+<li><a class="reference internal" href="#non-reduction-sum">2.3.7. Non-Reduction Sum</a></li>
+<li><a class="reference internal" href="#dot-products">2.3.8. Dot Products</a></li>
+<li><a class="reference internal" href="#matrixvector-products">2.3.9. Matrix–Vector Products</a></li>
+<li><a class="reference internal" href="#matrixmatrix-multiplication">2.3.10. Matrix–Matrix Multiplication</a></li>
+<li><a class="reference internal" href="#norms">2.3.11. Norms</a></li>
+<li><a class="reference internal" href="#discussion">2.3.12. Discussion</a></li>
+<li><a class="reference internal" href="#exercises">2.3.13. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="pandas.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>2.2. Data Preprocessing</div>
+         </div>
+     </a>
+     <a id="button-next" href="calculus.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>2.4. Calculus</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

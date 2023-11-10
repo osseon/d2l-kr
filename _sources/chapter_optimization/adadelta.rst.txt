@@ -1,0 +1,439 @@
+
+.. _sec_adadelta:
+
+Adadelta
+========
+
+
+Adadelta is yet another variant of AdaGrad (:numref:`sec_adagrad`).
+The main difference lies in the fact that it decreases the amount by
+which the learning rate is adaptive to coordinates. Moreover,
+traditionally it referred to as not having a learning rate since it uses
+the amount of change itself as calibration for future change. The
+algorithm was proposed in :cite:t:`Zeiler.2012`. It is fairly
+straightforward, given the discussion of previous algorithms so far.
+
+The Algorithm
+-------------
+
+In a nutshell, Adadelta uses two state variables, :math:`\mathbf{s}_t`
+to store a leaky average of the second moment of the gradient and
+:math:`\Delta\mathbf{x}_t` to store a leaky average of the second moment
+of the change of parameters in the model itself. Note that we use the
+original notation and naming of the authors for compatibility with other
+publications and implementations (there is no other real reason why one
+should use different Greek variables to indicate a parameter serving the
+same purpose in momentum, Adagrad, RMSProp, and Adadelta).
+
+Here are the technical details of Adadelta. Given the parameter du jour
+is :math:`\rho`, we obtain the following leaky updates similarly to
+:numref:`sec_rmsprop`:
+
+.. math::
+
+   \begin{aligned}
+       \mathbf{s}_t & = \rho \mathbf{s}_{t-1} + (1 - \rho) \mathbf{g}_t^2.
+   \end{aligned}
+
+The difference to :numref:`sec_rmsprop` is that we perform updates
+with the rescaled gradient :math:`\mathbf{g}_t'`, i.e.,
+
+.. math::
+
+   \begin{aligned}
+       \mathbf{x}_t  & = \mathbf{x}_{t-1} - \mathbf{g}_t'. \\
+   \end{aligned}
+
+So what is the rescaled gradient :math:`\mathbf{g}_t'`? We can calculate
+it as follows:
+
+.. math::
+
+   \begin{aligned}
+       \mathbf{g}_t' & = \frac{\sqrt{\Delta\mathbf{x}_{t-1} + \epsilon}}{\sqrt{{\mathbf{s}_t + \epsilon}}} \odot \mathbf{g}_t, \\
+   \end{aligned}
+
+where :math:`\Delta \mathbf{x}_{t-1}` is the leaky average of the
+squared rescaled gradients :math:`\mathbf{g}_t'`. We initialize
+:math:`\Delta \mathbf{x}_{0}` to be :math:`0` and update it at each step
+with :math:`\mathbf{g}_t'`, i.e.,
+
+.. math::
+
+   \begin{aligned}
+       \Delta \mathbf{x}_t & = \rho \Delta\mathbf{x}_{t-1} + (1 - \rho) {\mathbf{g}_t'}^2,
+   \end{aligned}
+
+and :math:`\epsilon` (a small value such as :math:`10^{-5}`) is added to
+maintain numerical stability.
+
+Implementation
+--------------
+
+Adadelta needs to maintain two state variables for each variable,
+:math:`\mathbf{s}_t` and :math:`\Delta\mathbf{x}_t`. This yields the
+following implementation.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-1-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-1-0">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    %matplotlib inline
+    import torch
+    from d2l import torch as d2l
+    
+    
+    def init_adadelta_states(feature_dim):
+        s_w, s_b = torch.zeros((feature_dim, 1)), torch.zeros(1)
+        delta_w, delta_b = torch.zeros((feature_dim, 1)), torch.zeros(1)
+        return ((s_w, delta_w), (s_b, delta_b))
+    
+    def adadelta(params, states, hyperparams):
+        rho, eps = hyperparams['rho'], 1e-5
+        for p, (s, delta) in zip(params, states):
+            with torch.no_grad():
+                # In-place updates via [:]
+                s[:] = rho * s + (1 - rho) * torch.square(p.grad)
+                g = (torch.sqrt(delta + eps) / torch.sqrt(s + eps)) * p.grad
+                p[:] -= g
+                delta[:] = rho * delta + (1 - rho) * g * g
+            p.grad.data.zero_()
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-1-1">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    %matplotlib inline
+    from mxnet import np, npx
+    from d2l import mxnet as d2l
+    
+    npx.set_np()
+    
+    def init_adadelta_states(feature_dim):
+        s_w, s_b = np.zeros((feature_dim, 1)), np.zeros(1)
+        delta_w, delta_b = np.zeros((feature_dim, 1)), np.zeros(1)
+        return ((s_w, delta_w), (s_b, delta_b))
+    
+    def adadelta(params, states, hyperparams):
+        rho, eps = hyperparams['rho'], 1e-5
+        for p, (s, delta) in zip(params, states):
+            # In-place updates via [:]
+            s[:] = rho * s + (1 - rho) * np.square(p.grad)
+            g = (np.sqrt(delta + eps) / np.sqrt(s + eps)) * p.grad
+            p[:] -= g
+            delta[:] = rho * delta + (1 - rho) * g * g
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-1-2">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    %matplotlib inline
+    import tensorflow as tf
+    from d2l import tensorflow as d2l
+    
+    
+    def init_adadelta_states(feature_dim):
+        s_w = tf.Variable(tf.zeros((feature_dim, 1)))
+        s_b = tf.Variable(tf.zeros(1))
+        delta_w = tf.Variable(tf.zeros((feature_dim, 1)))
+        delta_b = tf.Variable(tf.zeros(1))
+        return ((s_w, delta_w), (s_b, delta_b))
+    
+    def adadelta(params, grads, states, hyperparams):
+        rho, eps = hyperparams['rho'], 1e-5
+        for p, (s, delta), grad in zip(params, states, grads):
+            s[:].assign(rho * s + (1 - rho) * tf.math.square(grad))
+            g = (tf.math.sqrt(delta + eps) / tf.math.sqrt(s + eps)) * grad
+            p[:].assign(p - g)
+            delta[:].assign(rho * delta + (1 - rho) * g * g)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+Choosing :math:`\rho = 0.9` amounts to a half-life time of 10 for each
+parameter update. This tends to work quite well. We get the following
+behavior.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-3-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-3-0">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    data_iter, feature_dim = d2l.get_data_ch11(batch_size=10)
+    d2l.train_ch11(adadelta, init_adadelta_states(feature_dim),
+                   {'rho': 0.9}, data_iter, feature_dim);
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-3-1">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    data_iter, feature_dim = d2l.get_data_ch11(batch_size=10)
+    d2l.train_ch11(adadelta, init_adadelta_states(feature_dim),
+                   {'rho': 0.9}, data_iter, feature_dim);
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-3-2">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    data_iter, feature_dim = d2l.get_data_ch11(batch_size=10)
+    d2l.train_ch11(adadelta, init_adadelta_states(feature_dim),
+                   {'rho': 0.9}, data_iter, feature_dim);
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+For a concise implementation we simply use the Adadelta algorithm from
+high-level APIs. This yields the following one-liner for a much more
+compact invocation.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-5-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-5-0">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    trainer = torch.optim.Adadelta
+    d2l.train_concise_ch11(trainer, {'rho': 0.9}, data_iter)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-5-1">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    d2l.train_concise_ch11('adadelta', {'rho': 0.9}, data_iter)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-5-2">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    # adadelta is not converging at default learning rate
+    # but it is converging at lr = 5.0
+    trainer = tf.keras.optimizers.Adadelta
+    d2l.train_concise_ch11(trainer, {'learning_rate':5.0, 'rho': 0.9}, data_iter)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+Summary
+-------
+
+-  Adadelta has no learning rate parameter. Instead, it uses the rate of
+   change in the parameters itself to adapt the learning rate.
+-  Adadelta requires two state variables to store the second moments of
+   gradient and the change in parameters.
+-  Adadelta uses leaky averages to keep a running estimate of the
+   appropriate statistics.
+
+Exercises
+---------
+
+1. Adjust the value of :math:`\rho`. What happens?
+2. Show how to implement the algorithm without the use of
+   :math:`\mathbf{g}_t'`. Why might this be a good idea?
+3. Is Adadelta really learning rate free? Could you find optimization
+   problems that break Adadelta?
+4. Compare Adadelta to Adagrad and RMS prop to discuss their convergence
+   behavior.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-7-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-7-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-7-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-7-0">
+
+`Discussions <https://discuss.d2l.ai/t/1076>`__
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-7-1">
+
+`Discussions <https://discuss.d2l.ai/t/357>`__
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-7-2">
+
+`Discussions <https://discuss.d2l.ai/t/1077>`__
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>

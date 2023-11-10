@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>12.3. Gradient Descent &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="12.4. Stochastic Gradient Descent" href="sgd.html" />
+    <link rel="prev" title="12.2. Convexity" href="convexity.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">12. </span>Optimization Algorithms</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">12.3. </span>Gradient Descent</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_optimization/gd.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">12. Optimization Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">12. Optimization Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="gradient-descent">
+<span id="sec-gd"></span><h1><span class="section-number">12.3. </span>Gradient Descent<a class="headerlink" href="#gradient-descent" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_optimization/gd.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_optimization/gd.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_optimization/gd.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_optimization/gd.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_optimization/gd.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_optimization/gd.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_optimization/gd.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_optimization/gd.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>In this section we are going to introduce the basic concepts underlying
+<em>gradient descent</em>. Although it is rarely used directly in deep
+learning, an understanding of gradient descent is key to understanding
+stochastic gradient descent algorithms. For instance, the optimization
+problem might diverge due to an overly large learning rate. This
+phenomenon can already be seen in gradient descent. Likewise,
+preconditioning is a common technique in gradient descent and carries
+over to more advanced algorithms. Let’s start with a simple special
+case.</p>
+<div class="section" id="one-dimensional-gradient-descent">
+<h2><span class="section-number">12.3.1. </span>One-Dimensional Gradient Descent<a class="headerlink" href="#one-dimensional-gradient-descent" title="Permalink to this heading">¶</a></h2>
+<p>Gradient descent in one dimension is an excellent example to explain why
+the gradient descent algorithm may reduce the value of the objective
+function. Consider some continuously differentiable real-valued function
+<span class="math notranslate nohighlight">\(f: \mathbb{R} \rightarrow \mathbb{R}\)</span>. Using a Taylor expansion
+we obtain</p>
+<div class="math notranslate nohighlight" id="equation-gd-taylor">
+<span class="eqno">(12.3.1)<a class="headerlink" href="#equation-gd-taylor" title="Permalink to this equation">¶</a></span>\[f(x + \epsilon) = f(x) + \epsilon f'(x) + \mathcal{O}(\epsilon^2).\]</div>
+<p>That is, in first-order approximation <span class="math notranslate nohighlight">\(f(x+\epsilon)\)</span> is given by
+the function value <span class="math notranslate nohighlight">\(f(x)\)</span> and the first derivative <span class="math notranslate nohighlight">\(f'(x)\)</span>
+at <span class="math notranslate nohighlight">\(x\)</span>. It is not unreasonable to assume that for small
+<span class="math notranslate nohighlight">\(\epsilon\)</span> moving in the direction of the negative gradient will
+decrease <span class="math notranslate nohighlight">\(f\)</span>. To keep things simple we pick a fixed step size
+<span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> and choose <span class="math notranslate nohighlight">\(\epsilon = -\eta f'(x)\)</span>. Plugging
+this into the Taylor expansion above we get</p>
+<div class="math notranslate nohighlight" id="equation-gd-taylor-2">
+<span class="eqno">(12.3.2)<a class="headerlink" href="#equation-gd-taylor-2" title="Permalink to this equation">¶</a></span>\[f(x - \eta f'(x)) = f(x) - \eta f'^2(x) + \mathcal{O}(\eta^2 f'^2(x)).\]</div>
+<p>If the derivative <span class="math notranslate nohighlight">\(f'(x) \neq 0\)</span> does not vanish we make progress
+since <span class="math notranslate nohighlight">\(\eta f'^2(x)&gt;0\)</span>. Moreover, we can always choose
+<span class="math notranslate nohighlight">\(\eta\)</span> small enough for the higher-order terms to become
+irrelevant. Hence we arrive at</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-0">
+<span class="eqno">(12.3.3)<a class="headerlink" href="#equation-chapter-optimization-gd-0" title="Permalink to this equation">¶</a></span>\[f(x - \eta f'(x)) \lessapprox f(x).\]</div>
+<p>This means that, if we use</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-1">
+<span class="eqno">(12.3.4)<a class="headerlink" href="#equation-chapter-optimization-gd-1" title="Permalink to this equation">¶</a></span>\[x \leftarrow x - \eta f'(x)\]</div>
+<p>to iterate <span class="math notranslate nohighlight">\(x\)</span>, the value of function <span class="math notranslate nohighlight">\(f(x)\)</span> might decline.
+Therefore, in gradient descent we first choose an initial value
+<span class="math notranslate nohighlight">\(x\)</span> and a constant <span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> and then use them to
+continuously iterate <span class="math notranslate nohighlight">\(x\)</span> until the stop condition is reached, for
+example, when the magnitude of the gradient <span class="math notranslate nohighlight">\(|f'(x)|\)</span> is small
+enough or the number of iterations has reached a certain value.</p>
+<p>For simplicity we choose the objective function <span class="math notranslate nohighlight">\(f(x)=x^2\)</span> to
+illustrate how to implement gradient descent. Although we know that
+<span class="math notranslate nohighlight">\(x=0\)</span> is the solution to minimize <span class="math notranslate nohighlight">\(f(x)\)</span>, we still use this
+simple function to observe how <span class="math notranslate nohighlight">\(x\)</span> changes.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-1-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">torch</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient (derivative) of the objective function</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">np</span><span class="p">,</span> <span class="n">npx</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">mxnet</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">npx</span><span class="o">.</span><span class="n">set_np</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient (derivative) of the objective function</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient (derivative) of the objective function</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div></div><p>Next, we use <span class="math notranslate nohighlight">\(x=10\)</span> as the initial value and assume
+<span class="math notranslate nohighlight">\(\eta=0.2\)</span>. Using gradient descent to iterate <span class="math notranslate nohighlight">\(x\)</span> for 10
+times we can see that, eventually, the value of <span class="math notranslate nohighlight">\(x\)</span> approaches the
+optimal solution.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-3-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gd</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;epoch 10, x: </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">gd</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gd</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;epoch 10, x: </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">gd</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-3-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gd</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;epoch 10, x: </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">gd</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>The progress of optimizing over <span class="math notranslate nohighlight">\(x\)</span> can be plotted as follows.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-5-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_trace</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">results</span><span class="p">)),</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">results</span><span class="p">)))</span>
+    <span class="n">f_line</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">()</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">f_line</span><span class="p">,</span> <span class="n">results</span><span class="p">],</span> <span class="p">[[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_line</span><span class="p">],</span> <span class="p">[</span>
+        <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]],</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;f(x)&#39;</span><span class="p">,</span> <span class="n">fmts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">])</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_trace</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">results</span><span class="p">)),</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">results</span><span class="p">)))</span>
+    <span class="n">f_line</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">()</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">f_line</span><span class="p">,</span> <span class="n">results</span><span class="p">],</span> <span class="p">[[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_line</span><span class="p">],</span> <span class="p">[</span>
+        <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]],</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;f(x)&#39;</span><span class="p">,</span> <span class="n">fmts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">])</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_trace</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">results</span><span class="p">)),</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">results</span><span class="p">)))</span>
+    <span class="n">f_line</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">()</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">f_line</span><span class="p">,</span> <span class="n">results</span><span class="p">],</span> <span class="p">[[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_line</span><span class="p">],</span> <span class="p">[</span>
+        <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]],</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;f(x)&#39;</span><span class="p">,</span> <span class="n">fmts</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">])</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><div class="section" id="learning-rate">
+<span id="subsec-gd-learningrate"></span><h3><span class="section-number">12.3.1.1. </span>Learning Rate<a class="headerlink" href="#learning-rate" title="Permalink to this heading">¶</a></h3>
+<p>The learning rate <span class="math notranslate nohighlight">\(\eta\)</span> can be set by the algorithm designer. If
+we use a learning rate that is too small, it will cause <span class="math notranslate nohighlight">\(x\)</span> to
+update very slowly, requiring more iterations to get a better solution.
+To show what happens in such a case, consider the progress in the same
+optimization problem for <span class="math notranslate nohighlight">\(\eta = 0.05\)</span>. As we can see, even after
+10 steps we are still very far from the optimal solution.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-7-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-7-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-7-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-7-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-7-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-7-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Conversely, if we use an excessively high learning rate,
+<span class="math notranslate nohighlight">\(\left|\eta f'(x)\right|\)</span> might be too large for the first-order
+Taylor expansion formula. That is, the term
+<span class="math notranslate nohighlight">\(\mathcal{O}(\eta^2 f'^2(x))\)</span> in <a class="reference internal" href="#equation-gd-taylor-2">(12.3.2)</a> might
+become significant. In this case, we cannot guarantee that the iteration
+of <span class="math notranslate nohighlight">\(x\)</span> will be able to lower the value of <span class="math notranslate nohighlight">\(f(x)\)</span>. For
+example, when we set the learning rate to <span class="math notranslate nohighlight">\(\eta=1.1\)</span>, <span class="math notranslate nohighlight">\(x\)</span>
+overshoots the optimal solution <span class="math notranslate nohighlight">\(x=0\)</span> and gradually diverges.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-9-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-9-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="local-minima">
+<h3><span class="section-number">12.3.1.2. </span>Local Minima<a class="headerlink" href="#local-minima" title="Permalink to this heading">¶</a></h3>
+<p>To illustrate what happens for nonconvex functions consider the case of
+<span class="math notranslate nohighlight">\(f(x) = x \cdot \cos(cx)\)</span> for some constant <span class="math notranslate nohighlight">\(c\)</span>. This
+function has infinitely many local minima. Depending on our choice of
+the learning rate and depending on how well conditioned the problem is,
+we may end up with one of many solutions. The example below illustrates
+how an (unrealistically) high learning rate will lead to a poor local
+minimum.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-11-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-11-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">gd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+</div>
+<div class="section" id="multivariate-gradient-descent">
+<h2><span class="section-number">12.3.2. </span>Multivariate Gradient Descent<a class="headerlink" href="#multivariate-gradient-descent" title="Permalink to this heading">¶</a></h2>
+<p>Now that we have a better intuition of the univariate case, let’s
+consider the situation where
+<span class="math notranslate nohighlight">\(\mathbf{x} = [x_1, x_2, \ldots, x_d]^\top\)</span>. That is, the
+objective function <span class="math notranslate nohighlight">\(f: \mathbb{R}^d \to \mathbb{R}\)</span> maps vectors
+into scalars. Correspondingly its gradient is multivariate, too. It is a
+vector consisting of <span class="math notranslate nohighlight">\(d\)</span> partial derivatives:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-2">
+<span class="eqno">(12.3.5)<a class="headerlink" href="#equation-chapter-optimization-gd-2" title="Permalink to this equation">¶</a></span>\[\nabla f(\mathbf{x}) = \bigg[\frac{\partial f(\mathbf{x})}{\partial x_1}, \frac{\partial f(\mathbf{x})}{\partial x_2}, \ldots, \frac{\partial f(\mathbf{x})}{\partial x_d}\bigg]^\top.\]</div>
+<p>Each partial derivative element
+<span class="math notranslate nohighlight">\(\partial f(\mathbf{x})/\partial x_i\)</span> in the gradient indicates
+the rate of change of <span class="math notranslate nohighlight">\(f\)</span> at <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> with respect to
+the input <span class="math notranslate nohighlight">\(x_i\)</span>. As before in the univariate case we can use the
+corresponding Taylor approximation for multivariate functions to get
+some idea of what we should do. In particular, we have that</p>
+<div class="math notranslate nohighlight" id="equation-gd-multi-taylor">
+<span class="eqno">(12.3.6)<a class="headerlink" href="#equation-gd-multi-taylor" title="Permalink to this equation">¶</a></span>\[f(\mathbf{x} + \boldsymbol{\epsilon}) = f(\mathbf{x}) + \mathbf{\boldsymbol{\epsilon}}^\top \nabla f(\mathbf{x}) + \mathcal{O}(\|\boldsymbol{\epsilon}\|^2).\]</div>
+<p>In other words, up to second-order terms in
+<span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span> the direction of steepest descent is given
+by the negative gradient <span class="math notranslate nohighlight">\(-\nabla f(\mathbf{x})\)</span>. Choosing a
+suitable learning rate <span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> yields the prototypical gradient
+descent algorithm:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-3">
+<span class="eqno">(12.3.7)<a class="headerlink" href="#equation-chapter-optimization-gd-3" title="Permalink to this equation">¶</a></span>\[\mathbf{x} \leftarrow \mathbf{x} - \eta \nabla f(\mathbf{x}).\]</div>
+<p>To see how the algorithm behaves in practice let’s construct an
+objective function <span class="math notranslate nohighlight">\(f(\mathbf{x})=x_1^2+2x_2^2\)</span> with a
+two-dimensional vector <span class="math notranslate nohighlight">\(\mathbf{x} = [x_1, x_2]^\top\)</span> as input and
+a scalar as output. The gradient is given by
+<span class="math notranslate nohighlight">\(\nabla f(\mathbf{x}) = [2x_1, 4x_2]^\top\)</span>. We will observe the
+trajectory of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> by gradient descent from the initial
+position <span class="math notranslate nohighlight">\([-5, -2]\)</span>.</p>
+<p>To begin with, we need two more helper functions. The first uses an
+update function and applies it 20 times to the initial value. The second
+helper visualizes the trajectory of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-13-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_2d</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">f_grad</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1">#@save</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize a 2D objective function with a customized trainer.&quot;&quot;&quot;</span>
+    <span class="c1"># `s1` and `s2` are internal state variables that will be used in Momentum, adagrad, RMSProp</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">f_grad</span><span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">trainer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">trainer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;epoch </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">, x1: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">, x2: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="k">def</span> <span class="nf">show_trace_2d</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>  <span class="c1">#@save</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the trace of 2D variables during optimization.&quot;&quot;&quot;</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">()</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">results</span><span class="p">),</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ff7f0e&#39;</span><span class="p">)</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                          <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#1f77b4&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x1&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_2d</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">f_grad</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1">#@save</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize a 2D objective function with a customized trainer.&quot;&quot;&quot;</span>
+    <span class="c1"># `s1` and `s2` are internal state variables that will be used in Momentum, adagrad, RMSProp</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">f_grad</span><span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">trainer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">trainer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;epoch </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">, x1: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">, x2: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="k">def</span> <span class="nf">show_trace_2d</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>  <span class="c1">#@save</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the trace of 2D variables during optimization.&quot;&quot;&quot;</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">()</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">results</span><span class="p">),</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ff7f0e&#39;</span><span class="p">)</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">55</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span><span class="o">*</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">x2</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span><span class="o">*</span><span class="mf">0.1</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#1f77b4&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x1&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_2d</span><span class="p">(</span><span class="n">trainer</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">f_grad</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1">#@save</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize a 2D objective function with a customized trainer.&quot;&quot;&quot;</span>
+    <span class="c1"># `s1` and `s2` are internal state variables that will be used in Momentum, adagrad, RMSProp</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">f_grad</span><span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">trainer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">trainer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;epoch </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">, x1: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">, x2: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="k">def</span> <span class="nf">show_trace_2d</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>  <span class="c1">#@save</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the trace of 2D variables during optimization.&quot;&quot;&quot;</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">set_figsize</span><span class="p">()</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">results</span><span class="p">),</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#ff7f0e&#39;</span><span class="p">)</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mf">5.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                          <span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;#1f77b4&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x1&#39;</span><span class="p">)</span>
+    <span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Next, we observe the trajectory of the optimization variable
+<span class="math notranslate nohighlight">\(\mathbf{x}\)</span> for learning rate <span class="math notranslate nohighlight">\(\eta = 0.1\)</span>. We can see that
+after 20 steps the value of <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> approaches its minimum at
+<span class="math notranslate nohighlight">\([0, 0]\)</span>. Progress is fairly well-behaved albeit rather slow.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-15-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-15-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-15-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-15-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x1</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">f_2d_grad</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">x2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gd_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">):</span>
+    <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span> <span class="o">=</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">show_trace_2d</span><span class="p">(</span><span class="n">f_2d</span><span class="p">,</span> <span class="n">train_2d</span><span class="p">(</span><span class="n">gd_2d</span><span class="p">,</span> <span class="n">f_grad</span><span class="o">=</span><span class="n">f_2d_grad</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-15-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x1</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">f_2d_grad</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">x2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gd_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">):</span>
+    <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span> <span class="o">=</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">show_trace_2d</span><span class="p">(</span><span class="n">f_2d</span><span class="p">,</span> <span class="n">train_2d</span><span class="p">(</span><span class="n">gd_2d</span><span class="p">,</span> <span class="n">f_grad</span><span class="o">=</span><span class="n">f_2d_grad</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-15-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x1</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x2</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">f_2d_grad</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">x2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gd_2d</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">f_grad</span><span class="p">):</span>
+    <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span> <span class="o">=</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">show_trace_2d</span><span class="p">(</span><span class="n">f_2d</span><span class="p">,</span> <span class="n">train_2d</span><span class="p">(</span><span class="n">gd_2d</span><span class="p">,</span> <span class="n">f_grad</span><span class="o">=</span><span class="n">f_2d_grad</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="adaptive-methods">
+<h2><span class="section-number">12.3.3. </span>Adaptive Methods<a class="headerlink" href="#adaptive-methods" title="Permalink to this heading">¶</a></h2>
+<p>As we could see in <a class="reference internal" href="#subsec-gd-learningrate"><span class="std std-numref">Section 12.3.1.1</span></a>, getting the
+learning rate <span class="math notranslate nohighlight">\(\eta\)</span> “just right” is tricky. If we pick it too
+small, we make little progress. If we pick it too large, the solution
+oscillates and in the worst case it might even diverge. What if we could
+determine <span class="math notranslate nohighlight">\(\eta\)</span> automatically or get rid of having to select a
+learning rate at all? Second-order methods that look not only at the
+value and gradient of the objective function but also at its <em>curvature</em>
+can help in this case. While these methods cannot be applied to deep
+learning directly due to the computational cost, they provide useful
+intuition into how to design advanced optimization algorithms that mimic
+many of the desirable properties of the algorithms outlined below.</p>
+<div class="section" id="newtons-method">
+<h3><span class="section-number">12.3.3.1. </span>Newton’s Method<a class="headerlink" href="#newtons-method" title="Permalink to this heading">¶</a></h3>
+<p>Reviewing the Taylor expansion of some function
+<span class="math notranslate nohighlight">\(f: \mathbb{R}^d \rightarrow \mathbb{R}\)</span> there is no need to stop
+after the first term. In fact, we can write it as</p>
+<div class="math notranslate nohighlight" id="equation-gd-hot-taylor">
+<span class="eqno">(12.3.8)<a class="headerlink" href="#equation-gd-hot-taylor" title="Permalink to this equation">¶</a></span>\[f(\mathbf{x} + \boldsymbol{\epsilon}) = f(\mathbf{x}) + \boldsymbol{\epsilon}^\top \nabla f(\mathbf{x}) + \frac{1}{2} \boldsymbol{\epsilon}^\top \nabla^2 f(\mathbf{x}) \boldsymbol{\epsilon} + \mathcal{O}(\|\boldsymbol{\epsilon}\|^3).\]</div>
+<p>To avoid cumbersome notation we define
+<span class="math notranslate nohighlight">\(\mathbf{H} \stackrel{\textrm{def}}{=} \nabla^2 f(\mathbf{x})\)</span> to
+be the Hessian of <span class="math notranslate nohighlight">\(f\)</span>, which is a <span class="math notranslate nohighlight">\(d \times d\)</span> matrix. For
+small <span class="math notranslate nohighlight">\(d\)</span> and simple problems <span class="math notranslate nohighlight">\(\mathbf{H}\)</span> is easy to
+compute. For deep neural networks, on the other hand, <span class="math notranslate nohighlight">\(\mathbf{H}\)</span>
+may be prohibitively large, due to the cost of storing
+<span class="math notranslate nohighlight">\(\mathcal{O}(d^2)\)</span> entries. Furthermore it may be too expensive to
+compute via backpropagation. For now let’s ignore such considerations
+and look at what algorithm we would get.</p>
+<p>After all, the minimum of <span class="math notranslate nohighlight">\(f\)</span> satisfies <span class="math notranslate nohighlight">\(\nabla f = 0\)</span>.
+Following calculus rules in <a class="reference internal" href="../chapter_preliminaries/calculus.html#subsec-calculus-grad"><span class="std std-numref">Section 2.4.3</span></a>, by taking
+derivatives of <a class="reference internal" href="#equation-gd-hot-taylor">(12.3.8)</a> with regard to
+<span class="math notranslate nohighlight">\(\boldsymbol{\epsilon}\)</span> and ignoring higher-order terms we arrive
+at</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-4">
+<span class="eqno">(12.3.9)<a class="headerlink" href="#equation-chapter-optimization-gd-4" title="Permalink to this equation">¶</a></span>\[\nabla f(\mathbf{x}) + \mathbf{H} \boldsymbol{\epsilon} = 0 \textrm{ and hence }
+\boldsymbol{\epsilon} = -\mathbf{H}^{-1} \nabla f(\mathbf{x}).\]</div>
+<p>That is, we need to invert the Hessian <span class="math notranslate nohighlight">\(\mathbf{H}\)</span> as part of the
+optimization problem.</p>
+<p>As a simple example, for <span class="math notranslate nohighlight">\(f(x) = \frac{1}{2} x^2\)</span> we have
+<span class="math notranslate nohighlight">\(\nabla f(x) = x\)</span> and <span class="math notranslate nohighlight">\(\mathbf{H} = 1\)</span>. Hence for any
+<span class="math notranslate nohighlight">\(x\)</span> we obtain <span class="math notranslate nohighlight">\(\epsilon = -x\)</span>. In other words, a <em>single</em>
+step is sufficient to converge perfectly without the need for any
+adjustment! Alas, we got a bit lucky here: the Taylor expansion was
+exact since
+<span class="math notranslate nohighlight">\(f(x+\epsilon)= \frac{1}{2} x^2 + \epsilon x + \frac{1}{2} \epsilon^2\)</span>.</p>
+<p>Let’s see what happens in other problems. Given a convex hyperbolic
+cosine function <span class="math notranslate nohighlight">\(f(x) = \cosh(cx)\)</span> for some constant <span class="math notranslate nohighlight">\(c\)</span>, we
+can see that the global minimum at <span class="math notranslate nohighlight">\(x=0\)</span> is reached after a few
+iterations.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-17-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-17-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-17-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-17-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Hessian of the objective function</span>
+    <span class="k">return</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">newton</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;epoch 10, x:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-17-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Hessian of the objective function</span>
+    <span class="k">return</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">newton</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;epoch 10, x:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-17-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Hessian of the objective function</span>
+    <span class="k">return</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">newton</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mf">10.0</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;epoch 10, x:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Now let’s consider a <em>nonconvex</em> function, such as
+<span class="math notranslate nohighlight">\(f(x) = x \cos(c x)\)</span> for some constant <span class="math notranslate nohighlight">\(c\)</span>. After all, note
+that in Newton’s method we end up dividing by the Hessian. This means
+that if the second derivative is <em>negative</em> we may walk into the
+direction of <em>increasing</em> the value of <span class="math notranslate nohighlight">\(f\)</span>. That is a fatal flaw
+of the algorithm. Let’s see what happens in practice.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-19-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-19-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-19-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-19-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Hessian of the objective function</span>
+    <span class="k">return</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-19-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Hessian of the objective function</span>
+    <span class="k">return</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-19-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Objective function</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_grad</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Gradient of the objective function</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">f_hess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>  <span class="c1"># Hessian of the objective function</span>
+    <span class="k">return</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>This went spectacularly wrong. How can we fix it? One way would be to
+“fix” the Hessian by taking its absolute value instead. Another strategy
+is to bring back the learning rate. This seems to defeat the purpose,
+but not quite. Having second-order information allows us to be cautious
+whenever the curvature is large and to take longer steps whenever the
+objective function is flatter. Let’s see how this works with a slightly
+smaller learning rate, say <span class="math notranslate nohighlight">\(\eta = 0.5\)</span>. As we can see, we have
+quite an efficient algorithm.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-21-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-21-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-21-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-21-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-21-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-21-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">show_trace</span><span class="p">(</span><span class="n">newton</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="convergence-analysis">
+<h3><span class="section-number">12.3.3.2. </span>Convergence Analysis<a class="headerlink" href="#convergence-analysis" title="Permalink to this heading">¶</a></h3>
+<p>We only analyze the convergence rate of Newton’s method for some convex
+and three times differentiable objective function <span class="math notranslate nohighlight">\(f\)</span>, where the
+second derivative is nonzero, i.e., <span class="math notranslate nohighlight">\(f'' &gt; 0\)</span>. The multivariate
+proof is a straightforward extension of the one-dimensional argument
+below and omitted since it does not help us much in terms of intuition.</p>
+<p>Denote by <span class="math notranslate nohighlight">\(x^{(k)}\)</span> the value of <span class="math notranslate nohighlight">\(x\)</span> at the
+<span class="math notranslate nohighlight">\(k^\textrm{th}\)</span> iteration and let
+<span class="math notranslate nohighlight">\(e^{(k)} \stackrel{\textrm{def}}{=} x^{(k)} - x^*\)</span> be the distance
+from optimality at the <span class="math notranslate nohighlight">\(k^\textrm{th}\)</span> iteration. By Taylor
+expansion we have that the condition <span class="math notranslate nohighlight">\(f'(x^*) = 0\)</span> can be written
+as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-5">
+<span class="eqno">(12.3.10)<a class="headerlink" href="#equation-chapter-optimization-gd-5" title="Permalink to this equation">¶</a></span>\[0 = f'(x^{(k)} - e^{(k)}) = f'(x^{(k)}) - e^{(k)} f''(x^{(k)}) + \frac{1}{2} (e^{(k)})^2 f'''(\xi^{(k)}),\]</div>
+<p>which holds for some <span class="math notranslate nohighlight">\(\xi^{(k)} \in [x^{(k)} - e^{(k)}, x^{(k)}]\)</span>.
+Dividing the above expansion by <span class="math notranslate nohighlight">\(f''(x^{(k)})\)</span> yields</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-6">
+<span class="eqno">(12.3.11)<a class="headerlink" href="#equation-chapter-optimization-gd-6" title="Permalink to this equation">¶</a></span>\[e^{(k)} - \frac{f'(x^{(k)})}{f''(x^{(k)})} = \frac{1}{2} (e^{(k)})^2 \frac{f'''(\xi^{(k)})}{f''(x^{(k)})}.\]</div>
+<p>Recall that we have the update
+<span class="math notranslate nohighlight">\(x^{(k+1)} = x^{(k)} - f'(x^{(k)}) / f''(x^{(k)})\)</span>. Plugging in
+this update equation and taking the absolute value of both sides, we
+have</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-7">
+<span class="eqno">(12.3.12)<a class="headerlink" href="#equation-chapter-optimization-gd-7" title="Permalink to this equation">¶</a></span>\[\left|e^{(k+1)}\right| = \frac{1}{2}(e^{(k)})^2 \frac{\left|f'''(\xi^{(k)})\right|}{f''(x^{(k)})}.\]</div>
+<p>Consequently, whenever we are in a region of bounded
+<span class="math notranslate nohighlight">\(\left|f'''(\xi^{(k)})\right| / (2f''(x^{(k)})) \leq c\)</span>, we have a
+quadratically decreasing error</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-8">
+<span class="eqno">(12.3.13)<a class="headerlink" href="#equation-chapter-optimization-gd-8" title="Permalink to this equation">¶</a></span>\[\left|e^{(k+1)}\right| \leq c (e^{(k)})^2.\]</div>
+<p>As an aside, optimization researchers call this <em>linear</em> convergence,
+whereas a condition such as
+<span class="math notranslate nohighlight">\(\left|e^{(k+1)}\right| \leq \alpha \left|e^{(k)}\right|\)</span> would be
+called a <em>constant</em> rate of convergence. Note that this analysis comes
+with a number of caveats. First, we do not really have much of a
+guarantee when we will reach the region of rapid convergence. Instead,
+we only know that once we reach it, convergence will be very quick.
+Second, this analysis requires that <span class="math notranslate nohighlight">\(f\)</span> is well-behaved up to
+higher-order derivatives. It comes down to ensuring that <span class="math notranslate nohighlight">\(f\)</span> does
+not have any “surprising” properties in terms of how it might change its
+values.</p>
+</div>
+<div class="section" id="preconditioning">
+<h3><span class="section-number">12.3.3.3. </span>Preconditioning<a class="headerlink" href="#preconditioning" title="Permalink to this heading">¶</a></h3>
+<p>Quite unsurprisingly computing and storing the full Hessian is very
+expensive. It is thus desirable to find alternatives. One way to improve
+matters is <em>preconditioning</em>. It avoids computing the Hessian in its
+entirety but only computes the <em>diagonal</em> entries. This leads to update
+algorithms of the form</p>
+<div class="math notranslate nohighlight" id="equation-chapter-optimization-gd-9">
+<span class="eqno">(12.3.14)<a class="headerlink" href="#equation-chapter-optimization-gd-9" title="Permalink to this equation">¶</a></span>\[\mathbf{x} \leftarrow \mathbf{x} - \eta \textrm{diag}(\mathbf{H})^{-1} \nabla f(\mathbf{x}).\]</div>
+<p>While this is not quite as good as the full Newton’s method, it is still
+much better than not using it. To see why this might be a good idea
+consider a situation where one variable denotes height in millimeters
+and the other one denotes height in kilometers. Assuming that for both
+the natural scale is in meters, we have a terrible mismatch in
+parametrizations. Fortunately, using preconditioning removes this.
+Effectively preconditioning with gradient descent amounts to selecting a
+different learning rate for each variable (coordinate of vector
+<span class="math notranslate nohighlight">\(\mathbf{x}\)</span>). As we will see later, preconditioning drives some
+of the innovation in stochastic gradient descent optimization
+algorithms.</p>
+</div>
+<div class="section" id="gradient-descent-with-line-search">
+<h3><span class="section-number">12.3.3.4. </span>Gradient Descent with Line Search<a class="headerlink" href="#gradient-descent-with-line-search" title="Permalink to this heading">¶</a></h3>
+<p>One of the key problems in gradient descent is that we might overshoot
+the goal or make insufficient progress. A simple fix for the problem is
+to use line search in conjunction with gradient descent. That is, we use
+the direction given by <span class="math notranslate nohighlight">\(\nabla f(\mathbf{x})\)</span> and then perform
+binary search as to which learning rate <span class="math notranslate nohighlight">\(\eta\)</span> minimizes
+<span class="math notranslate nohighlight">\(f(\mathbf{x} - \eta \nabla f(\mathbf{x}))\)</span>.</p>
+<p>This algorithm converges rapidly (for an analysis and proof see e.g.,
+<span id="id1">Boyd and Vandenberghe (<a class="reference internal" href="../chapter_references/zreferences.html#id26" title="Boyd, S., &amp; Vandenberghe, L. (2004). Convex Optimization. Cambridge, England: Cambridge University Press.">2004</a>)</span>). However, for the purpose of deep
+learning this is not quite so feasible, since each step of the line
+search would require us to evaluate the objective function on the entire
+dataset. This is way too costly to accomplish.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2><span class="section-number">12.3.4. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Learning rates matter. Too large and we diverge, too small and we do
+not make progress.</p></li>
+<li><p>Gradient descent can get stuck in local minima.</p></li>
+<li><p>In high dimensions adjusting the learning rate is complicated.</p></li>
+<li><p>Preconditioning can help with scale adjustment.</p></li>
+<li><p>Newton’s method is a lot faster once it has started working properly
+in convex problems.</p></li>
+<li><p>Beware of using Newton’s method without any adjustments for nonconvex
+problems.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">12.3.5. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Experiment with different learning rates and objective functions for
+gradient descent.</p></li>
+<li><p>Implement line search to minimize a convex function in the interval
+<span class="math notranslate nohighlight">\([a, b]\)</span>.</p>
+<ol class="arabic simple">
+<li><p>Do you need derivatives for binary search, i.e., to decide whether
+to pick <span class="math notranslate nohighlight">\([a, (a+b)/2]\)</span> or <span class="math notranslate nohighlight">\([(a+b)/2, b]\)</span>.</p></li>
+<li><p>How rapid is the rate of convergence for the algorithm?</p></li>
+<li><p>Implement the algorithm and apply it to minimizing
+<span class="math notranslate nohighlight">\(\log (\exp(x) + \exp(-2x -3))\)</span>.</p></li>
+</ol>
+</li>
+<li><p>Design an objective function defined on <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span> where
+gradient descent is exceedingly slow. Hint: scale different
+coordinates differently.</p></li>
+<li><p>Implement the lightweight version of Newton’s method using
+preconditioning:</p>
+<ol class="arabic simple">
+<li><p>Use diagonal Hessian as preconditioner.</p></li>
+<li><p>Use the absolute values of that rather than the actual (possibly
+signed) values.</p></li>
+<li><p>Apply this to the problem above.</p></li>
+</ol>
+</li>
+<li><p>Apply the algorithm above to a number of objective functions (convex
+or not). What happens if you rotate coordinates by <span class="math notranslate nohighlight">\(45\)</span>
+degrees?</p></li>
+</ol>
+<p><a class="reference external" href="https://discuss.d2l.ai/t/351">Discussions</a></p>
+</div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">12.3. Gradient Descent</a><ul>
+<li><a class="reference internal" href="#one-dimensional-gradient-descent">12.3.1. One-Dimensional Gradient Descent</a><ul>
+<li><a class="reference internal" href="#learning-rate">12.3.1.1. Learning Rate</a></li>
+<li><a class="reference internal" href="#local-minima">12.3.1.2. Local Minima</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#multivariate-gradient-descent">12.3.2. Multivariate Gradient Descent</a></li>
+<li><a class="reference internal" href="#adaptive-methods">12.3.3. Adaptive Methods</a><ul>
+<li><a class="reference internal" href="#newtons-method">12.3.3.1. Newton’s Method</a></li>
+<li><a class="reference internal" href="#convergence-analysis">12.3.3.2. Convergence Analysis</a></li>
+<li><a class="reference internal" href="#preconditioning">12.3.3.3. Preconditioning</a></li>
+<li><a class="reference internal" href="#gradient-descent-with-line-search">12.3.3.4. Gradient Descent with Line Search</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#summary">12.3.4. Summary</a></li>
+<li><a class="reference internal" href="#exercises">12.3.5. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="convexity.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>12.2. Convexity</div>
+         </div>
+     </a>
+     <a id="button-next" href="sgd.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>12.4. Stochastic Gradient Descent</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

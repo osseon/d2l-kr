@@ -1,0 +1,749 @@
+
+.. _sec_convexity:
+
+Convexity
+=========
+
+
+Convexity plays a vital role in the design of optimization algorithms.
+This is largely due to the fact that it is much easier to analyze and
+test algorithms in such a context. In other words, if the algorithm
+performs poorly even in the convex setting, typically we should not hope
+to see great results otherwise. Furthermore, even though the
+optimization problems in deep learning are generally nonconvex, they
+often exhibit some properties of convex ones near local minima. This can
+lead to exciting new optimization variants such as
+:cite:`Izmailov.Podoprikhin.Garipov.ea.2018`.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-1-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-1-0">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    %matplotlib inline
+    import numpy as np
+    import torch
+    from mpl_toolkits import mplot3d
+    from d2l import torch as d2l
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-1-1">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    %matplotlib inline
+    from mpl_toolkits import mplot3d
+    from mxnet import np, npx
+    from d2l import mxnet as d2l
+    
+    npx.set_np()
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-1-2">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    %matplotlib inline
+    import numpy as np
+    import tensorflow as tf
+    from mpl_toolkits import mplot3d
+    from d2l import tensorflow as d2l
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+Definitions
+-----------
+
+Before convex analysis, we need to define *convex sets* and *convex
+functions*. They lead to mathematical tools that are commonly applied to
+machine learning.
+
+Convex Sets
+~~~~~~~~~~~
+
+Sets are the basis of convexity. Simply put, a set :math:`\mathcal{X}`
+in a vector space is *convex* if for any :math:`a, b \in \mathcal{X}`
+the line segment connecting :math:`a` and :math:`b` is also in
+:math:`\mathcal{X}`. In mathematical terms this means that for all
+:math:`\lambda \in [0, 1]` we have
+
+.. math:: \lambda  a + (1-\lambda)  b \in \mathcal{X} \textrm{ whenever } a, b \in \mathcal{X}.
+
+This sounds a bit abstract. Consider :numref:`fig_pacman`. The first
+set is not convex since there exist line segments that are not contained
+in it. The other two sets suffer no such problem.
+
+.. _fig_pacman:
+
+.. figure:: ../img/pacman.svg
+
+   The first set is nonconvex and the other two are convex.
+
+
+Definitions on their own are not particularly useful unless you can do
+something with them. In this case we can look at intersections as shown
+in :numref:`fig_convex_intersect`. Assume that :math:`\mathcal{X}` and
+:math:`\mathcal{Y}` are convex sets. Then
+:math:`\mathcal{X} \cap \mathcal{Y}` is also convex. To see this,
+consider any :math:`a, b \in \mathcal{X} \cap \mathcal{Y}`. Since
+:math:`\mathcal{X}` and :math:`\mathcal{Y}` are convex, the line
+segments connecting :math:`a` and :math:`b` are contained in both
+:math:`\mathcal{X}` and :math:`\mathcal{Y}`. Given that, they also need
+to be contained in :math:`\mathcal{X} \cap \mathcal{Y}`, thus proving
+our theorem.
+
+.. _fig_convex_intersect:
+
+.. figure:: ../img/convex-intersect.svg
+
+   The intersection between two convex sets is convex.
+
+
+We can strengthen this result with little effort: given convex sets
+:math:`\mathcal{X}_i`, their intersection :math:`\cap_{i} \mathcal{X}_i`
+is convex. To see that the converse is not true, consider two disjoint
+sets :math:`\mathcal{X} \cap \mathcal{Y} = \emptyset`. Now pick
+:math:`a \in \mathcal{X}` and :math:`b \in \mathcal{Y}`. The line
+segment in :numref:`fig_nonconvex` connecting :math:`a` and :math:`b`
+needs to contain some part that is neither in :math:`\mathcal{X}` nor in
+:math:`\mathcal{Y}`, since we assumed that
+:math:`\mathcal{X} \cap \mathcal{Y} = \emptyset`. Hence the line segment
+is not in :math:`\mathcal{X} \cup \mathcal{Y}` either, thus proving that
+in general unions of convex sets need not be convex.
+
+.. _fig_nonconvex:
+
+.. figure:: ../img/nonconvex.svg
+
+   The union of two convex sets need not be convex.
+
+
+Typically the problems in deep learning are defined on convex sets. For
+instance, :math:`\mathbb{R}^d`, the set of :math:`d`-dimensional vectors
+of real numbers, is a convex set (after all, the line between any two
+points in :math:`\mathbb{R}^d` remains in :math:`\mathbb{R}^d`). In some
+cases we work with variables of bounded length, such as balls of radius
+:math:`r` as defined by
+:math:`\{\mathbf{x} | \mathbf{x} \in \mathbb{R}^d \textrm{ and } \|\mathbf{x}\| \leq r\}`.
+
+Convex Functions
+~~~~~~~~~~~~~~~~
+
+Now that we have convex sets we can introduce *convex functions*
+:math:`f`. Given a convex set :math:`\mathcal{X}`, a function
+:math:`f: \mathcal{X} \to \mathbb{R}` is *convex* if for all
+:math:`x, x' \in \mathcal{X}` and for all :math:`\lambda \in [0, 1]` we
+have
+
+.. math:: \lambda f(x) + (1-\lambda) f(x') \geq f(\lambda x + (1-\lambda) x').
+
+To illustrate this let’s plot a few functions and check which ones
+satisfy the requirement. Below we define a few functions, both convex
+and nonconvex.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-3-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-3-0">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    f = lambda x: 0.5 * x**2  # Convex
+    g = lambda x: torch.cos(np.pi * x)  # Nonconvex
+    h = lambda x: torch.exp(0.5 * x)  # Convex
+    
+    x, segment = torch.arange(-2, 2, 0.01), torch.tensor([-1.5, 1])
+    d2l.use_svg_display()
+    _, axes = d2l.plt.subplots(1, 3, figsize=(9, 3))
+    for ax, func in zip(axes, [f, g, h]):
+        d2l.plot([x, segment], [func(x), func(segment)], axes=ax)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-3-1">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    f = lambda x: 0.5 * x**2  # Convex
+    g = lambda x: np.cos(np.pi * x)  # Nonconvex
+    h = lambda x: np.exp(0.5 * x)  # Convex
+    
+    x, segment = np.arange(-2, 2, 0.01), np.array([-1.5, 1])
+    d2l.use_svg_display()
+    _, axes = d2l.plt.subplots(1, 3, figsize=(9, 3))
+    for ax, func in zip(axes, [f, g, h]):
+        d2l.plot([x, segment], [func(x), func(segment)], axes=ax)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-3-2">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    f = lambda x: 0.5 * x**2  # Convex
+    g = lambda x: tf.cos(np.pi * x)  # Nonconvex
+    h = lambda x: tf.exp(0.5 * x)  # Convex
+    
+    x, segment = tf.range(-2, 2, 0.01), tf.constant([-1.5, 1])
+    d2l.use_svg_display()
+    _, axes = d2l.plt.subplots(1, 3, figsize=(9, 3))
+    for ax, func in zip(axes, [f, g, h]):
+        d2l.plot([x, segment], [func(x), func(segment)], axes=ax)
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+As expected, the cosine function is *nonconvex*, whereas the parabola
+and the exponential function are. Note that the requirement that
+:math:`\mathcal{X}` is a convex set is necessary for the condition to
+make sense. Otherwise the outcome of
+:math:`f(\lambda x + (1-\lambda) x')` might not be well defined.
+
+Jensen’s Inequality
+~~~~~~~~~~~~~~~~~~~
+
+Given a convex function :math:`f`, one of the most useful mathematical
+tools is *Jensen’s inequality*. It amounts to a generalization of the
+definition of convexity:
+
+.. math:: \sum_i \alpha_i f(x_i)  \geq f\left(\sum_i \alpha_i x_i\right)    \textrm{ and }    E_X[f(X)]  \geq f\left(E_X[X]\right),
+   :label: eq_jensens-inequality
+
+where :math:`\alpha_i` are nonnegative real numbers such that
+:math:`\sum_i \alpha_i = 1` and :math:`X` is a random variable. In other
+words, the expectation of a convex function is no less than the convex
+function of an expectation, where the latter is usually a simpler
+expression. To prove the first inequality we repeatedly apply the
+definition of convexity to one term in the sum at a time.
+
+One of the common applications of Jensen’s inequality is to bound a more
+complicated expression by a simpler one. For example, its application
+can be with regard to the log-likelihood of partially observed random
+variables. That is, we use
+
+.. math:: E_{Y \sim P(Y)}[-\log P(X \mid Y)] \geq -\log P(X),
+
+since :math:`\int P(Y) P(X \mid Y) dY = P(X)`. This can be used in
+variational methods. Here :math:`Y` is typically the unobserved random
+variable, :math:`P(Y)` is the best guess of how it might be distributed,
+and :math:`P(X)` is the distribution with :math:`Y` integrated out. For
+instance, in clustering :math:`Y` might be the cluster labels and
+:math:`P(X \mid Y)` is the generative model when applying cluster
+labels.
+
+Properties
+----------
+
+Convex functions have many useful properties. We describe a few
+commonly-used ones below.
+
+Local Minima Are Global Minima
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First and foremost, the local minima of convex functions are also the
+global minima. We can prove it by contradiction as follows.
+
+Consider a convex function :math:`f` defined on a convex set
+:math:`\mathcal{X}`. Suppose that :math:`x^{\ast} \in \mathcal{X}` is a
+local minimum: there exists a small positive value :math:`p` so that for
+:math:`x \in \mathcal{X}` that satisfies
+:math:`0 < |x - x^{\ast}| \leq p` we have :math:`f(x^{\ast}) < f(x)`.
+
+Assume that the local minimum :math:`x^{\ast}` is not the global minimum
+of :math:`f`: there exists :math:`x' \in \mathcal{X}` for which
+:math:`f(x') < f(x^{\ast})`. There also exists
+:math:`\lambda \in [0, 1)` such as
+:math:`\lambda = 1 - \frac{p}{|x^{\ast} - x'|}` so that
+:math:`0 < |\lambda x^{\ast} + (1-\lambda) x' - x^{\ast}| \leq p`.
+
+However, according to the definition of convex functions, we have
+
+.. math::
+
+   \begin{aligned}
+       f(\lambda x^{\ast} + (1-\lambda) x') &\leq \lambda f(x^{\ast}) + (1-\lambda) f(x') \\
+       &< \lambda f(x^{\ast}) + (1-\lambda) f(x^{\ast}) \\
+       &= f(x^{\ast}),
+   \end{aligned}
+
+which contradicts with our statement that :math:`x^{\ast}` is a local
+minimum. Therefore, there does not exist :math:`x' \in \mathcal{X}` for
+which :math:`f(x') < f(x^{\ast})`. The local minimum :math:`x^{\ast}` is
+also the global minimum.
+
+For instance, the convex function :math:`f(x) = (x-1)^2` has a local
+minimum at :math:`x=1`, which is also the global minimum.
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-5-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel is-active" id="pytorch-5-0">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    f = lambda x: (x - 1) ** 2
+    d2l.set_figsize()
+    d2l.plot([x, segment], [f(x), f(segment)], 'x', 'f(x)')
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="mxnet-5-1">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    f = lambda x: (x - 1) ** 2
+    d2l.set_figsize()
+    d2l.plot([x, segment], [f(x), f(segment)], 'x', 'f(x)')
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    <div class="mdl-tabs__panel " id="tensorflow-5-2">
+
+.. raw:: latex
+
+   \diilbookstyleinputcell
+
+.. code:: python
+
+    f = lambda x: (x - 1) ** 2
+    d2l.set_figsize()
+    d2l.plot([x, segment], [f(x), f(segment)], 'x', 'f(x)')
+
+
+
+.. raw:: html
+
+    </div>
+
+
+
+.. raw:: html
+
+    </div>
+
+The fact that the local minima for convex functions are also the global
+minima is very convenient. It means that if we minimize functions we
+cannot “get stuck”. Note, though, that this does not mean that there
+cannot be more than one global minimum or that there might even exist
+one. For instance, the function :math:`f(x) = \mathrm{max}(|x|-1, 0)`
+attains its minimum value over the interval :math:`[-1, 1]`. Conversely,
+the function :math:`f(x) = \exp(x)` does not attain a minimum value on
+:math:`\mathbb{R}`: for :math:`x \to -\infty` it asymptotes to
+:math:`0`, but there is no :math:`x` for which :math:`f(x) = 0`.
+
+Below Sets of Convex Functions Are Convex
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We can conveniently define convex sets via *below sets* of convex
+functions. Concretely, given a convex function :math:`f` defined on a
+convex set :math:`\mathcal{X}`, any below set
+
+.. math:: \mathcal{S}_b \stackrel{\textrm{def}}{=} \{x | x \in \mathcal{X} \textrm{ and } f(x) \leq b\}
+
+is convex.
+
+Let’s prove this quickly. Recall that for any
+:math:`x, x' \in \mathcal{S}_b` we need to show that
+:math:`\lambda x + (1-\lambda) x' \in \mathcal{S}_b` as long as
+:math:`\lambda \in [0, 1]`. Since :math:`f(x) \leq b` and
+:math:`f(x') \leq b`, by the definition of convexity we have
+
+.. math:: f(\lambda x + (1-\lambda) x') \leq \lambda f(x) + (1-\lambda) f(x') \leq b.
+
+Convexity and Second Derivatives
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Whenever the second derivative of a function
+:math:`f: \mathbb{R}^n \rightarrow \mathbb{R}` exists it is very easy to
+check whether :math:`f` is convex. All we need to do is check whether
+the Hessian of :math:`f` is positive semidefinite:
+:math:`\nabla^2f \succeq 0`, i.e., denoting the Hessian matrix
+:math:`\nabla^2f` by :math:`\mathbf{H}`,
+:math:`\mathbf{x}^\top \mathbf{H} \mathbf{x} \geq 0` for all
+:math:`\mathbf{x} \in \mathbb{R}^n`. For instance, the function
+:math:`f(\mathbf{x}) = \frac{1}{2} \|\mathbf{x}\|^2` is convex since
+:math:`\nabla^2 f = \mathbf{1}`, i.e., its Hessian is an identity
+matrix.
+
+Formally, a twice-differentiable one-dimensional function
+:math:`f: \mathbb{R} \rightarrow \mathbb{R}` is convex if and only if
+its second derivative :math:`f'' \geq 0`. For any twice-differentiable
+multidimensional function
+:math:`f: \mathbb{R}^{n} \rightarrow \mathbb{R}`, it is convex if and
+only if its Hessian :math:`\nabla^2f \succeq 0`.
+
+First, we need to prove the one-dimensional case. To see that convexity
+of :math:`f` implies :math:`f'' \geq 0` we use the fact that
+
+.. math:: \frac{1}{2} f(x + \epsilon) + \frac{1}{2} f(x - \epsilon) \geq f\left(\frac{x + \epsilon}{2} + \frac{x - \epsilon}{2}\right) = f(x).
+
+Since the second derivative is given by the limit over finite
+differences it follows that
+
+.. math:: f''(x) = \lim_{\epsilon \to 0} \frac{f(x+\epsilon) + f(x - \epsilon) - 2f(x)}{\epsilon^2} \geq 0.
+
+To see that :math:`f'' \geq 0` implies that :math:`f` is convex we use
+the fact that :math:`f'' \geq 0` implies that :math:`f'` is a
+monotonically nondecreasing function. Let :math:`a < x < b` be three
+points in :math:`\mathbb{R}`, where :math:`x = (1-\lambda)a + \lambda b`
+and :math:`\lambda \in (0, 1)`. According to the mean value theorem,
+there exist :math:`\alpha \in [a, x]` and :math:`\beta \in [x, b]` such
+that
+
+.. math:: f'(\alpha) = \frac{f(x) - f(a)}{x-a} \textrm{ and } f'(\beta) = \frac{f(b) - f(x)}{b-x}.
+
+By monotonicity :math:`f'(\beta) \geq f'(\alpha)`, hence
+
+.. math:: \frac{x-a}{b-a}f(b) + \frac{b-x}{b-a}f(a) \geq f(x).
+
+Since :math:`x = (1-\lambda)a + \lambda b`, we have
+
+.. math:: \lambda f(b) + (1-\lambda)f(a) \geq f((1-\lambda)a + \lambda b),
+
+thus proving convexity.
+
+Second, we need a lemma before proving the multidimensional case:
+:math:`f: \mathbb{R}^n \rightarrow \mathbb{R}` is convex if and only if
+for all :math:`\mathbf{x}, \mathbf{y} \in \mathbb{R}^n`
+
+.. math:: g(z) \stackrel{\textrm{def}}{=} f(z \mathbf{x} + (1-z)  \mathbf{y}) \textrm{ where } z \in [0,1]
+
+is convex.
+
+To prove that convexity of :math:`f` implies that :math:`g` is convex,
+we can show that for all :math:`a, b, \lambda \in [0, 1]` (thus
+:math:`0 \leq \lambda a + (1-\lambda) b \leq 1`)
+
+.. math::
+
+   \begin{aligned} &g(\lambda a + (1-\lambda) b)\\
+   =&f\left(\left(\lambda a + (1-\lambda) b\right)\mathbf{x} + \left(1-\lambda a - (1-\lambda) b\right)\mathbf{y} \right)\\
+   =&f\left(\lambda \left(a \mathbf{x} + (1-a)  \mathbf{y}\right)  + (1-\lambda) \left(b \mathbf{x} + (1-b)  \mathbf{y}\right) \right)\\
+   \leq& \lambda f\left(a \mathbf{x} + (1-a)  \mathbf{y}\right)  + (1-\lambda) f\left(b \mathbf{x} + (1-b)  \mathbf{y}\right) \\
+   =& \lambda g(a) + (1-\lambda) g(b).
+   \end{aligned}
+
+To prove the converse, we can show that for all
+:math:`\lambda \in [0, 1]`
+
+.. math::
+
+   \begin{aligned} &f(\lambda \mathbf{x} + (1-\lambda) \mathbf{y})\\
+   =&g(\lambda \cdot 1 + (1-\lambda) \cdot 0)\\
+   \leq& \lambda g(1)  + (1-\lambda) g(0) \\
+   =& \lambda f(\mathbf{x}) + (1-\lambda) f(\mathbf{y}).
+   \end{aligned}
+
+Finally, using the lemma above and the result of the one-dimensional
+case, the multidimensional case can be proven as follows. A
+multidimensional function :math:`f: \mathbb{R}^n \rightarrow \mathbb{R}`
+is convex if and only if for all
+:math:`\mathbf{x}, \mathbf{y} \in \mathbb{R}^n`
+:math:`g(z) \stackrel{\textrm{def}}{=} f(z \mathbf{x} + (1-z) \mathbf{y})`,
+where :math:`z \in [0,1]`, is convex. According to the one-dimensional
+case, this holds if and only if
+:math:`g'' = (\mathbf{x} - \mathbf{y})^\top \mathbf{H}(\mathbf{x} - \mathbf{y}) \geq 0`
+(:math:`\mathbf{H} \stackrel{\textrm{def}}{=} \nabla^2f`) for all
+:math:`\mathbf{x}, \mathbf{y} \in \mathbb{R}^n`, which is equivalent to
+:math:`\mathbf{H} \succeq 0` per the definition of positive semidefinite
+matrices.
+
+Constraints
+-----------
+
+One of the nice properties of convex optimization is that it allows us
+to handle constraints efficiently. That is, it allows us to solve
+*constrained optimization* problems of the form:
+
+.. math::
+
+   \begin{aligned} \mathop{\textrm{minimize~}}_{\mathbf{x}} & f(\mathbf{x}) \\
+       \textrm{ subject to } & c_i(\mathbf{x}) \leq 0 \textrm{ for all } i \in \{1, \ldots, n\},
+   \end{aligned}
+
+where :math:`f` is the objective and the functions :math:`c_i` are
+constraint functions. To see what this does consider the case where
+:math:`c_1(\mathbf{x}) = \|\mathbf{x}\|_2 - 1`. In this case the
+parameters :math:`\mathbf{x}` are constrained to the unit ball. If a
+second constraint is
+:math:`c_2(\mathbf{x}) = \mathbf{v}^\top \mathbf{x} + b`, then this
+corresponds to all :math:`\mathbf{x}` lying on a half-space. Satisfying
+both constraints simultaneously amounts to selecting a slice of a ball.
+
+Lagrangian
+~~~~~~~~~~
+
+In general, solving a constrained optimization problem is difficult. One
+way of addressing it stems from physics with a rather simple intuition.
+Imagine a ball inside a box. The ball will roll to the place that is
+lowest and the forces of gravity will be balanced out with the forces
+that the sides of the box can impose on the ball. In short, the gradient
+of the objective function (i.e., gravity) will be offset by the gradient
+of the constraint function (the ball need to remain inside the box by
+virtue of the walls “pushing back”). Note that some constraints may not
+be active: the walls that are not touched by the ball will not be able
+to exert any force on the ball.
+
+Skipping over the derivation of the *Lagrangian* :math:`L`, the above
+reasoning can be expressed via the following saddle point optimization
+problem:
+
+.. math:: L(\mathbf{x}, \alpha_1, \ldots, \alpha_n) = f(\mathbf{x}) + \sum_{i=1}^n \alpha_i c_i(\mathbf{x}) \textrm{ where } \alpha_i \geq 0.
+
+Here the variables :math:`\alpha_i` (:math:`i=1,\ldots,n`) are the
+so-called *Lagrange multipliers* that ensure that constraints are
+properly enforced. They are chosen just large enough to ensure that
+:math:`c_i(\mathbf{x}) \leq 0` for all :math:`i`. For instance, for any
+:math:`\mathbf{x}` where :math:`c_i(\mathbf{x}) < 0` naturally, we’d end
+up picking :math:`\alpha_i = 0`. Moreover, this is a saddle point
+optimization problem where one wants to *maximize* :math:`L` with
+respect to all :math:`\alpha_i` and simultaneously *minimize* it with
+respect to :math:`\mathbf{x}`. There is a rich body of literature
+explaining how to arrive at the function
+:math:`L(\mathbf{x}, \alpha_1, \ldots, \alpha_n)`. For our purposes it
+is sufficient to know that the saddle point of :math:`L` is where the
+original constrained optimization problem is solved optimally.
+
+Penalties
+~~~~~~~~~
+
+One way of satisfying constrained optimization problems at least
+*approximately* is to adapt the Lagrangian :math:`L`. Rather than
+satisfying :math:`c_i(\mathbf{x}) \leq 0` we simply add
+:math:`\alpha_i c_i(\mathbf{x})` to the objective function :math:`f(x)`.
+This ensures that the constraints will not be violated too badly.
+
+In fact, we have been using this trick all along. Consider weight decay
+in :numref:`sec_weight_decay`. In it we add
+:math:`\frac{\lambda}{2} \|\mathbf{w}\|^2` to the objective function to
+ensure that :math:`\mathbf{w}` does not grow too large. From the
+constrained optimization point of view we can see that this will ensure
+that :math:`\|\mathbf{w}\|^2 - r^2 \leq 0` for some radius :math:`r`.
+Adjusting the value of :math:`\lambda` allows us to vary the size of
+:math:`\mathbf{w}`.
+
+In general, adding penalties is a good way of ensuring approximate
+constraint satisfaction. In practice this turns out to be much more
+robust than exact satisfaction. Furthermore, for nonconvex problems many
+of the properties that make the exact approach so appealing in the
+convex case (e.g., optimality) no longer hold.
+
+Projections
+~~~~~~~~~~~
+
+An alternative strategy for satisfying constraints is projections.
+Again, we encountered them before, e.g., when dealing with gradient
+clipping in :numref:`sec_rnn-scratch`. There we ensured that a
+gradient has length bounded by :math:`\theta` via
+
+.. math:: \mathbf{g} \leftarrow \mathbf{g} \cdot \mathrm{min}(1, \theta/\|\mathbf{g}\|).
+
+This turns out to be a *projection* of :math:`\mathbf{g}` onto the ball
+of radius :math:`\theta`. More generally, a projection on a convex set
+:math:`\mathcal{X}` is defined as
+
+.. math:: \textrm{Proj}_\mathcal{X}(\mathbf{x}) = \mathop{\mathrm{argmin}}_{\mathbf{x}' \in \mathcal{X}} \|\mathbf{x} - \mathbf{x}'\|,
+
+which is the closest point in :math:`\mathcal{X}` to :math:`\mathbf{x}`.
+
+.. _fig_projections:
+
+.. figure:: ../img/projections.svg
+
+   Convex Projections.
+
+
+The mathematical definition of projections may sound a bit abstract.
+:numref:`fig_projections` explains it somewhat more clearly. In it we
+have two convex sets, a circle and a diamond. Points inside both sets
+(yellow) remain unchanged during projections. Points outside both sets
+(black) are projected to the points inside the sets (red) that are
+closet to the original points (black). While for :math:`\ell_2` balls
+this leaves the direction unchanged, this need not be the case in
+general, as can be seen in the case of the diamond.
+
+One of the uses for convex projections is to compute sparse weight
+vectors. In this case we project weight vectors onto an :math:`\ell_1`
+ball, which is a generalized version of the diamond case in
+:numref:`fig_projections`.
+
+Summary
+-------
+
+In the context of deep learning the main purpose of convex functions is
+to motivate optimization algorithms and help us understand them in
+detail. In the following we will see how gradient descent and stochastic
+gradient descent can be derived accordingly.
+
+-  Intersections of convex sets are convex. Unions are not.
+-  The expectation of a convex function is no less than the convex
+   function of an expectation (Jensen’s inequality).
+-  A twice-differentiable function is convex if and only if its Hessian
+   (a matrix of second derivatives) is positive semidefinite.
+-  Convex constraints can be added via the Lagrangian. In practice we
+   may simply add them with a penalty to the objective function.
+-  Projections map to points in the convex set closest to the original
+   points.
+
+Exercises
+---------
+
+1. Assume that we want to verify convexity of a set by drawing all lines
+   between points within the set and checking whether the lines are
+   contained.
+
+   1. Prove that it is sufficient to check only the points on the
+      boundary.
+   2. Prove that it is sufficient to check only the vertices of the set.
+
+2. Denote by
+   :math:`\mathcal{B}_p[r] \stackrel{\textrm{def}}{=} \{\mathbf{x} | \mathbf{x} \in \mathbb{R}^d \textrm{ and } \|\mathbf{x}\|_p \leq r\}`
+   the ball of radius :math:`r` using the :math:`p`-norm. Prove that
+   :math:`\mathcal{B}_p[r]` is convex for all :math:`p \geq 1`.
+3. Given convex functions :math:`f` and :math:`g`, show that
+   :math:`\mathrm{max}(f, g)` is convex, too. Prove that
+   :math:`\mathrm{min}(f, g)` is not convex.
+4. Prove that the normalization of the softmax function is convex. More
+   specifically prove the convexity of
+   :math:`f(x) = \log \sum_i \exp(x_i)`.
+5. Prove that linear subspaces, i.e.,
+   :math:`\mathcal{X} = \{\mathbf{x} | \mathbf{W} \mathbf{x} = \mathbf{b}\}`,
+   are convex sets.
+6. Prove that in the case of linear subspaces with
+   :math:`\mathbf{b} = \mathbf{0}` the projection
+   :math:`\textrm{Proj}_\mathcal{X}` can be written as
+   :math:`\mathbf{M} \mathbf{x}` for some matrix :math:`\mathbf{M}`.
+7. Show that for twice-differentiable convex functions :math:`f` we can
+   write
+   :math:`f(x + \epsilon) = f(x) + \epsilon f'(x) + \frac{1}{2} \epsilon^2 f''(x + \xi)`
+   for some :math:`\xi \in [0, \epsilon]`.
+8. Given a convex set :math:`\mathcal{X}` and two vectors
+   :math:`\mathbf{x}` and :math:`\mathbf{y}`, prove that projections
+   never increase distances, i.e.,
+   :math:`\|\mathbf{x} - \mathbf{y}\| \geq \|\textrm{Proj}_\mathcal{X}(\mathbf{x}) - \textrm{Proj}_\mathcal{X}(\mathbf{y})\|`.
+
+`Discussions <https://discuss.d2l.ai/t/350>`__

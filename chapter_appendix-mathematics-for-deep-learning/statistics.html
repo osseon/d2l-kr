@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>22.10. Statistics &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="22.11. Information Theory" href="information-theory.html" />
+    <link rel="prev" title="22.9. Naive Bayes" href="naive-bayes.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">22. </span>Appendix: Mathematics for Deep Learning</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">22.10. </span>Statistics</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_appendix-mathematics-for-deep-learning/statistics.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">22. Appendix: Mathematics for Deep Learning</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">22. Appendix: Mathematics for Deep Learning</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="statistics">
+<span id="sec-statistics"></span><h1><span class="section-number">22.10. </span>Statistics<a class="headerlink" href="#statistics" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_appendix-mathematics-for-deep-learning/statistics.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>Undoubtedly, to be a top deep learning practitioner, the ability to
+train the state-of-the-art and high accurate models is crucial. However,
+it is often unclear when improvements are significant, or only the
+result of random fluctuations in the training process. To be able to
+discuss uncertainty in estimated values, we must learn some statistics.</p>
+<p>The earliest reference of <em>statistics</em> can be traced back to an Arab
+scholar Al-Kindi in the <span class="math notranslate nohighlight">\(9^{\textrm{th}}\)</span>-century, who gave a
+detailed description of how to use statistics and frequency analysis to
+decipher encrypted messages. After 800 years, the modern statistics
+arose from Germany in 1700s, when the researchers focused on the
+demographic and economic data collection and analysis. Today, statistics
+is the science subject that concerns the collection, processing,
+analysis, interpretation and visualization of data. What is more, the
+core theory of statistics has been widely used in the research within
+academia, industry, and government.</p>
+<p>More specifically, statistics can be divided to <em>descriptive statistics</em>
+and <em>statistical inference</em>. The former focus on summarizing and
+illustrating the features of a collection of observed data, which is
+referred to as a <em>sample</em>. The sample is drawn from a <em>population</em>,
+denotes the total set of similar individuals, items, or events of our
+experiment interests. Contrary to descriptive statistics, <em>statistical
+inference</em> further deduces the characteristics of a population from the
+given <em>samples</em>, based on the assumptions that the sample distribution
+can replicate the population distribution at some degree.</p>
+<p>You may wonder: “What is the essential difference between machine
+learning and statistics?” Fundamentally speaking, statistics focuses on
+the inference problem. This type of problems includes modeling the
+relationship between the variables, such as causal inference, and
+testing the statistically significance of model parameters, such as A/B
+testing. In contrast, machine learning emphasizes on making accurate
+predictions, without explicitly programming and understanding each
+parameter’s functionality.</p>
+<p>In this section, we will introduce three types of statistics inference
+methods: evaluating and comparing estimators, conducting hypothesis
+tests, and constructing confidence intervals. These methods can help us
+infer the characteristics of a given population, i.e., the true
+parameter <span class="math notranslate nohighlight">\(\theta\)</span>. For brevity, we assume that the true parameter
+<span class="math notranslate nohighlight">\(\theta\)</span> of a given population is a scalar value. It is
+straightforward to extend to the case where <span class="math notranslate nohighlight">\(\theta\)</span> is a vector
+or a tensor, thus we omit it in our discussion.</p>
+<div class="section" id="evaluating-and-comparing-estimators">
+<h2><span class="section-number">22.10.1. </span>Evaluating and Comparing Estimators<a class="headerlink" href="#evaluating-and-comparing-estimators" title="Permalink to this heading">¶</a></h2>
+<p>In statistics, an <em>estimator</em> is a function of given samples used to
+estimate the true parameter <span class="math notranslate nohighlight">\(\theta\)</span>. We will write
+<span class="math notranslate nohighlight">\(\hat{\theta}_n = \hat{f}(x_1, \ldots, x_n)\)</span> for the estimate of
+<span class="math notranslate nohighlight">\(\theta\)</span> after observing the samples
+{<span class="math notranslate nohighlight">\(x_1, x_2, \ldots, x_n\)</span>}.</p>
+<p>We have seen simple examples of estimators before in section
+<a class="reference internal" href="maximum-likelihood.html#sec-maximum-likelihood"><span class="std std-numref">Section 22.7</span></a>. If you have a number of samples from
+a Bernoulli random variable, then the maximum likelihood estimate for
+the probability the random variable is one can be obtained by counting
+the number of ones observed and dividing by the total number of samples.
+Similarly, an exercise asked you to show that the maximum likelihood
+estimate of the mean of a Gaussian given a number of samples is given by
+the average value of all the samples. These estimators will almost never
+give the true value of the parameter, but ideally for a large number of
+samples the estimate will be close.</p>
+<p>As an example, we show below the true density of a Gaussian random
+variable with mean zero and variance one, along with a collection
+samples from that Gaussian. We constructed the <span class="math notranslate nohighlight">\(y\)</span> coordinate so
+every point is visible and the relationship to the original density is
+clearer.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-1-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">torch</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">pi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1">#define pi in torch</span>
+
+<span class="c1"># Sample datapoints and create y coordinate</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">8675309</span><span class="p">)</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,))</span>
+
+<span class="n">ys</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>\
+               <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>\
+     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">))])</span>
+
+<span class="c1"># Compute true density</span>
+<span class="n">xd</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">yd</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">xd</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sample mean: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">np</span><span class="p">,</span> <span class="n">npx</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">mxnet</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">npx</span><span class="o">.</span><span class="n">set_np</span><span class="p">()</span>
+
+<span class="c1"># Sample datapoints and create y coordinate</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">8675309</span><span class="p">)</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">300</span><span class="p">,))</span>
+
+<span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+             <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">))]</span>
+
+<span class="c1"># Compute true density</span>
+<span class="n">xd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">yd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">xd</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sample mean: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">tf</span><span class="o">.</span><span class="n">pi</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># define pi in TensorFlow</span>
+
+<span class="c1"># Sample datapoints and create y coordinate</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">((</span><span class="mi">300</span><span class="p">,))</span>
+
+<span class="n">ys</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> \
+               <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">tf</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> \
+     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">xs</span><span class="p">))])</span>
+
+<span class="c1"># Compute true density</span>
+<span class="n">xd</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">yd</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">xd</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;density&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;purple&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sample mean: </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div><p>There can be many ways to compute an estimator of a parameter
+<span class="math notranslate nohighlight">\(\hat{\theta}_n\)</span>. In this section, we introduce three common
+methods to evaluate and compare estimators: the mean squared error, the
+standard deviation, and statistical bias.</p>
+<div class="section" id="mean-squared-error">
+<h3><span class="section-number">22.10.1.1. </span>Mean Squared Error<a class="headerlink" href="#mean-squared-error" title="Permalink to this heading">¶</a></h3>
+<p>Perhaps the simplest metric used to evaluate estimators is the <em>mean
+squared error (MSE)</em> (or <span class="math notranslate nohighlight">\(l_2\)</span> loss) estimator which can be
+defined as</p>
+<div class="math notranslate nohighlight" id="equation-eq-mse-est">
+<span class="eqno">(22.10.1)<a class="headerlink" href="#equation-eq-mse-est" title="Permalink to this equation">¶</a></span>\[\textrm{MSE} (\hat{\theta}_n, \theta) = E[(\hat{\theta}_n - \theta)^2].\]</div>
+<p>This allows us to quantify the average squared deviation from the true
+value. MSE is always non-negative. If you have read
+<a class="reference internal" href="../chapter_linear-regression/linear-regression.html#sec-linear-regression"><span class="std std-numref">Section 3.1</span></a>, you will recognize it as the most
+commonly used regression loss function. As a measure to evaluate an
+estimator, the closer its value is to zero, the closer the estimator is
+to the true parameter <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
+</div>
+<div class="section" id="statistical-bias">
+<h3><span class="section-number">22.10.1.2. </span>Statistical Bias<a class="headerlink" href="#statistical-bias" title="Permalink to this heading">¶</a></h3>
+<p>The MSE provides a natural metric, but we can easily imagine multiple
+different phenomena that might make it large. Two fundamentally
+important are fluctuation in the estimator due to randomness in the
+dataset, and systematic error in the estimator due to the estimation
+procedure.</p>
+<p>First, let’s measure the systematic error. For an estimator
+<span class="math notranslate nohighlight">\(\hat{\theta}_n\)</span>, the mathematical illustration of <em>statistical
+bias</em> can be defined as</p>
+<div class="math notranslate nohighlight" id="equation-eq-bias">
+<span class="eqno">(22.10.2)<a class="headerlink" href="#equation-eq-bias" title="Permalink to this equation">¶</a></span>\[\textrm{bias}(\hat{\theta}_n) = E(\hat{\theta}_n - \theta) = E(\hat{\theta}_n) - \theta.\]</div>
+<p>Note that when <span class="math notranslate nohighlight">\(\textrm{bias}(\hat{\theta}_n) = 0\)</span>, the
+expectation of the estimator <span class="math notranslate nohighlight">\(\hat{\theta}_n\)</span> is equal to the true
+value of parameter. In this case, we say <span class="math notranslate nohighlight">\(\hat{\theta}_n\)</span> is an
+unbiased estimator. In general, an unbiased estimator is better than a
+biased estimator since its expectation is the same as the true
+parameter.</p>
+<p>It is worth being aware, however, that biased estimators are frequently
+used in practice. There are cases where unbiased estimators do not exist
+without further assumptions, or are intractable to compute. This may
+seem like a significant flaw in an estimator, however the majority of
+estimators encountered in practice are at least asymptotically unbiased
+in the sense that the bias tends to zero as the number of available
+samples tends to infinity:
+<span class="math notranslate nohighlight">\(\lim_{n \rightarrow \infty} \textrm{bias}(\hat{\theta}_n) = 0\)</span>.</p>
+</div>
+<div class="section" id="variance-and-standard-deviation">
+<h3><span class="section-number">22.10.1.3. </span>Variance and Standard Deviation<a class="headerlink" href="#variance-and-standard-deviation" title="Permalink to this heading">¶</a></h3>
+<p>Second, let’s measure the randomness in the estimator. Recall from
+<a class="reference internal" href="random-variables.html#sec-random-variables"><span class="std std-numref">Section 22.6</span></a>, the <em>standard deviation</em> (or <em>standard
+error</em>) is defined as the squared root of the variance. We may measure
+the degree of fluctuation of an estimator by measuring the standard
+deviation or variance of that estimator.</p>
+<div class="math notranslate nohighlight" id="equation-eq-var-est">
+<span class="eqno">(22.10.3)<a class="headerlink" href="#equation-eq-var-est" title="Permalink to this equation">¶</a></span>\[\sigma_{\hat{\theta}_n} = \sqrt{\textrm{Var} (\hat{\theta}_n )} = \sqrt{E[(\hat{\theta}_n - E(\hat{\theta}_n))^2]}.\]</div>
+<p>It is important to compare <a class="reference internal" href="#equation-eq-var-est">(22.10.3)</a> to
+<a class="reference internal" href="#equation-eq-mse-est">(22.10.1)</a>. In this equation we do not compare to the true
+population value <span class="math notranslate nohighlight">\(\theta\)</span>, but instead to
+<span class="math notranslate nohighlight">\(E(\hat{\theta}_n)\)</span>, the expected sample mean. Thus we are not
+measuring how far the estimator tends to be from the true value, but
+instead we are measuring the fluctuation of the estimator itself.</p>
+</div>
+<div class="section" id="the-bias-variance-trade-off">
+<h3><span class="section-number">22.10.1.4. </span>The Bias-Variance Trade-off<a class="headerlink" href="#the-bias-variance-trade-off" title="Permalink to this heading">¶</a></h3>
+<p>It is intuitively clear that these two main components contribute to the
+mean squared error. What is somewhat shocking is that we can show that
+this is actually a <em>decomposition</em> of the mean squared error into these
+two contributions plus a third one. That is to say that we can write the
+mean squared error as the sum of the square of the bias, the variance
+and the irreducible error.</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-0">
+<span class="eqno">(22.10.4)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-0" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\textrm{MSE} (\hat{\theta}_n, \theta) &amp;= E[(\hat{\theta}_n - \theta)^2] \\
+ &amp;= E[(\hat{\theta}_n)^2] + E[\theta^2] - 2E[\hat{\theta}_n\theta] \\
+ &amp;= \textrm{Var} [\hat{\theta}_n] + E[\hat{\theta}_n]^2 + \textrm{Var} [\theta] + E[\theta]^2 - 2E[\hat{\theta}_n]E[\theta] \\
+ &amp;= (E[\hat{\theta}_n] - E[\theta])^2 + \textrm{Var} [\hat{\theta}_n] + \textrm{Var} [\theta] \\
+ &amp;= (E[\hat{\theta}_n - \theta])^2 + \textrm{Var} [\hat{\theta}_n] + \textrm{Var} [\theta] \\
+ &amp;= (\textrm{bias} [\hat{\theta}_n])^2 + \textrm{Var} (\hat{\theta}_n) + \textrm{Var} [\theta].\\
+\end{aligned}\end{split}\]</div>
+<p>We refer the above formula as <em>bias-variance trade-off</em>. The mean
+squared error can be divided into three sources of error: the error from
+high bias, the error from high variance and the irreducible error. The
+bias error is commonly seen in a simple model (such as a linear
+regression model), which cannot extract high dimensional relations
+between the features and the outputs. If a model suffers from high bias
+error, we often say it is <em>underfitting</em> or lack of <em>flexibility</em> as
+introduced in (<a class="reference internal" href="../chapter_linear-regression/generalization.html#sec-generalization-basics"><span class="std std-numref">Section 3.6</span></a>). The high variance
+usually results from a too complex model, which overfits the training
+data. As a result, an <em>overfitting</em> model is sensitive to small
+fluctuations in the data. If a model suffers from high variance, we
+often say it is <em>overfitting</em> and lack of <em>generalization</em> as introduced
+in (<a class="reference internal" href="../chapter_linear-regression/generalization.html#sec-generalization-basics"><span class="std std-numref">Section 3.6</span></a>). The irreducible error is the
+result from noise in the <span class="math notranslate nohighlight">\(\theta\)</span> itself.</p>
+</div>
+<div class="section" id="evaluating-estimators-in-code">
+<h3><span class="section-number">22.10.1.5. </span>Evaluating Estimators in Code<a class="headerlink" href="#evaluating-estimators-in-code" title="Permalink to this heading">¶</a></h3>
+<p>Since the standard deviation of an estimator has been implementing by
+simply calling <code class="docutils literal notranslate"><span class="pre">a.std()</span></code> for a tensor <code class="docutils literal notranslate"><span class="pre">a</span></code>, we will skip it but
+implement the statistical bias and the mean squared error.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-3-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Statistical bias</span>
+<span class="k">def</span> <span class="nf">stat_bias</span><span class="p">(</span><span class="n">true_theta</span><span class="p">,</span> <span class="n">est_theta</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">est_theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">true_theta</span><span class="p">)</span>
+
+<span class="c1"># Mean squared error</span>
+<span class="k">def</span> <span class="nf">mse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">true_theta</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">true_theta</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Statistical bias</span>
+<span class="k">def</span> <span class="nf">stat_bias</span><span class="p">(</span><span class="n">true_theta</span><span class="p">,</span> <span class="n">est_theta</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">est_theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">true_theta</span><span class="p">)</span>
+
+<span class="c1"># Mean squared error</span>
+<span class="k">def</span> <span class="nf">mse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">true_theta</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">true_theta</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-3-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Statistical bias</span>
+<span class="k">def</span> <span class="nf">stat_bias</span><span class="p">(</span><span class="n">true_theta</span><span class="p">,</span> <span class="n">est_theta</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">est_theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">true_theta</span><span class="p">)</span>
+
+<span class="c1"># Mean squared error</span>
+<span class="k">def</span> <span class="nf">mse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">true_theta</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">true_theta</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div><p>To illustrate the equation of the bias-variance trade-off, let’s
+simulate of normal distribution <span class="math notranslate nohighlight">\(\mathcal{N}(\theta, \sigma^2)\)</span>
+with <span class="math notranslate nohighlight">\(10,000\)</span> samples. Here, we use a <span class="math notranslate nohighlight">\(\theta = 1\)</span> and
+<span class="math notranslate nohighlight">\(\sigma = 4\)</span>. As the estimator is a function of the given samples,
+here we use the mean of the samples as an estimator for true
+<span class="math notranslate nohighlight">\(\theta\)</span> in this normal distribution
+<span class="math notranslate nohighlight">\(\mathcal{N}(\theta, \sigma^2)\)</span> .</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-5-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">theta_true</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">sample_len</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">sample_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">theta_est</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">theta_est</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">theta_true</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">sample_len</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">sample_len</span><span class="p">)</span>
+<span class="n">theta_est</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">theta_est</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">theta_true</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">sample_len</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">((</span><span class="n">sample_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">theta_true</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+<span class="n">theta_est</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">theta_est</span>
+</pre></div>
+</div>
+</div></div><p>Let’s validate the trade-off equation by calculating the summation of
+the squared bias and the variance of our estimator. First, calculate the
+MSE of our estimator.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-7-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-7-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-7-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-7-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mse</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">theta_true</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-7-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mse</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">theta_true</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-7-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mse</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">theta_true</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Next, we calculate
+<span class="math notranslate nohighlight">\(\textrm{Var} (\hat{\theta}_n) + [\textrm{bias} (\hat{\theta}_n)]^2\)</span>
+as below. As you can see, the two values agree to numerical precision.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-9-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bias</span> <span class="o">=</span> <span class="n">stat_bias</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">theta_est</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">unbiased</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">bias</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bias</span> <span class="o">=</span> <span class="n">stat_bias</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">theta_est</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">std</span><span class="p">())</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">bias</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-9-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bias</span> <span class="o">=</span> <span class="n">stat_bias</span><span class="p">(</span><span class="n">theta_true</span><span class="p">,</span> <span class="n">theta_est</span><span class="p">)</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">reduce_std</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">bias</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+</div>
+<div class="section" id="conducting-hypothesis-tests">
+<h2><span class="section-number">22.10.2. </span>Conducting Hypothesis Tests<a class="headerlink" href="#conducting-hypothesis-tests" title="Permalink to this heading">¶</a></h2>
+<p>The most commonly encountered topic in statistical inference is
+hypothesis testing. While hypothesis testing was popularized in the
+early <span class="math notranslate nohighlight">\(20^{th}\)</span> century, the first use can be traced back to John
+Arbuthnot in the 1700s. John tracked 80-year birth records in London and
+concluded that more men were born than women each year. Following that,
+the modern significance testing is the intelligence heritage by Karl
+Pearson who invented <span class="math notranslate nohighlight">\(p\)</span>-value and Pearson’s chi-squared test,
+William Gosset who is the father of Student’s t-distribution, and Ronald
+Fisher who initialed the null hypothesis and the significance test.</p>
+<p>A <em>hypothesis test</em> is a way of evaluating some evidence against the
+default statement about a population. We refer the default statement as
+the <em>null hypothesis</em> <span class="math notranslate nohighlight">\(H_0\)</span>, which we try to reject using the
+observed data. Here, we use <span class="math notranslate nohighlight">\(H_0\)</span> as a starting point for the
+statistical significance testing. The <em>alternative hypothesis</em>
+<span class="math notranslate nohighlight">\(H_A\)</span> (or <span class="math notranslate nohighlight">\(H_1\)</span>) is a statement that is contrary to the null
+hypothesis. A null hypothesis is often stated in a declarative form
+which posits a relationship between variables. It should reflect the
+brief as explicit as possible, and be testable by statistics theory.</p>
+<p>Imagine you are a chemist. After spending thousands of hours in the lab,
+you develop a new medicine which can dramatically improve one’s ability
+to understand math. To show its magic power, you need to test it.
+Naturally, you may need some volunteers to take the medicine and see
+whether it can help them learn mathematics better. How do you get
+started?</p>
+<p>First, you will need carefully random selected two groups of volunteers,
+so that there is no difference between their mathematical understanding
+ability measured by some metrics. The two groups are commonly referred
+to as the test group and the control group. The <em>test group</em> (or
+<em>treatment group</em>) is a group of individuals who will experience the
+medicine, while the <em>control group</em> represents the group of users who
+are set aside as a benchmark, i.e., identical environment setups except
+taking this medicine. In this way, the influence of all the variables
+are minimized, except the impact of the independent variable in the
+treatment.</p>
+<p>Second, after a period of taking the medicine, you will need to measure
+the two groups’ mathematical understanding by the same metrics, such as
+letting the volunteers do the same tests after learning a new
+mathematical formula. Then, you can collect their performance and
+compare the results. In this case, our null hypothesis will be that
+there is no difference between the two groups, and our alternate will be
+that there is.</p>
+<p>This is still not fully formal. There are many details you have to think
+of carefully. For example, what is the suitable metrics to test their
+mathematical understanding ability? How many volunteers for your test so
+you can be confident to claim the effectiveness of your medicine? How
+long should you run the test? How do you decide if there is a difference
+between the two groups? Do you care about the average performance only,
+or also the range of variation of the scores? And so on.</p>
+<p>In this way, hypothesis testing provides a framework for experimental
+design and reasoning about certainty in observed results. If we can now
+show that the null hypothesis is very unlikely to be true, we may reject
+it with confidence.</p>
+<p>To complete the story of how to work with hypothesis testing, we need to
+now introduce some additional terminology and make some of our concepts
+above formal.</p>
+<div class="section" id="statistical-significance">
+<h3><span class="section-number">22.10.2.1. </span>Statistical Significance<a class="headerlink" href="#statistical-significance" title="Permalink to this heading">¶</a></h3>
+<p>The <em>statistical significance</em> measures the probability of erroneously
+rejecting the null hypothesis, <span class="math notranslate nohighlight">\(H_0\)</span>, when it should not be
+rejected, i.e.,</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-1">
+<span class="eqno">(22.10.5)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-1" title="Permalink to this equation">¶</a></span>\[\textrm{statistical significance }= 1 - \alpha = 1 - P(\textrm{reject } H_0 \mid H_0 \textrm{ is true} ).\]</div>
+<p>It is also referred to as the <em>type I error</em> or <em>false positive</em>. The
+<span class="math notranslate nohighlight">\(\alpha\)</span>, is called as the <em>significance level</em> and its commonly
+used value is <span class="math notranslate nohighlight">\(5\%\)</span>, i.e., <span class="math notranslate nohighlight">\(1-\alpha = 95\%\)</span>. The
+significance level can be explained as the level of risk that we are
+willing to take, when we reject a true null hypothesis.</p>
+<p><a class="reference internal" href="#fig-statistical-significance"><span class="std std-numref">Fig. 22.10.1</span></a> shows the observations’ values
+and probability of a given normal distribution in a two-sample
+hypothesis test. If the observation data example is located outsides the
+<span class="math notranslate nohighlight">\(95\%\)</span> threshold, it will be a very unlikely observation under the
+null hypothesis assumption. Hence, there might be something wrong with
+the null hypothesis and we will reject it.</p>
+<div class="figure align-default" id="id3">
+<span id="fig-statistical-significance"></span><img alt="../_images/statistical-significance.svg" src="../_images/statistical-significance.svg" /><p class="caption"><span class="caption-number">Fig. 22.10.1 </span><span class="caption-text">Statistical significance.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="statistical-power">
+<h3><span class="section-number">22.10.2.2. </span>Statistical Power<a class="headerlink" href="#statistical-power" title="Permalink to this heading">¶</a></h3>
+<p>The <em>statistical power</em> (or <em>sensitivity</em>) measures the probability of
+reject the null hypothesis, <span class="math notranslate nohighlight">\(H_0\)</span>, when it should be rejected,
+i.e.,</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-2">
+<span class="eqno">(22.10.6)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-2" title="Permalink to this equation">¶</a></span>\[\textrm{statistical power }= 1 - \beta = 1 - P(\textrm{ fail to reject } H_0  \mid H_0 \textrm{ is false} ).\]</div>
+<p>Recall that a <em>type I error</em> is error caused by rejecting the null
+hypothesis when it is true, whereas a <em>type II error</em> is resulted from
+failing to reject the null hypothesis when it is false. A type II error
+is usually denoted as <span class="math notranslate nohighlight">\(\beta\)</span>, and hence the corresponding
+statistical power is <span class="math notranslate nohighlight">\(1-\beta\)</span>.</p>
+<p>Intuitively, statistical power can be interpreted as how likely our test
+will detect a real discrepancy of some minimum magnitude at a desired
+statistical significance level. <span class="math notranslate nohighlight">\(80\%\)</span> is a commonly used
+statistical power threshold. The higher the statistical power, the more
+likely we are to detect true differences.</p>
+<p>One of the most common uses of statistical power is in determining the
+number of samples needed. The probability you reject the null hypothesis
+when it is false depends on the degree to which it is false (known as
+the <em>effect size</em>) and the number of samples you have. As you might
+expect, small effect sizes will require a very large number of samples
+to be detectable with high probability. While beyond the scope of this
+brief appendix to derive in detail, as an example, want to be able to
+reject a null hypothesis that our sample came from a mean zero variance
+one Gaussian, and we believe that our sample’s mean is actually close to
+one, we can do so with acceptable error rates with a sample size of only
+<span class="math notranslate nohighlight">\(8\)</span>. However, if we think our sample population true mean is close
+to <span class="math notranslate nohighlight">\(0.01\)</span>, then we’d need a sample size of nearly <span class="math notranslate nohighlight">\(80000\)</span> to
+detect the difference.</p>
+<p>We can imagine the power as a water filter. In this analogy, a high
+power hypothesis test is like a high quality water filtration system
+that will reduce harmful substances in the water as much as possible. On
+the other hand, a smaller discrepancy is like a low quality water
+filter, where some relative small substances may easily escape from the
+gaps. Similarly, if the statistical power is not of enough high power,
+then the test may not catch the smaller discrepancy.</p>
+</div>
+<div class="section" id="test-statistic">
+<h3><span class="section-number">22.10.2.3. </span>Test Statistic<a class="headerlink" href="#test-statistic" title="Permalink to this heading">¶</a></h3>
+<p>A <em>test statistic</em> <span class="math notranslate nohighlight">\(T(x)\)</span> is a scalar which summarizes some
+characteristic of the sample data. The goal of defining such a statistic
+is that it should allow us to distinguish between different
+distributions and conduct our hypothesis test. Thinking back to our
+chemist example, if we wish to show that one population performs better
+than the other, it could be reasonable to take the mean as the test
+statistic. Different choices of test statistic can lead to statistical
+test with drastically different statistical power.</p>
+<p>Often, <span class="math notranslate nohighlight">\(T(X)\)</span> (the distribution of the test statistic under our
+null hypothesis) will follow, at least approximately, a common
+probability distribution such as a normal distribution when considered
+under the null hypothesis. If we can derive explicitly such a
+distribution, and then measure our test statistic on our dataset, we can
+safely reject the null hypothesis if our statistic is far outside the
+range that we would expect. Making this quantitative leads us to the
+notion of <span class="math notranslate nohighlight">\(p\)</span>-values.</p>
+</div>
+<div class="section" id="p-value">
+<h3><span class="section-number">22.10.2.4. </span><span class="math notranslate nohighlight">\(p\)</span>-value<a class="headerlink" href="#p-value" title="Permalink to this heading">¶</a></h3>
+<p>The <span class="math notranslate nohighlight">\(p\)</span>-value (or the <em>probability value</em>) is the probability that
+<span class="math notranslate nohighlight">\(T(X)\)</span> is at least as extreme as the observed test statistic
+<span class="math notranslate nohighlight">\(T(x)\)</span> assuming that the null hypothesis is <em>true</em>, i.e.,</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-3">
+<span class="eqno">(22.10.7)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-3" title="Permalink to this equation">¶</a></span>\[p\textrm{-value} = P_{H_0}(T(X) \geq T(x)).\]</div>
+<p>If the <span class="math notranslate nohighlight">\(p\)</span>-value is smaller than or equal to a predefined and
+fixed statistical significance level <span class="math notranslate nohighlight">\(\alpha\)</span>, we may reject the
+null hypothesis. Otherwise, we will conclude that we are lack of
+evidence to reject the null hypothesis. For a given population
+distribution, the <em>region of rejection</em> will be the interval contained
+of all the points which has a <span class="math notranslate nohighlight">\(p\)</span>-value smaller than the
+statistical significance level <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
+</div>
+<div class="section" id="one-side-test-and-two-sided-test">
+<h3><span class="section-number">22.10.2.5. </span>One-side Test and Two-sided Test<a class="headerlink" href="#one-side-test-and-two-sided-test" title="Permalink to this heading">¶</a></h3>
+<p>Normally there are two kinds of significance test: the one-sided test
+and the two-sided test. The <em>one-sided test</em> (or <em>one-tailed test</em>) is
+applicable when the null hypothesis and the alternative hypothesis only
+have one direction. For example, the null hypothesis may state that the
+true parameter <span class="math notranslate nohighlight">\(\theta\)</span> is less than or equal to a value
+<span class="math notranslate nohighlight">\(c\)</span>. The alternative hypothesis would be that <span class="math notranslate nohighlight">\(\theta\)</span> is
+greater than <span class="math notranslate nohighlight">\(c\)</span>. That is, the region of rejection is on only one
+side of the sampling distribution. Contrary to the one-sided test, the
+<em>two-sided test</em> (or <em>two-tailed test</em>) is applicable when the region of
+rejection is on both sides of the sampling distribution. An example in
+this case may have a null hypothesis state that the true parameter
+<span class="math notranslate nohighlight">\(\theta\)</span> is equal to a value <span class="math notranslate nohighlight">\(c\)</span>. The alternative hypothesis
+would be that <span class="math notranslate nohighlight">\(\theta\)</span> is not equal to <span class="math notranslate nohighlight">\(c\)</span>.</p>
+</div>
+<div class="section" id="general-steps-of-hypothesis-testing">
+<h3><span class="section-number">22.10.2.6. </span>General Steps of Hypothesis Testing<a class="headerlink" href="#general-steps-of-hypothesis-testing" title="Permalink to this heading">¶</a></h3>
+<p>After getting familiar with the above concepts, let’s go through the
+general steps of hypothesis testing.</p>
+<ol class="arabic simple">
+<li><p>State the question and establish a null hypotheses <span class="math notranslate nohighlight">\(H_0\)</span>.</p></li>
+<li><p>Set the statistical significance level <span class="math notranslate nohighlight">\(\alpha\)</span> and a
+statistical power (<span class="math notranslate nohighlight">\(1 - \beta\)</span>).</p></li>
+<li><p>Obtain samples through experiments. The number of samples needed will
+depend on the statistical power, and the expected effect size.</p></li>
+<li><p>Calculate the test statistic and the <span class="math notranslate nohighlight">\(p\)</span>-value.</p></li>
+<li><p>Make the decision to keep or reject the null hypothesis based on the
+<span class="math notranslate nohighlight">\(p\)</span>-value and the statistical significance level
+<span class="math notranslate nohighlight">\(\alpha\)</span>.</p></li>
+</ol>
+<p>To conduct a hypothesis test, we start by defining a null hypothesis and
+a level of risk that we are willing to take. Then we calculate the test
+statistic of the sample, taking an extreme value of the test statistic
+as evidence against the null hypothesis. If the test statistic falls
+within the reject region, we may reject the null hypothesis in favor of
+the alternative.</p>
+<p>Hypothesis testing is applicable in a variety of scenarios such as the
+clinical trails and A/B testing.</p>
+</div>
+</div>
+<div class="section" id="constructing-confidence-intervals">
+<h2><span class="section-number">22.10.3. </span>Constructing Confidence Intervals<a class="headerlink" href="#constructing-confidence-intervals" title="Permalink to this heading">¶</a></h2>
+<p>When estimating the value of a parameter <span class="math notranslate nohighlight">\(\theta\)</span>, point
+estimators like <span class="math notranslate nohighlight">\(\hat \theta\)</span> are of limited utility since they
+contain no notion of uncertainty. Rather, it would be far better if we
+could produce an interval that would contain the true parameter
+<span class="math notranslate nohighlight">\(\theta\)</span> with high probability. If you were interested in such
+ideas a century ago, then you would have been excited to read “Outline
+of a Theory of Statistical Estimation Based on the Classical Theory of
+Probability” by Jerzy Neyman <span id="id1">(<a class="reference internal" href="../chapter_references/zreferences.html#id205" title="Neyman, J. (1937). Outline of a theory of statistical estimation based on the classical theory of probability. Philosophical Transactions of the Royal Society of London. Series A, Mathematical and Physical Sciences, 236(767), 333–380.">Neyman, 1937</a>)</span>, who first introduced
+the concept of confidence interval in 1937.</p>
+<p>To be useful, a confidence interval should be as small as possible for a
+given degree of certainty. Let’s see how to derive it.</p>
+<div class="section" id="definition">
+<h3><span class="section-number">22.10.3.1. </span>Definition<a class="headerlink" href="#definition" title="Permalink to this heading">¶</a></h3>
+<p>Mathematically, a <em>confidence interval</em> for the true parameter
+<span class="math notranslate nohighlight">\(\theta\)</span> is an interval <span class="math notranslate nohighlight">\(C_n\)</span> that computed from the sample
+data such that</p>
+<div class="math notranslate nohighlight" id="equation-eq-confidence">
+<span class="eqno">(22.10.8)<a class="headerlink" href="#equation-eq-confidence" title="Permalink to this equation">¶</a></span>\[P_{\theta} (C_n \ni \theta) \geq 1 - \alpha, \forall \theta.\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\alpha \in (0, 1)\)</span>, and <span class="math notranslate nohighlight">\(1 - \alpha\)</span> is called the
+<em>confidence level</em> or <em>coverage</em> of the interval. This is the same
+<span class="math notranslate nohighlight">\(\alpha\)</span> as the significance level as we discussed about above.</p>
+<p>Note that <a class="reference internal" href="#equation-eq-confidence">(22.10.8)</a> is about variable <span class="math notranslate nohighlight">\(C_n\)</span>, not
+about the fixed <span class="math notranslate nohighlight">\(\theta\)</span>. To emphasize this, we write
+<span class="math notranslate nohighlight">\(P_{\theta} (C_n \ni \theta)\)</span> rather than
+<span class="math notranslate nohighlight">\(P_{\theta} (\theta \in C_n)\)</span>.</p>
+</div>
+<div class="section" id="interpretation">
+<h3><span class="section-number">22.10.3.2. </span>Interpretation<a class="headerlink" href="#interpretation" title="Permalink to this heading">¶</a></h3>
+<p>It is very tempting to interpret a <span class="math notranslate nohighlight">\(95\%\)</span> confidence interval as
+an interval where you can be <span class="math notranslate nohighlight">\(95\%\)</span> sure the true parameter lies,
+however this is sadly not true. The true parameter is fixed, and it is
+the interval that is random. Thus a better interpretation would be to
+say that if you generated a large number of confidence intervals by this
+procedure, <span class="math notranslate nohighlight">\(95\%\)</span> of the generated intervals would contain the
+true parameter.</p>
+<p>This may seem pedantic, but it can have real implications for the
+interpretation of the results. In particular, we may satisfy
+<a class="reference internal" href="#equation-eq-confidence">(22.10.8)</a> by constructing intervals that we are <em>almost
+certain</em> do not contain the true value, as long as we only do so rarely
+enough. We close this section by providing three tempting but false
+statements. An in-depth discussion of these points can be found in
+<span id="id2">Morey <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id197" title="Morey, R. D., Hoekstra, R., Rouder, J. N., Lee, M. D., &amp; Wagenmakers, E.-J. (2016). The fallacy of placing confidence in confidence intervals. Psychonomic Bulletin &amp; Review, 23(1), 103–123.">2016</a>)</span>.</p>
+<ul class="simple">
+<li><p><strong>Fallacy 1</strong>. Narrow confidence intervals mean we can estimate the
+parameter precisely.</p></li>
+<li><p><strong>Fallacy 2</strong>. The values inside the confidence interval are more
+likely to be the true value than those outside the interval.</p></li>
+<li><p><strong>Fallacy 3</strong>. The probability that a particular observed
+<span class="math notranslate nohighlight">\(95\%\)</span> confidence interval contains the true value is
+<span class="math notranslate nohighlight">\(95\%\)</span>.</p></li>
+</ul>
+<p>Sufficed to say, confidence intervals are subtle objects. However, if
+you keep the interpretation clear, they can be powerful tools.</p>
+</div>
+<div class="section" id="a-gaussian-example">
+<h3><span class="section-number">22.10.3.3. </span>A Gaussian Example<a class="headerlink" href="#a-gaussian-example" title="Permalink to this heading">¶</a></h3>
+<p>Let’s discuss the most classical example, the confidence interval for
+the mean of a Gaussian of unknown mean and variance. Suppose we collect
+<span class="math notranslate nohighlight">\(n\)</span> samples <span class="math notranslate nohighlight">\(\{x_i\}_{i=1}^n\)</span> from our Gaussian
+<span class="math notranslate nohighlight">\(\mathcal{N}(\mu, \sigma^2)\)</span>. We can compute estimators for the
+mean and variance by taking</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-4">
+<span class="eqno">(22.10.9)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-4" title="Permalink to this equation">¶</a></span>\[\hat\mu_n = \frac{1}{n}\sum_{i=1}^n x_i \;\textrm{and}\; \hat\sigma^2_n = \frac{1}{n-1}\sum_{i=1}^n (x_i - \hat\mu)^2.\]</div>
+<p>If we now consider the random variable</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-5">
+<span class="eqno">(22.10.10)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-5" title="Permalink to this equation">¶</a></span>\[T = \frac{\hat\mu_n - \mu}{\hat\sigma_n/\sqrt{n}},\]</div>
+<p>we obtain a random variable following a well-known distribution called
+the <em>Student’s t-distribution on</em> <span class="math notranslate nohighlight">\(n-1\)</span> <em>degrees of freedom</em>.</p>
+<p>This distribution is very well studied, and it is known, for instance,
+that as <span class="math notranslate nohighlight">\(n\rightarrow \infty\)</span>, it is approximately a standard
+Gaussian, and thus by looking up values of the Gaussian c.d.f. in a
+table, we may conclude that the value of <span class="math notranslate nohighlight">\(T\)</span> is in the interval
+<span class="math notranslate nohighlight">\([-1.96, 1.96]\)</span> at least <span class="math notranslate nohighlight">\(95\%\)</span> of the time. For finite
+values of <span class="math notranslate nohighlight">\(n\)</span>, the interval needs to be somewhat larger, but are
+well known and precomputed in tables.</p>
+<p>Thus, we may conclude that for large <span class="math notranslate nohighlight">\(n\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-6">
+<span class="eqno">(22.10.11)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-6" title="Permalink to this equation">¶</a></span>\[P\left(\frac{\hat\mu_n - \mu}{\hat\sigma_n/\sqrt{n}} \in [-1.96, 1.96]\right) \ge 0.95.\]</div>
+<p>Rearranging this by multiplying both sides by
+<span class="math notranslate nohighlight">\(\hat\sigma_n/\sqrt{n}\)</span> and then adding <span class="math notranslate nohighlight">\(\hat\mu_n\)</span>, we
+obtain</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-7">
+<span class="eqno">(22.10.12)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-7" title="Permalink to this equation">¶</a></span>\[P\left(\mu \in \left[\hat\mu_n - 1.96\frac{\hat\sigma_n}{\sqrt{n}}, \hat\mu_n + 1.96\frac{\hat\sigma_n}{\sqrt{n}}\right]\right) \ge 0.95.\]</div>
+<p>Thus we know that we have found our <span class="math notranslate nohighlight">\(95\%\)</span> confidence interval:</p>
+<div class="math notranslate nohighlight" id="equation-eq-gauss-confidence">
+<span class="eqno">(22.10.13)<a class="headerlink" href="#equation-eq-gauss-confidence" title="Permalink to this equation">¶</a></span>\[\left[\hat\mu_n - 1.96\frac{\hat\sigma_n}{\sqrt{n}}, \hat\mu_n + 1.96\frac{\hat\sigma_n}{\sqrt{n}}\right].\]</div>
+<p>It is safe to say that <a class="reference internal" href="#equation-eq-gauss-confidence">(22.10.13)</a> is one of the most
+used formula in statistics. Let’s close our discussion of statistics by
+implementing it. For simplicity, we assume we are in the asymptotic
+regime. Small values of <span class="math notranslate nohighlight">\(N\)</span> should include the correct value of
+<code class="docutils literal notranslate"><span class="pre">t_star</span></code> obtained either programmatically or from a <span class="math notranslate nohighlight">\(t\)</span>-table.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-11-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># PyTorch uses Bessel&#39;s correction by default, which means the use of ddof=1</span>
+<span class="c1"># instead of default ddof=0 in numpy. We can use unbiased=False to imitate</span>
+<span class="c1"># ddof=0.</span>
+
+<span class="c1"># Number of samples</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Sample dataset</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+
+<span class="c1"># Lookup Students&#39;s t-distribution c.d.f.</span>
+<span class="n">t_star</span> <span class="o">=</span> <span class="mf">1.96</span>
+
+<span class="c1"># Construct interval</span>
+<span class="n">mu_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">sigma_hat</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">unbiased</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">(</span><span class="n">mu_hat</span> <span class="o">-</span> <span class="n">t_star</span><span class="o">*</span><span class="n">sigma_hat</span><span class="o">/</span><span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)),</span>\
+ <span class="n">mu_hat</span> <span class="o">+</span> <span class="n">t_star</span><span class="o">*</span><span class="n">sigma_hat</span><span class="o">/</span><span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Number of samples</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Sample dataset</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,))</span>
+
+<span class="c1"># Lookup Students&#39;s t-distribution c.d.f.</span>
+<span class="n">t_star</span> <span class="o">=</span> <span class="mf">1.96</span>
+
+<span class="c1"># Construct interval</span>
+<span class="n">mu_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">sigma_hat</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">(</span><span class="n">mu_hat</span> <span class="o">-</span> <span class="n">t_star</span><span class="o">*</span><span class="n">sigma_hat</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">mu_hat</span> <span class="o">+</span> <span class="n">t_star</span><span class="o">*</span><span class="n">sigma_hat</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-11-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Number of samples</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># Sample dataset</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">((</span><span class="n">N</span><span class="p">,),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Lookup Students&#39;s t-distribution c.d.f.</span>
+<span class="n">t_star</span> <span class="o">=</span> <span class="mf">1.96</span>
+
+<span class="c1"># Construct interval</span>
+<span class="n">mu_hat</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="n">sigma_hat</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">reduce_std</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+<span class="p">(</span><span class="n">mu_hat</span> <span class="o">-</span> <span class="n">t_star</span><span class="o">*</span><span class="n">sigma_hat</span><span class="o">/</span><span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)),</span> \
+ <span class="n">mu_hat</span> <span class="o">+</span> <span class="n">t_star</span><span class="o">*</span><span class="n">sigma_hat</span><span class="o">/</span><span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div></div></div>
+</div>
+<div class="section" id="summary">
+<h2><span class="section-number">22.10.4. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Statistics focuses on inference problems, whereas deep learning
+emphasizes on making accurate predictions without explicitly
+programming and understanding.</p></li>
+<li><p>There are three common statistics inference methods: evaluating and
+comparing estimators, conducting hypothesis tests, and constructing
+confidence intervals.</p></li>
+<li><p>There are three most common estimators: statistical bias, standard
+deviation, and mean square error.</p></li>
+<li><p>A confidence interval is an estimated range of a true population
+parameter that we can construct by given the samples.</p></li>
+<li><p>Hypothesis testing is a way of evaluating some evidence against the
+default statement about a population.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">22.10.5. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>Let
+<span class="math notranslate nohighlight">\(X_1, X_2, \ldots, X_n \overset{\textrm{iid}}{\sim} \textrm{Unif}(0, \theta)\)</span>,
+where “iid” stands for <em>independent and identically distributed</em>.
+Consider the following estimators of <span class="math notranslate nohighlight">\(\theta\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-8">
+<span class="eqno">(22.10.14)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-8" title="Permalink to this equation">¶</a></span>\[\hat{\theta} = \max \{X_1, X_2, \ldots, X_n \};\]</div>
+<div class="math notranslate nohighlight" id="equation-chapter-appendix-mathematics-for-deep-learning-statistics-9">
+<span class="eqno">(22.10.15)<a class="headerlink" href="#equation-chapter-appendix-mathematics-for-deep-learning-statistics-9" title="Permalink to this equation">¶</a></span>\[\tilde{\theta} = 2 \bar{X_n} = \frac{2}{n} \sum_{i=1}^n X_i.\]</div>
+<ul class="simple">
+<li><p>Find the statistical bias, standard deviation, and mean square
+error of <span class="math notranslate nohighlight">\(\hat{\theta}.\)</span></p></li>
+<li><p>Find the statistical bias, standard deviation, and mean square
+error of <span class="math notranslate nohighlight">\(\tilde{\theta}.\)</span></p></li>
+<li><p>Which estimator is better?</p></li>
+</ul>
+</li>
+<li><p>For our chemist example in introduction, can you derive the 5 steps
+to conduct a two-sided hypothesis testing? Given the statistical
+significance level <span class="math notranslate nohighlight">\(\alpha = 0.05\)</span> and the statistical power
+<span class="math notranslate nohighlight">\(1 - \beta = 0.8\)</span>.</p></li>
+<li><p>Run the confidence interval code with <span class="math notranslate nohighlight">\(N=2\)</span> and
+<span class="math notranslate nohighlight">\(\alpha = 0.5\)</span> for <span class="math notranslate nohighlight">\(100\)</span> independently generated dataset,
+and plot the resulting intervals (in this case <code class="docutils literal notranslate"><span class="pre">t_star</span> <span class="pre">=</span> <span class="pre">1.0</span></code>). You
+will see several very short intervals which are very far from
+containing the true mean <span class="math notranslate nohighlight">\(0\)</span>. Does this contradict the
+interpretation of the confidence interval? Do you feel comfortable
+using short intervals to indicate high precision estimates?</p></li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-13-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/1102">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/419">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-2"><p><a class="reference external" href="https://discuss.d2l.ai/t/1103">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">22.10. Statistics</a><ul>
+<li><a class="reference internal" href="#evaluating-and-comparing-estimators">22.10.1. Evaluating and Comparing Estimators</a><ul>
+<li><a class="reference internal" href="#mean-squared-error">22.10.1.1. Mean Squared Error</a></li>
+<li><a class="reference internal" href="#statistical-bias">22.10.1.2. Statistical Bias</a></li>
+<li><a class="reference internal" href="#variance-and-standard-deviation">22.10.1.3. Variance and Standard Deviation</a></li>
+<li><a class="reference internal" href="#the-bias-variance-trade-off">22.10.1.4. The Bias-Variance Trade-off</a></li>
+<li><a class="reference internal" href="#evaluating-estimators-in-code">22.10.1.5. Evaluating Estimators in Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conducting-hypothesis-tests">22.10.2. Conducting Hypothesis Tests</a><ul>
+<li><a class="reference internal" href="#statistical-significance">22.10.2.1. Statistical Significance</a></li>
+<li><a class="reference internal" href="#statistical-power">22.10.2.2. Statistical Power</a></li>
+<li><a class="reference internal" href="#test-statistic">22.10.2.3. Test Statistic</a></li>
+<li><a class="reference internal" href="#p-value">22.10.2.4. <span class="math notranslate nohighlight">\(p\)</span>-value</a></li>
+<li><a class="reference internal" href="#one-side-test-and-two-sided-test">22.10.2.5. One-side Test and Two-sided Test</a></li>
+<li><a class="reference internal" href="#general-steps-of-hypothesis-testing">22.10.2.6. General Steps of Hypothesis Testing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#constructing-confidence-intervals">22.10.3. Constructing Confidence Intervals</a><ul>
+<li><a class="reference internal" href="#definition">22.10.3.1. Definition</a></li>
+<li><a class="reference internal" href="#interpretation">22.10.3.2. Interpretation</a></li>
+<li><a class="reference internal" href="#a-gaussian-example">22.10.3.3. A Gaussian Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#summary">22.10.4. Summary</a></li>
+<li><a class="reference internal" href="#exercises">22.10.5. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="naive-bayes.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>22.9. Naive Bayes</div>
+         </div>
+     </a>
+     <a id="button-next" href="information-theory.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>22.11. Information Theory</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

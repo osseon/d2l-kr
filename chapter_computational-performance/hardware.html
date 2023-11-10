@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>13.4. Hardware &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="13.5. Training on Multiple GPUs" href="multiple-gpus.html" />
+    <link rel="prev" title="13.3. Automatic Parallelism" href="auto-parallelism.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">13. </span>Computational Performance</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">13.4. </span>Hardware</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_computational-performance/hardware.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">13. Computational Performance</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">13. Computational Performance</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="hardware">
+<span id="sec-hardware"></span><h1><span class="section-number">13.4. </span>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_computational-performance/hardware.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_computational-performance/hardware.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_computational-performance/hardware.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_computational-performance/hardware.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_computational-performance/hardware.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_computational-performance/hardware.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_computational-performance/hardware.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_computational-performance/hardware.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>Building systems with great performance requires a good understanding of
+the algorithms and models to capture the statistical aspects of the
+problem. At the same time it is also indispensable to have at least a
+modicum of knowledge of the underlying hardware. The current section is
+no substitute for a proper course on hardware and system design.
+Instead, it might serve as a starting point for understanding why some
+algorithms are more efficient than others and how to achieve good
+throughput. A good design can easily make a difference of an order of
+magnitude and, in turn, this can make the difference between being able
+to train a network (e.g., in a week) and not at all (in 3 months, thus
+missing the deadline). We will start by looking at computers. Then we
+will zoom in to look more carefully at CPUs and GPUs. Lastly we zoom out
+to review how multiple computers are connected in a server center or in
+the cloud.</p>
+<div class="figure align-default" id="id5">
+<span id="fig-latencynumbers"></span><img alt="../_images/latencynumbers.png" src="../_images/latencynumbers.png" />
+<p class="caption"><span class="caption-number">Fig. 13.4.1 </span><span class="caption-text">Latency Numbers that every programmer should know.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<p>Impatient readers may be able to get by with
+<a class="reference internal" href="#fig-latencynumbers"><span class="std std-numref">Fig. 13.4.1</span></a>. It is taken from Colin Scott’s
+<a class="reference external" href="https://people.eecs.berkeley.edu/%7Ercs/research/interactive_latency.html">interactive
+post</a>
+that gives a good overview of the progress over the past decade. The
+original numbers are due to Jeff Dean’s <a class="reference external" href="https://static.googleusercontent.com/media/research.google.com/en//people/jeff/Stanford-DL-Nov-2010.pdf">Stanford talk from
+2010</a>.
+The discussion below explains some of the rationale for these numbers
+and how they can guide us in designing algorithms. The discussion below
+is very high level and cursory. It is clearly <em>no substitute</em> for a
+proper course but rather just meant to provide enough information for a
+statistical modeler to make suitable design decisions. For an in-depth
+overview of computer architecture we refer the reader to
+<span id="id1">(<a class="reference internal" href="../chapter_references/zreferences.html#id113" title="Hennessy, J. L., &amp; Patterson, D. A. (2011). Computer Architecture: A Quantitative Approach. Elsevier.">Hennessy and Patterson, 2011</a>)</span> or a recent course on the subject,
+such as the one by <a class="reference external" href="http://inst.eecs.berkeley.edu/%7Ecs152/sp19/">Arste
+Asanovic</a>.</p>
+<div class="section" id="computers">
+<h2><span class="section-number">13.4.1. </span>Computers<a class="headerlink" href="#computers" title="Permalink to this heading">¶</a></h2>
+<p>Most deep learning researchers and practitioners have access to a
+computer with a fair amount of memory, computation, some form of an
+accelerator such as a GPU, or multiples thereof. A computer consists of
+the following key components:</p>
+<ul class="simple">
+<li><p>A processor (also referred to as a CPU) that is able to execute the
+programs we give it (in addition to running an operating system and
+many other things), typically consisting of 8 or more cores.</p></li>
+<li><p>Memory (RAM) to store and retrieve the results from computation, such
+as weight vectors and activations, and training data.</p></li>
+<li><p>An Ethernet network connection (sometimes multiple) with speeds
+ranging from 1 GB/s to 100 GB/s. On high end servers more advanced
+interconnects can be found.</p></li>
+<li><p>A high speed expansion bus (PCIe) to connect the system to one or
+more GPUs. Servers have up to 8 accelerators, often connected in an
+advanced topology, while desktop systems have 1 or 2, depending on
+the budget of the user and the size of the power supply.</p></li>
+<li><p>Durable storage, such as a magnetic hard disk drive, a solid state
+drive, in many cases connected using the PCIe bus. It provides
+efficient transfer of training data to the system and storage of
+intermediate checkpoints as needed.</p></li>
+</ul>
+<div class="figure align-default" id="id6">
+<span id="fig-mobo-symbol"></span><img alt="../_images/mobo-symbol.svg" src="../_images/mobo-symbol.svg" /><p class="caption"><span class="caption-number">Fig. 13.4.2 </span><span class="caption-text">Connectivity of components of a computer.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<p>As <a class="reference internal" href="#fig-mobo-symbol"><span class="std std-numref">Fig. 13.4.2</span></a> indicates, most components (network, GPU,
+and storage) are connected to the CPU across the PCIe bus. It consists
+of multiple lanes that are directly attached to the CPU. For instance
+AMD’s Threadripper 3 has 64 PCIe 4.0 lanes, each of which is capable 16
+Gbit/s data transfer in both directions. The memory is directly attached
+to the CPU with a total bandwidth of up to 100 GB/s.</p>
+<p>When we run code on a computer we need to shuffle data to the processors
+(CPUs or GPUs), perform computation, and then move the results off the
+processor back to RAM and durable storage. Hence, in order to get good
+performance we need to make sure that this works seamlessly without any
+one of the systems becoming a major bottleneck. For instance, if we
+cannot load images quickly enough the processor will not have any work
+to do. Likewise, if we cannot move matrices quickly enough to the CPU
+(or GPU), its processing elements will starve. Finally, if we want to
+synchronize multiple computers across the network, the latter should not
+slow down computation. One option is to interleave communication and
+computation. Let’s have a look at the various components in more detail.</p>
+</div>
+<div class="section" id="memory">
+<h2><span class="section-number">13.4.2. </span>Memory<a class="headerlink" href="#memory" title="Permalink to this heading">¶</a></h2>
+<p>At its most basic memory is used to store data that needs to be readily
+accessible. At present CPU RAM is typically of the
+<a class="reference external" href="https://en.wikipedia.org/wiki/DDR4_SDRAM">DDR4</a> variety, offering
+20–25 GB/s bandwidth per module. Each module has a 64-bit-wide bus.
+Typically pairs of memory modules are used to allow for multiple
+channels. CPUs have between 2 and 4 memory channels, i.e., they have
+between 4 0GB/s and 100 GB/s peak memory bandwidth. Often there are two
+banks per channel. For instance AMD’s Zen 3 Threadripper has 8 slots.</p>
+<p>While these numbers are impressive, indeed, they only tell part of the
+story. When we want to read a portion from memory we first need to tell
+the memory module where the information can be found. That is, we first
+need to send the <em>address</em> to RAM. Once this is accomplished we can
+choose to read just a single 64 bit record or a long sequence of
+records. The latter is called <em>burst read</em>. In a nutshell, sending an
+address to memory and setting up the transfer takes approximately 100 ns
+(details depend on the specific timing coefficients of the memory chips
+used), every subsequent transfer takes only 0.2 ns. In short, the first
+read is 500 times as expensive as subsequent ones! Note that we could
+perform up to 10,000,000 random reads per second. This suggests that we
+avoid random memory access as far as possible and use burst reads (and
+writes) instead.</p>
+<p>Matters are a bit more complex when we take into account that we have
+multiple <em>banks</em>. Each bank can read memory largely independently. This
+means two things. On the one hand, the effective number of random reads
+is up to 4 times higher, provided that they are spread evenly across
+memory. It also means that it is still a bad idea to perform random
+reads since burst reads are 4 times faster, too. On the other hand, due
+to memory alignment to 64 bit boundaries it is a good idea to align any
+data structures with the same boundaries. Compilers do this pretty much
+<a class="reference external" href="https://en.wikipedia.org/wiki/Data_structure_alignment">automatically</a>
+when the appropriate flags are set. Curious readers are encouraged to
+review a lecture on DRAMs such as the one by <a class="reference external" href="http://web.cecs.pdx.edu/%7Ezeshan/ece585_lec5.pdf">Zeshan
+Chishti</a>.</p>
+<p>GPU memory is subject to even higher bandwidth requirements since they
+have many more processing elements than CPUs. By and large there are two
+options to address them. The first is to make the memory bus
+significantly wider. For instance, NVIDIA’s RTX 2080 Ti has a
+352-bit-wide bus. This allows for much more information to be
+transferred at the same time. Second, GPUs use specific high-performance
+memory. Consumer-grade devices, such as NVIDIA’s RTX and Titan series
+typically use <a class="reference external" href="https://en.wikipedia.org/wiki/GDDR6_SDRAM">GDDR6</a>
+chips with over 500 GB/s aggregate bandwidth. An alternative is to use
+HBM (high bandwidth memory) modules. They use a very different interface
+and connect directly with GPUs on a dedicated silicon wafer. This makes
+them very expensive and their use is typically limited to high-end
+server chips, such as the NVIDIA Volta V100 series of accelerators.
+Quite unsurprisingly, GPU memory is generally <em>much</em> smaller than CPU
+memory due to the higher cost of the former. For our purposes, by and
+large their performance characteristics are similar, just a lot faster.
+We can safely ignore the details for the purpose of this book. They only
+matter when tuning GPU kernels for high throughput.</p>
+</div>
+<div class="section" id="storage">
+<h2><span class="section-number">13.4.3. </span>Storage<a class="headerlink" href="#storage" title="Permalink to this heading">¶</a></h2>
+<p>We saw that some of the key characteristics of RAM are <em>bandwidth</em> and
+<em>latency</em>. The same is true for storage devices, just that the
+differences can be even more extreme.</p>
+<div class="section" id="hard-disk-drives">
+<h3><span class="section-number">13.4.3.1. </span>Hard Disk Drives<a class="headerlink" href="#hard-disk-drives" title="Permalink to this heading">¶</a></h3>
+<p><em>Hard disk drives</em> (HDDs) have been in use for over half a century. In a
+nutshell they contain a number of spinning platters with heads that can
+be positioned to read or write at any given track. High-end disks hold
+up to 16 TB on 9 platters. One of the key benefits of HDDs is that they
+are relatively inexpensive. One of their many downsides are their
+typically catastrophic failure modes and their relatively high read
+latency.</p>
+<p>To understand the latter, consider the fact that HDDs spin at around
+7,200 RPM (revolutions per minute). If they were much faster they would
+shatter due to the centrifugal force exerted on the platters. This has a
+major downside when it comes to accessing a specific sector on the disk:
+we need to wait until the platter has rotated in position (we can move
+the heads but not accelerate the actual disks). Hence it can take over 8
+ms until the requested data is available. A common way this is expressed
+is to say that HDDs can operate at approximately 100 IOPs (input/output
+operations per second). This number has essentially remained unchanged
+for the past two decades. Worse still, it is equally difficult to
+increase bandwidth (it is in the order of 100–200 MB/s). After all, each
+head reads a track of bits, hence the bit rate only scales with the
+square root of the information density. As a result, HDDs are quickly
+becoming relegated to archival storage and low-grade storage for very
+large datasets.</p>
+</div>
+<div class="section" id="solid-state-drives">
+<h3><span class="section-number">13.4.3.2. </span>Solid State Drives<a class="headerlink" href="#solid-state-drives" title="Permalink to this heading">¶</a></h3>
+<p>Solid state drives (SSDs) use flash memory to store information
+persistently. This allows for <em>much faster</em> access to stored records.
+Modern SSDs can operate at 100,000 to 500,000 IOPs, i.e., up to 3 orders
+of magnitude faster than HDDs. Furthermore, their bandwidth can reach
+1–3GB/s, i.e., one order of magnitude faster than HDDs. These
+improvements sound almost too good to be true. Indeed, they come with
+the following caveats, due to the way SSDs are designed.</p>
+<ul class="simple">
+<li><p>SSDs store information in blocks (256 KB or larger). They can only be
+written as a whole, which takes significant time. Consequently
+bit-wise random writes on SSD have very poor performance. Likewise,
+writing data in general takes significant time since the block has to
+be read, erased and then rewritten with new information. By now SSD
+controllers and firmware have developed algorithms to mitigate this.
+Nonetheless, writes can be much slower, in particular for QLC (quad
+level cell) SSDs. The key for improved performance is to maintain a
+<em>queue</em> of operations, to prefer reads and to write in large blocks
+if possible.</p></li>
+<li><p>The memory cells in SSDs wear out relatively quickly (often already
+after a few thousand writes). Wear-level protection algorithms are
+able to spread the degradation over many cells. That said, it is not
+recommended to use SSDs for swapping files or for large aggregations
+of log-files.</p></li>
+<li><p>Lastly, the massive increase in bandwidth has forced computer
+designers to attach SSDs directly to the PCIe bus. The drives capable
+of handling this, referred to as NVMe (Non Volatile Memory enhanced),
+can use up to 4 PCIe lanes. This amounts to up to 8GB/s on PCIe 4.0.</p></li>
+</ul>
+</div>
+<div class="section" id="cloud-storage">
+<h3><span class="section-number">13.4.3.3. </span>Cloud Storage<a class="headerlink" href="#cloud-storage" title="Permalink to this heading">¶</a></h3>
+<p>Cloud storage provides a configurable range of performance. That is, the
+assignment of storage to virtual machines is dynamic, both in terms of
+quantity and in terms of speed, as chosen by users. We recommend that
+users increase the provisioned number of IOPs whenever latency is too
+high, e.g., during training with many small records.</p>
+</div>
+</div>
+<div class="section" id="cpus">
+<h2><span class="section-number">13.4.4. </span>CPUs<a class="headerlink" href="#cpus" title="Permalink to this heading">¶</a></h2>
+<p>Central processing units (CPUs) are the centerpiece of any computer.
+They consist of a number of key components: <em>processor cores</em> that are
+able to execute machine code, a <em>bus</em> connecting them (the specific
+topology differs significantly between processor models, generations,
+and vendors), and <em>caches</em> to allow for higher bandwidth and lower
+latency memory access than what is possible by reads from main memory.
+Lastly, almost all modern CPUs contain <em>vector processing units</em> to aid
+with high performance linear algebra and convolutions, as they are
+common in media processing and machine learning.</p>
+<div class="figure align-default" id="id7">
+<span id="fig-skylake"></span><img alt="../_images/skylake.svg" src="../_images/skylake.svg" /><p class="caption"><span class="caption-number">Fig. 13.4.3 </span><span class="caption-text">Intel Skylake consumer quad-core CPU.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<p><a class="reference internal" href="#fig-skylake"><span class="std std-numref">Fig. 13.4.3</span></a> depicts an Intel Skylake consumer-grade
+quad-core CPU. It has an integrated GPU, caches, and a ringbus
+connecting the four cores. Peripherals, such as Ethernet, WiFi,
+Bluetooth, SSD controller, and USB, are either part of the chipset or
+directly attached (PCIe) to the CPU.</p>
+<div class="section" id="microarchitecture">
+<h3><span class="section-number">13.4.4.1. </span>Microarchitecture<a class="headerlink" href="#microarchitecture" title="Permalink to this heading">¶</a></h3>
+<p>Each of the processor cores consists of a rather sophisticated set of
+components. While details differ between generations and vendors, the
+basic functionality is pretty much standard. The front-end loads
+instructions and tries to predict which path will be taken (e.g., for
+control flow). Instructions are then decoded from assembly code to
+microinstructions. Assembly code is often not the lowest level code that
+a processor executes. Instead, complex instructions may be decoded into
+a set of more lower level operations. These are then processed by the
+actual execution core. Often the latter is capable of performing many
+operations simultaneously. For instance, the ARM Cortex A77 core of
+<a class="reference internal" href="#fig-cortexa77"><span class="std std-numref">Fig. 13.4.4</span></a> is able to perform up to 8 operations
+simultaneously.</p>
+<div class="figure align-default" id="id8">
+<span id="fig-cortexa77"></span><img alt="../_images/a77.svg" src="../_images/a77.svg" /><p class="caption"><span class="caption-number">Fig. 13.4.4 </span><span class="caption-text">ARM Cortex A77 Microarchitecture.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+<p>This means that efficient programs might be able to perform more than
+one instruction per clock cycle, provided that they can be carried out
+independently. Not all units are created equal. Some specialize in
+integer instructions whereas others are optimized for floating point
+performance. To increase throughput, the processor might also follow
+multiple code paths simultaneously in a branching instruction and then
+discard the results of the branches not taken. This is why branch
+prediction units matter (on the front-end) such that only the most
+promising paths are pursued.</p>
+</div>
+<div class="section" id="vectorization">
+<h3><span class="section-number">13.4.4.2. </span>Vectorization<a class="headerlink" href="#vectorization" title="Permalink to this heading">¶</a></h3>
+<p>Deep learning is extremely compute-hungry. Hence, to make CPUs suitable
+for machine learning, one needs to perform many operations in one clock
+cycle. This is achieved via vector units. They have different names: on
+ARM they are called NEON, on x86 they (a recent generation) are referred
+to as
+<a class="reference external" href="https://en.wikipedia.org/wiki/Advanced_Vector_Extensions">AVX2</a>
+units. A common aspect is that they are able to perform SIMD (single
+instruction multiple data) operations. <a class="reference internal" href="#fig-neon128"><span class="std std-numref">Fig. 13.4.5</span></a> shows how
+8 short integers can be added in one clock cycle on ARM.</p>
+<div class="figure align-default" id="id9">
+<span id="fig-neon128"></span><img alt="../_images/neon128.svg" src="../_images/neon128.svg" /><p class="caption"><span class="caption-number">Fig. 13.4.5 </span><span class="caption-text">128 bit NEON vectorization.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+<p>Depending on architecture choices, such registers are up to 512 bits
+long, allowing for the combination of up to 64 pairs of numbers. For
+instance, we might be multiplying two numbers and adding them to a
+third, which is also known as a fused multiply-add. Intel’s
+<a class="reference external" href="https://01.org/openvinotoolkit">OpenVino</a> uses these to achieve
+respectable throughput for deep learning on server-grade CPUs. Note,
+though, that this number is entirely dwarfed by what GPUs are capable of
+achieving. For instance, NVIDIA’s RTX 2080 Ti has 4,352 CUDA cores, each
+of which is capable of processing such an operation at any time.</p>
+</div>
+<div class="section" id="cache">
+<h3><span class="section-number">13.4.4.3. </span>Cache<a class="headerlink" href="#cache" title="Permalink to this heading">¶</a></h3>
+<p>Consider the following situation: we have a modest CPU core with 4 cores
+as depicted in <a class="reference internal" href="#fig-skylake"><span class="std std-numref">Fig. 13.4.3</span></a> above, running at 2 GHz
+frequency. Moreover, let’s assume that we have an IPC (instructions per
+clock) count of 1 and that the units have AVX2 with 256-bit width
+enabled. Let’s furthermore assume that at least one of the registers
+used for AVX2 operations needs to be retrieved from memory. This means
+that the CPU consumes
+<span class="math notranslate nohighlight">\(4 \times 256 \textrm{ bit} = 128 \textrm{ bytes}\)</span> of data per
+clock cycle. Unless we are able to transfer
+<span class="math notranslate nohighlight">\(2 \times 10^9 \times 128 = 256 \times 10^9\)</span> bytes to the
+processor per second the processing elements are going to starve.
+Unfortunately the memory interface of such a chip only supports 20–40
+GB/s data transfer, i.e., one order of magnitude less. The fix is to
+avoid loading <em>new</em> data from memory as far as possible and rather to
+cache it locally on the CPU. This is where caches come in handy.
+Commonly the following names or concepts are used:</p>
+<ul class="simple">
+<li><p><strong>Registers</strong> are strictly speaking not part of the cache. They help
+stage instructions. That said, CPU registers are memory locations
+that a CPU can access at clock speed without any delay penalty. CPUs
+have tens of registers. It is up to the compiler (or programmer) to
+use registers efficiently. For instance the C programming language
+has a <code class="docutils literal notranslate"><span class="pre">register</span></code> keyword.</p></li>
+<li><p><strong>L1 caches</strong> are the first line of defense against high memory
+bandwidth requirements. L1 caches are tiny (typical sizes might be
+32–64 KB) and often split into data and instructions caches. When
+data is found in the L1 cache, access is very fast. If they cannot be
+found there, the search progresses down the cache hierarchy.</p></li>
+<li><p><strong>L2 caches</strong> are the next stop. Depending on architecture design and
+processor size they might be exclusive. They might be accessible only
+by a given core or shared among multiple cores. L2 caches are larger
+(typically 256–512 KB per core) and slower than L1. Furthermore, to
+access something in L2 we first need to check to realize that the
+data is not in L1, which adds a small amount of extra latency.</p></li>
+<li><p><strong>L3 caches</strong> are shared among multiple cores and can be quite large.
+AMD’s Epyc 3 server CPUs have a whopping 256 MB of cache spread
+across multiple chiplets. More typical numbers are in the 4–8 MB
+range.</p></li>
+</ul>
+<p>Predicting which memory elements will be needed next is one of the key
+optimization parameters in chip design. For instance, it is advisable to
+traverse memory in a <em>forward</em> direction since most caching algorithms
+will try to <em>read ahead</em> rather than backwards. Likewise, keeping memory
+access patterns local is a good way of improving performance.</p>
+<p>Adding caches is a double-edge sword. On the one hand they ensure that
+the processor cores do not starve of data. At the same time they
+increase chip size, using up area that otherwise could have been spent
+on increasing processing power. Moreover, <em>cache misses</em> can be
+expensive. Consider the worst case scenario, <em>false sharing</em>, as
+depicted in <a class="reference internal" href="#fig-falsesharing"><span class="std std-numref">Fig. 13.4.6</span></a>. A memory location is cached on
+processor 0 when a thread on processor 1 requests the data. To obtain
+it, processor 0 needs to stop what it is doing, write the information
+back to main memory and then let processor 1 read it from memory. During
+this operation both processors wait. Quite potentially such code runs
+<em>more slowly</em> on multiple processors when compared with an efficient
+single-processor implementation. This is one more reason for why there
+is a practical limit to cache sizes (besides their physical size).</p>
+<div class="figure align-default" id="id10">
+<span id="fig-falsesharing"></span><img alt="../_images/falsesharing.svg" src="../_images/falsesharing.svg" /><p class="caption"><span class="caption-number">Fig. 13.4.6 </span><span class="caption-text">False sharing (image courtesy of Intel).</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="gpus-and-other-accelerators">
+<h2><span class="section-number">13.4.5. </span>GPUs and other Accelerators<a class="headerlink" href="#gpus-and-other-accelerators" title="Permalink to this heading">¶</a></h2>
+<p>It is not an exaggeration to claim that deep learning would not have
+been successful without GPUs. By the same token, it is quite reasonable
+to argue that GPU manufacturers’ fortunes have increased significantly
+due to deep learning. This co-evolution of hardware and algorithms has
+led to a situation where for better or worse deep learning is the
+preferable statistical modeling paradigm. Hence it pays to understand
+the specific benefits that GPUs and related accelerators such as the TPU
+<span id="id2">(<a class="reference internal" href="../chapter_references/zreferences.html#id140" title="Jouppi, N. P., Young, C., Patil, N., Patterson, D., Agrawal, G., Bajwa, R., … et al. (2017). In-datacenter performance analysis of a tensor processing unit. 2017 ACM/IEEE 44th Annual International Symposium on Computer Architecture (ISCA) (pp. 1–12).">Jouppi <em>et al.</em>, 2017</a>)</span>.</p>
+<p>Of note is a distinction that is often made in practice: accelerators
+are optimized either for training or inference. For the latter we only
+need to compute the forward propagation in a network. No storage of
+intermediate data is needed for backpropagation. Moreover, we may not
+need very precise computation (FP16 or INT8 typically suffice). On the
+other hand, during training all intermediate results need storage to
+compute gradients. Moreover, accumulating gradients requires higher
+precision to avoid numerical underflow (or overflow). This means that
+FP16 (or mixed precision with FP32) is the minimum requirement. All of
+this necessitates faster and larger memory (HBM2 vs. GDDR6) and more
+processing power. For instance, NVIDIA’s
+<a class="reference external" href="https://devblogs.nvidia.com/nvidia-turing-architecture-in-depth/">Turing</a>
+T4 GPUs are optimized for inference whereas the V100 GPUs are preferable
+for training.</p>
+<p>Recall vectorization as illustrated in <a class="reference internal" href="#fig-neon128"><span class="std std-numref">Fig. 13.4.5</span></a>. Adding
+vector units to a processor core allowed us to increase throughput
+significantly. For example, in the example in <a class="reference internal" href="#fig-neon128"><span class="std std-numref">Fig. 13.4.5</span></a> we
+were able to perform 16 operations simultaneously. First, what if we
+added operations that optimized not just operations between vectors but
+also between matrices? This strategy led to tensor cores (to be covered
+shortly). Second, what if we added many more cores? In a nutshell, these
+two strategies summarize the design decisions in GPUs.
+<a class="reference internal" href="#fig-turing-processing-block"><span class="std std-numref">Fig. 13.4.7</span></a> gives an overview of a basic
+processing block. It contains 16 integer and 16 floating point units. In
+addition to that, two tensor cores accelerate a narrow subset of
+additional operations relevant for deep learning. Each streaming
+multiprocessor consists of four such blocks.</p>
+<div class="figure align-default" id="id11">
+<span id="fig-turing-processing-block"></span><a class="reference internal image-reference" href="../_images/turing-processing-block.png"><img alt="../_images/turing-processing-block.png" src="../_images/turing-processing-block.png" style="width: 150px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.4.7 </span><span class="caption-text">NVIDIA Turing processing block (image courtesy of NVIDIA).</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</div>
+<p>Next, 12 streaming multiprocessors are grouped into graphics processing
+clusters which make up the high-end TU102 processors. Ample memory
+channels and an L2 cache complement the setup. <a class="reference internal" href="#fig-turing"><span class="std std-numref">Fig. 13.4.8</span></a>
+has the relevant details. One of the reasons for designing such a device
+is that individual blocks can be added or removed as needed to allow for
+more compact chips and to deal with yield issues (faulty modules might
+not be activated). Fortunately programming such devices is well hidden
+from the casual deep learning researcher beneath layers of CUDA and
+framework code. In particular, more than one of the programs might well
+be executed simultaneously on the GPU, provided that there are available
+resources. Nonetheless it pays to be aware of the limitations of the
+devices to avoid picking models that do not fit into device memory.</p>
+<div class="figure align-default" id="id12">
+<span id="fig-turing"></span><a class="reference internal image-reference" href="../_images/turing.png"><img alt="../_images/turing.png" src="../_images/turing.png" style="width: 350px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.4.8 </span><span class="caption-text">NVIDIA Turing architecture (image courtesy of NVIDIA)</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</div>
+<p>A last aspect that is worth mentioning in more detail are <em>tensor
+cores</em>. They are an example of a recent trend of adding more optimized
+circuits that are specifically effective for deep learning. For
+instance, the TPU added a systolic array <span id="id3">(<a class="reference internal" href="../chapter_references/zreferences.html#id157" title="Kung, S. Y. (1988). VLSI Array Processors. Prentice Hall.">Kung, 1988</a>)</span> for fast
+matrix multiplication. There the design was to support a very small
+number (one for the first generation of TPUs) of large operations.
+Tensor cores are at the other end. They are optimized for small
+operations involving between <span class="math notranslate nohighlight">\(4 \times 4\)</span> and <span class="math notranslate nohighlight">\(16 \times 16\)</span>
+matrices, depending on their numerical precision.
+<a class="reference internal" href="#fig-tensorcore"><span class="std std-numref">Fig. 13.4.9</span></a> gives an overview of the optimizations.</p>
+<div class="figure align-default" id="id13">
+<span id="fig-tensorcore"></span><a class="reference internal image-reference" href="../_images/tensorcore.jpg"><img alt="../_images/tensorcore.jpg" src="../_images/tensorcore.jpg" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 13.4.9 </span><span class="caption-text">NVIDIA tensor cores in Turing (image courtesy of NVIDIA).</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
+</div>
+<p>Obviously when optimizing for computation we end up making certain
+compromises. One of them is that GPUs are not very good at handling
+interrupts and sparse data. While there are notable exceptions, such as
+<a class="reference external" href="https://github.com/gunrock/gunrock">Gunrock</a>
+<span id="id4">(<a class="reference internal" href="../chapter_references/zreferences.html#id305" title="Wang, Y., Davidson, A., Pan, Y., Wu, Y., Riffel, A., &amp; Owens, J. D. (2016). Gunrock: a high-performance graph processing library on the GPU. ACM SIGPLAN Notices (p. 11).">Wang <em>et al.</em>, 2016</a>)</span>, the access pattern of sparse
+matrices and vectors do not go well with the high bandwidth burst read
+operations where GPUs excel. Matching both goals is an area of active
+research. See e.g., <a class="reference external" href="http://dgl.ai">DGL</a>, a library tuned for deep
+learning on graphs.</p>
+</div>
+<div class="section" id="networks-and-buses">
+<h2><span class="section-number">13.4.6. </span>Networks and Buses<a class="headerlink" href="#networks-and-buses" title="Permalink to this heading">¶</a></h2>
+<p>Whenever a single device is insufficient for optimization we need to
+transfer data to and from it to synchronize processing. This is where
+networks and buses come in handy. We have a number of design parameters:
+bandwidth, cost, distance, and flexibility. On one end we have WiFi that
+has a pretty good range, is very easy to use (no wires, after all),
+cheap but it offers comparatively mediocre bandwidth and latency. No
+machine learning researcher within their right mind would use it to
+build a cluster of servers. In what follows we focus on interconnects
+that are suitable for deep learning.</p>
+<ul class="simple">
+<li><p><strong>PCIe</strong> is a dedicated bus for very high bandwidth point-to-point
+connections (up to 32 GB/s on PCIe 4.0 in a 16-lane slot) per lane.
+Latency is in the order of single-digit microseconds (5 μs). PCIe
+links are precious. Processors only have a limited number of them:
+AMD’s EPYC 3 has 128 lanes, Intel’s Xeon has up to 48 lanes per chip;
+on desktop-grade CPUs the numbers are 20 (Ryzen 9) and 16 (Core i9)
+respectively. Since GPUs have typically 16 lanes, this limits the
+number of GPUs that can connect to the CPU at full bandwidth. After
+all, they need to share the links with other high bandwidth
+peripherals such as storage and Ethernet. Just like with RAM access,
+large bulk transfers are preferable due to reduced packet overhead.</p></li>
+<li><p><strong>Ethernet</strong> is the most commonly used way of connecting computers.
+While it is significantly slower than PCIe, it is very cheap and
+resilient to install and covers much longer distances. Typical
+bandwidth for low-grade servers is 1 GBit/s. Higher-end devices
+(e.g., <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/c5/">C5
+instances</a> in the
+cloud) offer between 10 and 100 GBit/s bandwidth. As in all previous
+cases data transmission has significant overheads. Note that we
+almost never use raw Ethernet directly but rather a protocol that is
+executed on top of the physical interconnect (such as UDP or TCP/IP).
+This adds further overhead. Like PCIe, Ethernet is designed to
+connect two devices, e.g., a computer and a switch.</p></li>
+<li><p><strong>Switches</strong> allow us to connect multiple devices in a manner where
+any pair of them can carry out a (typically full bandwidth)
+point-to-point connection simultaneously. For instance, Ethernet
+switches might connect 40 servers at high cross-sectional bandwidth.
+Note that switches are not unique to traditional computer networks.
+Even PCIe lanes can be
+<a class="reference external" href="https://www.broadcom.com/products/pcie-switches-bridges/pcie-switches">switched</a>.
+This occurs, e.g., to connect a large number of GPUs to a host
+processor, as is the case for the <a class="reference external" href="https://aws.amazon.com/ec2/instance-types/p2/">P2
+instances</a>.</p></li>
+<li><p><strong>NVLink</strong> is an alternative to PCIe when it comes to very high
+bandwidth interconnects. It offers up to 300 Gbit/s data transfer
+rate per link. Server GPUs (Volta V100) have six links whereas
+consumer-grade GPUs (RTX 2080 Ti) have only one link, operating at a
+reduced 100 Gbit/s rate. We recommend to use
+<a class="reference external" href="https://github.com/NVIDIA/nccl">NCCL</a> to achieve high data
+transfer between GPUs.</p></li>
+</ul>
+</div>
+<div class="section" id="more-latency-numbers">
+<h2><span class="section-number">13.4.7. </span>More Latency Numbers<a class="headerlink" href="#more-latency-numbers" title="Permalink to this heading">¶</a></h2>
+<p>The summary in <a class="reference internal" href="#table-latency-numbers"><span class="std std-numref">Table 13.4.1</span></a> and
+<a class="reference internal" href="#table-latency-numbers-tesla"><span class="std std-numref">Table 13.4.2</span></a> are from <a class="reference external" href="https://gist.github.com/eshelman">Eliot
+Eshelman</a> who maintains an updated
+version of the numbers as a <a class="reference external" href="https://gist.github.com/eshelman/343a1c46cb3fba142c1afdcdeec17646">GitHub
+gist</a>.</p>
+<span id="table-latency-numbers"></span><table class="docutils align-default" id="id14">
+<caption><span class="caption-number">Table 13.4.1 </span><span class="caption-text">Common Latency Numbers.</span><a class="headerlink" href="#id14" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 4%" />
+<col style="width: 51%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Action</p></th>
+<th class="head"><p>T
+i
+m
+e</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>L1 cache reference/hit</p></td>
+<td><p>5
+n
+s</p></td>
+<td><p>4 cycles</p></td>
+</tr>
+<tr class="row-odd"><td><p>Floating-point add/mult/FMA</p></td>
+<td><p>5
+n
+s</p></td>
+<td><p>4 cycles</p></td>
+</tr>
+<tr class="row-even"><td><p>L2 cache reference/hit</p></td>
+<td><p>5
+n
+s</p></td>
+<td><p>12 ~ 17 cycles</p></td>
+</tr>
+<tr class="row-odd"><td><p>Branch mispredict</p></td>
+<td><p>6
+n
+s</p></td>
+<td><p>15 ~ 20 cycles</p></td>
+</tr>
+<tr class="row-even"><td><p>L3 cache hit (unshared
+cache)</p></td>
+<td><p>1
+6
+n
+s</p></td>
+<td><p>42 cycles</p></td>
+</tr>
+<tr class="row-odd"><td><p>L3 cache hit (shared in
+another core)</p></td>
+<td><p>2
+5
+n
+s</p></td>
+<td><p>65 cycles</p></td>
+</tr>
+<tr class="row-even"><td><p>Mutex lock/unlock</p></td>
+<td><p>2
+5
+n
+s</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>L3 cache hit (modified in
+another core)</p></td>
+<td><p>2
+9
+n
+s</p></td>
+<td><p>75 cycles</p></td>
+</tr>
+<tr class="row-even"><td><p>L3 cache hit (on a remote
+CPU socket)</p></td>
+<td><p>4
+0
+n
+s</p></td>
+<td><p>100 ~ 300 cycles (40 ~ 116 ns)</p></td>
+</tr>
+<tr class="row-odd"><td><p>QPI hop to a another CPU
+(per hop)</p></td>
+<td><p>4
+0
+n
+s</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>64MB memory ref. (local CPU)</p></td>
+<td><p>4
+6
+n
+s</p></td>
+<td><p>TinyMemBench on Broadwell
+E5-2690v4</p></td>
+</tr>
+<tr class="row-odd"><td><p>64MB memory ref. (remote
+CPU)</p></td>
+<td><p>7
+0
+n
+s</p></td>
+<td><p>TinyMemBench on Broadwell
+E5-2690v4</p></td>
+</tr>
+<tr class="row-even"><td><p>256MB memory ref. (local
+CPU)</p></td>
+<td><p>7
+5
+n
+s</p></td>
+<td><p>TinyMemBench on Broadwell
+E5-2690v4</p></td>
+</tr>
+<tr class="row-odd"><td><p>Intel Optane random write</p></td>
+<td><p>9
+4
+n
+s</p></td>
+<td><p>UCSD Non-Volatile Systems Lab</p></td>
+</tr>
+<tr class="row-even"><td><p>256MB memory ref. (remote
+CPU)</p></td>
+<td><p>1
+2
+0
+n
+s</p></td>
+<td><p>TinyMemBench on Broadwell
+E5-2690v4</p></td>
+</tr>
+<tr class="row-odd"><td><p>Intel Optane random read</p></td>
+<td><p>3
+0
+5
+n
+s</p></td>
+<td><p>UCSD Non-Volatile Systems Lab</p></td>
+</tr>
+<tr class="row-even"><td><p>Send 4KB over 100 Gbps HPC
+fabric</p></td>
+<td><p>1
+μ
+s</p></td>
+<td><p>MVAPICH2 over Intel Omni-Path</p></td>
+</tr>
+<tr class="row-odd"><td><p>Compress 1KB with Google
+Snappy</p></td>
+<td><p>3
+μ
+s</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Send 4KB over 10 Gbps
+ethernet</p></td>
+<td><p>1
+0
+μ
+s</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Write 4KB randomly to NVMe
+SSD</p></td>
+<td><p>3
+0
+μ
+s</p></td>
+<td><p>DC P3608 NVMe SSD (QOS 99% is
+500μs)</p></td>
+</tr>
+<tr class="row-even"><td><p>Transfer 1MB to/from NVLink
+GPU</p></td>
+<td><p>3
+0
+μ
+s</p></td>
+<td><p>~33GB/s on NVIDIA 40GB NVLink</p></td>
+</tr>
+<tr class="row-odd"><td><p>Transfer 1MB to/from PCI-E
+GPU</p></td>
+<td><p>8
+0
+μ
+s</p></td>
+<td><p>~12GB/s on PCIe 3.0 x16 link</p></td>
+</tr>
+<tr class="row-even"><td><p>Read 4KB randomly from NVMe
+SSD</p></td>
+<td><p>1
+2
+0
+μ
+s</p></td>
+<td><p>DC P3608 NVMe SSD (QOS 99%)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read 1MB sequentially from
+NVMe SSD</p></td>
+<td><p>2
+0
+8
+μ
+s</p></td>
+<td><p>~4.8GB/s DC P3608 NVMe SSD</p></td>
+</tr>
+<tr class="row-even"><td><p>Write 4KB randomly to SATA
+SSD</p></td>
+<td><p>5
+0
+0
+μ
+s</p></td>
+<td><p>DC S3510 SATA SSD (QOS 99.9%)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read 4KB randomly from SATA
+SSD</p></td>
+<td><p>5
+0
+0
+μ
+s</p></td>
+<td><p>DC S3510 SATA SSD (QOS 99.9%)</p></td>
+</tr>
+<tr class="row-even"><td><p>Round trip within same data
+center</p></td>
+<td><p>5
+0
+0
+μ
+s</p></td>
+<td><p>One-way ping is ~250μs</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read 1MB sequentially from
+SATA SSD</p></td>
+<td><p>2
+m
+s</p></td>
+<td><p>~550MB/s DC S3510 SATA SSD</p></td>
+</tr>
+<tr class="row-even"><td><p>Read 1MB sequentially from
+disk</p></td>
+<td><p>5
+m
+s</p></td>
+<td><p>~200MB/s server HDD</p></td>
+</tr>
+<tr class="row-odd"><td><p>Random Disk Access
+(seek+rotation)</p></td>
+<td><p>1
+0
+m
+s</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Send packet
+CA-&gt;Netherlands-&gt;CA</p></td>
+<td><p>1
+5
+0
+m
+s</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<span id="table-latency-numbers-tesla"></span><table class="docutils align-default" id="id15">
+<caption><span class="caption-number">Table 13.4.2 </span><span class="caption-text">Latency Numbers for NVIDIA Tesla GPUs.</span><a class="headerlink" href="#id15" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 6%" />
+<col style="width: 54%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Action</p></th>
+<th class="head"><p>Ti
+me</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GPU Shared Memory access</p></td>
+<td><p>30
+ns</p></td>
+<td><p>30~90 cycles (bank conflicts add
+latency)</p></td>
+</tr>
+<tr class="row-odd"><td><p>GPU Global Memory access</p></td>
+<td><p>2
+00
+ns</p></td>
+<td><p>200~800 cycles</p></td>
+</tr>
+<tr class="row-even"><td><p>Launch CUDA kernel on GPU</p></td>
+<td><p>10
+μs</p></td>
+<td><p>Host CPU instructs GPU to start
+kernel</p></td>
+</tr>
+<tr class="row-odd"><td><p>Transfer 1MB to/from
+NVLink GPU</p></td>
+<td><p>30
+μs</p></td>
+<td><p>~33GB/s on NVIDIA 40GB NVLink</p></td>
+</tr>
+<tr class="row-even"><td><p>Transfer 1MB to/from
+PCI-E GPU</p></td>
+<td><p>80
+μs</p></td>
+<td><p>~12GB/s on PCI-Express x16 link</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="summary">
+<h2><span class="section-number">13.4.8. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Devices have overheads for operations. Hence it is important to aim
+for a small number of large transfers rather than many small ones.
+This applies to RAM, SSDs, networks and GPUs.</p></li>
+<li><p>Vectorization is key for performance. Make sure you are aware of the
+specific abilities of your accelerator. E.g., some Intel Xeon CPUs
+are particularly good for INT8 operations, NVIDIA Volta GPUs excel at
+FP16 matrix-matrix operations and NVIDIA Turing shines at FP16, INT8,
+and INT4 operations.</p></li>
+<li><p>Numerical overflow due to small data types can be a problem during
+training (and to a lesser extent during inference).</p></li>
+<li><p>Aliasing can significantly degrade performance. For instance, memory
+alignment on 64 bit CPUs should be done with respect to 64 bit
+boundaries. On GPUs it is a good idea to keep convolution sizes
+aligned, e.g., to tensor cores.</p></li>
+<li><p>Match your algorithms to the hardware (e.g., memory footprint, and
+bandwidth). Great speedup (orders of magnitude) can be achieved when
+fitting the parameters into caches.</p></li>
+<li><p>We recommend that you sketch out the performance of a novel algorithm
+on paper before verifying the experimental results. Discrepancies of
+an order-of-magnitude or more are reasons for concern.</p></li>
+<li><p>Use profilers to debug performance bottlenecks.</p></li>
+<li><p>Training and inference hardware have different sweet spots in terms
+of price and performance.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">13.4.9. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Write C code to test whether there is any difference in speed
+between accessing memory aligned or misaligned relative to the
+external memory interface. Hint: be careful of caching effects.</p></li>
+<li><p>Test the difference in speed between accessing memory in sequence or
+with a given stride.</p></li>
+<li><p>How could you measure the cache sizes on a CPU?</p></li>
+<li><p>How would you lay out data across multiple memory channels for
+maximum bandwidth? How would you lay it out if you had many small
+threads?</p></li>
+<li><p>An enterprise-class HDD is spinning at 10,000 rpm. What is the
+absolutely minimum time an HDD needs to spend worst case before it
+can read data (you can assume that heads move almost
+instantaneously)? Why are 2.5” HDDs becoming popular for commercial
+servers (relative to 3.5” and 5.25” drives)?</p></li>
+<li><p>Assume that an HDD manufacturer increases the storage density from 1
+Tbit per square inch to 5 Tbit per square inch. How much information
+can you store on a ring on a 2.5” HDD? Is there a difference between
+the inner and outer tracks?</p></li>
+<li><p>Going from 8 bit to 16 bit data types increases the amount of
+silicon approximately by four times. Why? Why might NVIDIA have
+added INT4 operations to their Turing GPUs?</p></li>
+<li><p>How much faster is it to read forward through memory vs. reading
+backwards? Does this number differ between different computers and
+CPU vendors? Why? Write C code and experiment with it.</p></li>
+<li><p>Can you measure the cache size of your disk? What is it for a
+typical HDD? Do SSDs need a cache?</p></li>
+<li><p>Measure the packet overhead when sending messages across the
+Ethernet. Look up the difference between UDP and TCP/IP connections.</p></li>
+<li><p>Direct memory access allows devices other than the CPU to write (and
+read) directly to (from) memory. Why is this a good idea?</p></li>
+<li><p>Look at the performance numbers for the Turing T4 GPU. Why does the
+performance “only” double as you go from FP16 to INT8 and INT4?</p></li>
+<li><p>What is the shortest time it should take for a packet on a round
+trip between San Francisco and Amsterdam? Hint: you can assume that
+the distance is 10,000 km.</p></li>
+</ol>
+<p><a class="reference external" href="https://discuss.d2l.ai/t/363">Discussions</a></p>
+</div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">13.4. Hardware</a><ul>
+<li><a class="reference internal" href="#computers">13.4.1. Computers</a></li>
+<li><a class="reference internal" href="#memory">13.4.2. Memory</a></li>
+<li><a class="reference internal" href="#storage">13.4.3. Storage</a><ul>
+<li><a class="reference internal" href="#hard-disk-drives">13.4.3.1. Hard Disk Drives</a></li>
+<li><a class="reference internal" href="#solid-state-drives">13.4.3.2. Solid State Drives</a></li>
+<li><a class="reference internal" href="#cloud-storage">13.4.3.3. Cloud Storage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cpus">13.4.4. CPUs</a><ul>
+<li><a class="reference internal" href="#microarchitecture">13.4.4.1. Microarchitecture</a></li>
+<li><a class="reference internal" href="#vectorization">13.4.4.2. Vectorization</a></li>
+<li><a class="reference internal" href="#cache">13.4.4.3. Cache</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gpus-and-other-accelerators">13.4.5. GPUs and other Accelerators</a></li>
+<li><a class="reference internal" href="#networks-and-buses">13.4.6. Networks and Buses</a></li>
+<li><a class="reference internal" href="#more-latency-numbers">13.4.7. More Latency Numbers</a></li>
+<li><a class="reference internal" href="#summary">13.4.8. Summary</a></li>
+<li><a class="reference internal" href="#exercises">13.4.9. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="auto-parallelism.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>13.3. Automatic Parallelism</div>
+         </div>
+     </a>
+     <a id="button-next" href="multiple-gpus.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>13.5. Training on Multiple GPUs</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>8.8. Designing Convolution Network Architectures &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="9. Recurrent Neural Networks" href="../chapter_recurrent-neural-networks/index.html" />
+    <link rel="prev" title="8.7. Densely Connected Networks (DenseNet)" href="densenet.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">8. </span>Modern Convolutional Neural Networks</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">8.8. </span>Designing Convolution Network Architectures</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_convolutional-modern/cnn-design.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Modern Convolutional Neural Networks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-regression/index.html">3. Linear Neural Networks for Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression.html">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-regression/weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">8. Modern Convolutional Neural Networks</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="designing-convolution-network-architectures">
+<span id="sec-cnn-design"></span><h1><span class="section-number">8.8. </span>Designing Convolution Network Architectures<a class="headerlink" href="#designing-convolution-network-architectures" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_convolutional-modern/cnn-design.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p>The previous sections have taken us on a tour of modern network design
+for computer vision. Common to all the work we covered was that it
+greatly relied on the intuition of scientists. Many of the architectures
+are heavily informed by human creativity and to a much lesser extent by
+systematic exploration of the design space that deep networks offer.
+Nonetheless, this <em>network engineering</em> approach has been tremendously
+successful.</p>
+<p>Ever since AlexNet (<a class="reference internal" href="alexnet.html#sec-alexnet"><span class="std std-numref">Section 8.1</span></a>) beat conventional computer
+vision models on ImageNet, it has become popular to construct very deep
+networks by stacking blocks of convolutions, all designed according to
+the same pattern. In particular, <span class="math notranslate nohighlight">\(3 \times 3\)</span> convolutions were
+popularized by VGG networks (<a class="reference internal" href="vgg.html#sec-vgg"><span class="std std-numref">Section 8.2</span></a>). NiN
+(<a class="reference internal" href="nin.html#sec-nin"><span class="std std-numref">Section 8.3</span></a>) showed that even <span class="math notranslate nohighlight">\(1 \times 1\)</span> convolutions
+could be beneficial by adding local nonlinearities. Moreover, NiN solved
+the problem of aggregating information at the head of a network by
+aggregating across all locations. GoogLeNet (<a class="reference internal" href="googlenet.html#sec-googlenet"><span class="std std-numref">Section 8.4</span></a>)
+added multiple branches of different convolution width, combining the
+advantages of VGG and NiN in its Inception block. ResNets
+(<a class="reference internal" href="resnet.html#sec-resnet"><span class="std std-numref">Section 8.6</span></a>) changed the inductive bias towards the identity
+mapping (from <span class="math notranslate nohighlight">\(f(x) = 0\)</span>). This allowed for very deep networks.
+Almost a decade later, the ResNet design is still popular, a testament
+to its design. Lastly, ResNeXt (<a class="reference internal" href="resnet.html#subsec-resnext"><span class="std std-numref">Section 8.6.5</span></a>) added
+grouped convolutions, offering a better trade-off between parameters and
+computation. A precursor to Transformers for vision, the
+Squeeze-and-Excitation Networks (SENets) allow for efficient information
+transfer between locations <span id="id1">(<a class="reference internal" href="../chapter_references/zreferences.html#id126" title="Hu, J., Shen, L., &amp; Sun, G. (2018). Squeeze-and-excitation networks. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 7132–7141).">Hu <em>et al.</em>, 2018</a>)</span>. This was
+accomplished by computing a per-channel global attention function.</p>
+<p>Up to now we have omitted networks obtained via <em>neural architecture
+search</em> (NAS) <span id="id2">(<a class="reference internal" href="../chapter_references/zreferences.html#id361" title="Liu, H., Simonyan, K., &amp; Yang, Y. (2018). DARTS: differentiable architecture search. ArXiv:1806.09055.">Liu <em>et al.</em>, 2018</a>, <a class="reference internal" href="../chapter_references/zreferences.html#id360" title="Zoph, B., &amp; Le, Q. V. (2016). Neural architecture search with reinforcement learning. ArXiv:1611.01578.">Zoph and Le, 2016</a>)</span>. We chose to do so
+since their cost is usually enormous, relying on brute-force search,
+genetic algorithms, reinforcement learning, or some other form of
+hyperparameter optimization. Given a fixed search space, NAS uses a
+search strategy to automatically select an architecture based on the
+returned performance estimation. The outcome of NAS is a single network
+instance. EfficientNets are a notable outcome of this search
+<span id="id3">(<a class="reference internal" href="../chapter_references/zreferences.html#id359" title="Tan, M., &amp; Le, Q. (2019). EfficientNet: rethinking model scaling for convolutional neural networks. International Conference on Machine Learning (pp. 6105–6114).">Tan and Le, 2019</a>)</span>.</p>
+<p>In the following we discuss an idea that is quite different to the quest
+for the <em>single best network</em>. It is computationally relatively
+inexpensive, it leads to scientific insights on the way, and it is quite
+effective in terms of the quality of outcomes. Let’s review the strategy
+by <span id="id4">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id225" title="Radosavovic, I., Kosaraju, R. P., Girshick, R., He, K., &amp; Dollár, P. (2020). Designing network design spaces. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10428–10436).">2020</a>)</span> to <em>design network
+design spaces</em>. The strategy combines the strength of manual design and
+NAS. It accomplishes this by operating on <em>distributions of networks</em>
+and optimizing the distributions in a way to obtain good performance for
+entire families of networks. The outcome of it are <em>RegNets</em>,
+specifically RegNetX and RegNetY, plus a range of guiding principles for
+the design of performant CNNs.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-1-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-1-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">torch</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">init</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">npx</span>
+<span class="kn">from</span> <span class="nn">mxnet.gluon</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">mxnet</span> <span class="k">as</span> <span class="n">d2l</span>
+
+<span class="n">npx</span><span class="o">.</span><span class="n">set_np</span><span class="p">()</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flax</span> <span class="kn">import</span> <span class="n">linen</span> <span class="k">as</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">jax</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div></div><div class="section" id="the-anynet-design-space">
+<span id="subsec-the-anynet-design-space"></span><h2><span class="section-number">8.8.1. </span>The AnyNet Design Space<a class="headerlink" href="#the-anynet-design-space" title="Permalink to this heading">¶</a></h2>
+<p>The description below closely follows the reasoning in
+<span id="id5">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id225" title="Radosavovic, I., Kosaraju, R. P., Girshick, R., He, K., &amp; Dollár, P. (2020). Designing network design spaces. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10428–10436).">2020</a>)</span> with some abbreviations
+to make it fit in the scope of the book. To begin, we need a template
+for the family of networks to explore. One of the commonalities of the
+designs in this chapter is that the networks consist of a <em>stem</em>, a
+<em>body</em> and a <em>head</em>. The stem performs initial image processing, often
+through convolutions with a larger window size. The body consists of
+multiple blocks, carrying out the bulk of the transformations needed to
+go from raw images to object representations. Lastly, the head converts
+this into the desired outputs, such as via a softmax regressor for
+multiclass classification. The body, in turn, consists of multiple
+stages, operating on the image at decreasing resolutions. In fact, both
+the stem and each subsequent stage quarter the spatial resolution.
+Lastly, each stage consists of one or more blocks. This pattern is
+common to all networks, from VGG to ResNeXt. Indeed, for the design of
+generic AnyNet networks,
+<span id="id6">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id225" title="Radosavovic, I., Kosaraju, R. P., Girshick, R., He, K., &amp; Dollár, P. (2020). Designing network design spaces. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10428–10436).">2020</a>)</span> used the ResNeXt block
+of <a class="reference internal" href="resnet.html#fig-resnext-block"><span class="std std-numref">Fig. 8.6.5</span></a>.</p>
+<div class="figure align-default" id="id18">
+<span id="fig-anynet-full"></span><img alt="../_images/anynet.svg" src="../_images/anynet.svg" /><p class="caption"><span class="caption-number">Fig. 8.8.1 </span><span class="caption-text">The AnyNet design space. The numbers <span class="math notranslate nohighlight">\((\mathit{c}, \mathit{r})\)</span>
+along each arrow indicate the number of channels <span class="math notranslate nohighlight">\(c\)</span> and the
+resolution <span class="math notranslate nohighlight">\(\mathit{r} \times \mathit{r}\)</span> of the images at that
+point. From left to right: generic network structure composed of
+stem, body, and head; body composed of four stages; detailed
+structure of a stage; two alternative structures for blocks, one
+without downsampling and one that halves the resolution in each
+dimension. Design choices include depth <span class="math notranslate nohighlight">\(\mathit{d_i}\)</span>, the
+number of output channels <span class="math notranslate nohighlight">\(\mathit{c_i}\)</span>, the number of groups
+<span class="math notranslate nohighlight">\(\mathit{g_i}\)</span>, and bottleneck ratio <span class="math notranslate nohighlight">\(\mathit{k_i}\)</span> for
+any stage <span class="math notranslate nohighlight">\(\mathit{i}\)</span>.</span><a class="headerlink" href="#id18" title="Permalink to this image">¶</a></p>
+</div>
+<p>Let’s review the structure outlined in <a class="reference internal" href="#fig-anynet-full"><span class="std std-numref">Fig. 8.8.1</span></a> in
+detail. As mentioned, an AnyNet consists of a stem, body, and head. The
+stem takes as its input RGB images (3 channels), using a
+<span class="math notranslate nohighlight">\(3 \times 3\)</span> convolution with a stride of <span class="math notranslate nohighlight">\(2\)</span>, followed by a
+batch norm, to halve the resolution from <span class="math notranslate nohighlight">\(r \times r\)</span> to
+<span class="math notranslate nohighlight">\(r/2 \times r/2\)</span>. Moreover, it generates <span class="math notranslate nohighlight">\(c_0\)</span> channels that
+serve as input to the body.</p>
+<p>Since the network is designed to work well with ImageNet images of shape
+<span class="math notranslate nohighlight">\(224 \times 224 \times 3\)</span>, the body serves to reduce this to
+<span class="math notranslate nohighlight">\(7 \times 7 \times c_4\)</span> through 4 stages (recall that
+<span class="math notranslate nohighlight">\(224 / 2^{1+4} = 7\)</span>), each with an eventual stride of <span class="math notranslate nohighlight">\(2\)</span>.
+Lastly, the head employs an entirely standard design via global average
+pooling, similar to NiN (<a class="reference internal" href="nin.html#sec-nin"><span class="std std-numref">Section 8.3</span></a>), followed by a fully
+connected layer to emit an <span class="math notranslate nohighlight">\(n\)</span>-dimensional vector for
+<span class="math notranslate nohighlight">\(n\)</span>-class classification.</p>
+<p>Most of the relevant design decisions are inherent to the body of the
+network. It proceeds in stages, where each stage is composed of the same
+type of ResNeXt blocks as we discussed in <a class="reference internal" href="resnet.html#subsec-resnext"><span class="std std-numref">Section 8.6.5</span></a>.
+The design there is again entirely generic: we begin with a block that
+halves the resolution by using a stride of <span class="math notranslate nohighlight">\(2\)</span> (the rightmost in
+<a class="reference internal" href="#fig-anynet-full"><span class="std std-numref">Fig. 8.8.1</span></a>). To match this, the residual branch of the
+ResNeXt block needs to pass through a <span class="math notranslate nohighlight">\(1 \times 1\)</span> convolution.
+This block is followed by a variable number of additional ResNeXt blocks
+that leave both resolution and the number of channels unchanged. Note
+that a common design practice is to add a slight bottleneck in the
+design of convolutional blocks. As such, with bottleneck ratio
+<span class="math notranslate nohighlight">\(k_i \geq 1\)</span> we afford some number of channels, <span class="math notranslate nohighlight">\(c_i/k_i\)</span>,
+within each block for stage <span class="math notranslate nohighlight">\(i\)</span> (as the experiments show, this is
+not really effective and should be skipped). Lastly, since we are
+dealing with ResNeXt blocks, we also need to pick the number of groups
+<span class="math notranslate nohighlight">\(g_i\)</span> for grouped convolutions at stage <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p>This seemingly generic design space provides us nonetheless with many
+parameters: we can set the block width (number of channels)
+<span class="math notranslate nohighlight">\(c_0, \ldots c_4\)</span>, the depth (number of blocks) per stage
+<span class="math notranslate nohighlight">\(d_1, \ldots d_4\)</span>, the bottleneck ratios <span class="math notranslate nohighlight">\(k_1, \ldots k_4\)</span>,
+and the group widths (numbers of groups) <span class="math notranslate nohighlight">\(g_1, \ldots g_4\)</span>. In
+total this adds up to 17 parameters, resulting in an unreasonably large
+number of configurations that would warrant exploring. We need some
+tools to reduce this huge design space effectively. This is where the
+conceptual beauty of design spaces comes in. Before we do so, let’s
+implement the generic design first.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-3-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-3-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AnyNet</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">Classifier</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">stem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">LazyConv2d</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">LazyBatchNorm2d</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AnyNet</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">Classifier</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">stem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">):</span>
+        <span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">net</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-3-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AnyNet</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">Classifier</span><span class="p">):</span>
+    <span class="n">arch</span><span class="p">:</span> <span class="nb">tuple</span>
+    <span class="n">stem_channels</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">training</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_net</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">stem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                    <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">relu</span>
+        <span class="p">])</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-3-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AnyNet</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">Classifier</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">stem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                   <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">),</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">BatchNormalization</span><span class="p">(),</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Activation</span><span class="p">(</span><span class="s1">&#39;relu&#39;</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div></div><p>Each stage consists of <code class="docutils literal notranslate"><span class="pre">depth</span></code> ResNeXt blocks, where <code class="docutils literal notranslate"><span class="pre">num_channels</span></code>
+specifies the block width. Note that the first block halves the height
+and width of input images.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-5-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-5-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">):</span>
+    <span class="n">blk</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">blk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">,</span>
+                <span class="n">use_1x1conv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">blk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">blk</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">):</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span>
+                <span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">,</span> <span class="n">use_1x1conv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span>
+                <span class="n">num_channels</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">net</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">):</span>
+    <span class="n">blk</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">blk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">,</span>
+                <span class="n">use_1x1conv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">blk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">,</span>
+                                        <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">blk</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">):</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">,</span>
+                <span class="n">use_1x1conv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">ResNeXtBlock</span><span class="p">(</span><span class="n">num_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">net</span>
+</pre></div>
+</div>
+</div></div><p>Putting the network stem, body, and head together, we complete the
+implementation of AnyNet.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-7-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-7-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-7-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-7-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-7-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">stem_channels</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">stem_channels</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arch</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stage</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveAvgPool2d</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">LazyLinear</span><span class="p">(</span><span class="n">num_classes</span><span class="p">)))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">d2l</span><span class="o">.</span><span class="n">init_cnn</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-7-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">stem_channels</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">stem_channels</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arch</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">GlobalAvgPool2D</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">init</span><span class="o">.</span><span class="n">Xavier</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-7-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_net</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stem_channels</span><span class="p">)])</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arch</span><span class="p">):</span>
+        <span class="n">net</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">)])</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">avg_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">window_shape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span>
+                            <span class="n">strides</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">),</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)])])</span>
+    <span class="k">return</span> <span class="n">net</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-7-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@d2l</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">)</span>
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">stem_channels</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">save_hyperparameters</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">stem_channels</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arch</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">GlobalAvgPool2D</span><span class="p">(),</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="n">num_classes</span><span class="p">)]))</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="distributions-and-parameters-of-design-spaces">
+<h2><span class="section-number">8.8.2. </span>Distributions and Parameters of Design Spaces<a class="headerlink" href="#distributions-and-parameters-of-design-spaces" title="Permalink to this heading">¶</a></h2>
+<p>As just discussed in <a class="reference internal" href="#subsec-the-anynet-design-space"><span class="std std-numref">Section 8.8.1</span></a>,
+parameters of a design space are hyperparameters of networks in that
+design space. Consider the problem of identifying good parameters in the
+AnyNet design space. We could try finding the <em>single best</em> parameter
+choice for a given amount of computation (e.g., FLOPs and compute time).
+If we allowed for even only <em>two</em> possible choices for each parameter,
+we would have to explore <span class="math notranslate nohighlight">\(2^{17} = 131072\)</span> combinations to find
+the best solution. This is clearly infeasible because of its exorbitant
+cost. Even worse, we do not really learn anything from this exercise in
+terms of how one should design a network. Next time we add, say, an
+X-stage, or a shift operation, or similar, we would need to start from
+scratch. Even worse, due to the stochasticity in training (rounding,
+shuffling, bit errors), no two runs are likely to produce exactly the
+same results. A better strategy would be to try to determine general
+guidelines of how the choices of parameters should be related. For
+instance, the bottleneck ratio, the number of channels, blocks, groups,
+or their change between layers should ideally be governed by a
+collection of simple rules. The approach in
+<span id="id7">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id363" title="Radosavovic, I., Johnson, J., Xie, S., Lo, W.-Y., &amp; Dollár, P. (2019). On network design spaces for visual recognition. Proceedings of the IEEE/CVF International Conference on Computer Vision (pp. 1882–1890).">2019</a>)</span> relies on the following four
+assumptions:</p>
+<ol class="arabic simple">
+<li><p>We assume that general design principles actually exist, so that many
+networks satisfying these requirements should offer good performance.
+Consequently, identifying a <em>distribution</em> over networks can be a
+sensible strategy. In other words, we assume that there are many good
+needles in the haystack.</p></li>
+<li><p>We need not train networks to convergence before we can assess
+whether a network is good. Instead, it is sufficient to use the
+intermediate results as reliable guidance for final accuracy. Using
+(approximate) proxies to optimize an objective is referred to as
+multi-fidelity optimization <span id="id8">(<a class="reference internal" href="../chapter_references/zreferences.html#id431" title="Forrester, A. I., Sóbester, A., &amp; Keane, A. J. (2007). Multi-fidelity optimization via surrogate modelling. Proceedings of the Royal Society A: Mathematical, Physical and Engineering Sciences, 463(2088), 3251–3269.">Forrester <em>et al.</em>, 2007</a>)</span>.
+Consequently, design optimization is carried out, based on the
+accuracy achieved after only a few passes through the dataset,
+reducing the cost significantly.</p></li>
+<li><p>Results obtained at a smaller scale (for smaller networks) generalize
+to larger ones. Consequently, optimization is carried out for
+networks that are structurally similar, but with a smaller number of
+blocks, fewer channels, etc. Only in the end will we need to verify
+that the so-found networks also offer good performance at scale.</p></li>
+<li><p>Aspects of the design can be approximately factorized so that it is
+possible to infer their effect on the quality of the outcome somewhat
+independently. In other words, the optimization problem is moderately
+easy.</p></li>
+</ol>
+<p>These assumptions allow us to test many networks cheaply. In particular,
+we can <em>sample</em> uniformly from the space of configurations and evaluate
+their performance. Subsequently, we can evaluate the quality of the
+choice of parameters by reviewing the <em>distribution</em> of error/accuracy
+that can be achieved with said networks. Denote by <span class="math notranslate nohighlight">\(F(e)\)</span> the
+cumulative distribution function (CDF) for errors committed by networks
+of a given design space, drawn using probability disribution <span class="math notranslate nohighlight">\(p\)</span>.
+That is,</p>
+<div class="math notranslate nohighlight" id="equation-chapter-convolutional-modern-cnn-design-0">
+<span class="eqno">(8.8.1)<a class="headerlink" href="#equation-chapter-convolutional-modern-cnn-design-0" title="Permalink to this equation">¶</a></span>\[F(e, p) \stackrel{\textrm{def}}{=} P_{\textrm{net} \sim p} \{e(\textrm{net}) \leq e\}.\]</div>
+<p>Our goal is now to find a distribution <span class="math notranslate nohighlight">\(p\)</span> over <em>networks</em> such
+that most networks have a very low error rate and where the support of
+<span class="math notranslate nohighlight">\(p\)</span> is concise. Of course, this is computationally infeasible to
+perform accurately. We resort to a sample of networks
+<span class="math notranslate nohighlight">\(\mathcal{Z} \stackrel{\textrm{def}}{=} \{\textrm{net}_1, \ldots \textrm{net}_n\}\)</span>
+(with errors <span class="math notranslate nohighlight">\(e_1, \ldots, e_n\)</span>, respectively) from <span class="math notranslate nohighlight">\(p\)</span> and
+use the empirical CDF <span class="math notranslate nohighlight">\(\hat{F}(e, \mathcal{Z})\)</span> instead:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-convolutional-modern-cnn-design-1">
+<span class="eqno">(8.8.2)<a class="headerlink" href="#equation-chapter-convolutional-modern-cnn-design-1" title="Permalink to this equation">¶</a></span>\[\hat{F}(e, \mathcal{Z}) = \frac{1}{n}\sum_{i=1}^n \mathbf{1}(e_i \leq e).\]</div>
+<p>Whenever the CDF for one set of choices majorizes (or matches) another
+CDF it follows that its choice of parameters is superior (or
+indifferent). Accordingly
+<span id="id9">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id225" title="Radosavovic, I., Kosaraju, R. P., Girshick, R., He, K., &amp; Dollár, P. (2020). Designing network design spaces. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10428–10436).">2020</a>)</span> experimented with a
+shared network bottleneck ratio <span class="math notranslate nohighlight">\(k_i = k\)</span> for all stages <span class="math notranslate nohighlight">\(i\)</span>
+of the network. This gets rid of three of the four parameters governing
+the bottleneck ratio. To assess whether this (negatively) affects the
+performance one can draw networks from the constrained and from the
+unconstrained distribution and compare the corresonding CDFs. It turns
+out that this constraint does not affect the accuracy of the
+distribution of networks at all, as can be seen in the first panel of
+<a class="reference internal" href="#fig-regnet-fig"><span class="std std-numref">Fig. 8.8.2</span></a>. Likewise, we could choose to pick the same
+group width <span class="math notranslate nohighlight">\(g_i = g\)</span> occurring at the various stages of the
+network. Again, this does not affect performance, as can be seen in the
+second panel of <a class="reference internal" href="#fig-regnet-fig"><span class="std std-numref">Fig. 8.8.2</span></a>. Both steps combined reduce
+the number of free parameters by six.</p>
+<div class="figure align-default" id="id19">
+<span id="fig-regnet-fig"></span><img alt="../_images/regnet-fig.png" src="../_images/regnet-fig.png" />
+<p class="caption"><span class="caption-number">Fig. 8.8.2 </span><span class="caption-text">Comparing error empirical distribution functions of design spaces.
+<span class="math notranslate nohighlight">\(\textrm{AnyNet}_\mathit{A}\)</span> is the original design space;
+<span class="math notranslate nohighlight">\(\textrm{AnyNet}_\mathit{B}\)</span> ties the bottleneck ratios,
+<span class="math notranslate nohighlight">\(\textrm{AnyNet}_\mathit{C}\)</span> also ties group widths,
+<span class="math notranslate nohighlight">\(\textrm{AnyNet}_\mathit{D}\)</span> increases the network depth across
+stages. From left to right: (i) tying bottleneck ratios has no effect
+on performance; (ii) tying group widths has no effect on performance;
+(iii) increasing network widths (channels) across stages improves
+performance; (iv) increasing network depths across stages improves
+performance. Figure courtesy of
+<span id="id10">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id225" title="Radosavovic, I., Kosaraju, R. P., Girshick, R., He, K., &amp; Dollár, P. (2020). Designing network design spaces. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10428–10436).">2020</a>)</span>.</span><a class="headerlink" href="#id19" title="Permalink to this image">¶</a></p>
+</div>
+<p>Next we look for ways to reduce the multitude of potential choices for
+width and depth of the stages. It is a reasonable assumption that, as we
+go deeper, the number of channels should increase, i.e.,
+<span class="math notranslate nohighlight">\(c_i \geq c_{i-1}\)</span> (<span class="math notranslate nohighlight">\(w_{i+1} \geq w_i\)</span> per their notation in
+<a class="reference internal" href="#fig-regnet-fig"><span class="std std-numref">Fig. 8.8.2</span></a>), yielding <span class="math notranslate nohighlight">\(\textrm{AnyNetX}_D\)</span>.
+Likewise, it is equally reasonable to assume that as the stages
+progress, they should become deeper, i.e., <span class="math notranslate nohighlight">\(d_i \geq d_{i-1}\)</span>,
+yielding <span class="math notranslate nohighlight">\(\textrm{AnyNetX}_E\)</span>. This can be experimentally verified
+in the third and fourth panel of <a class="reference internal" href="#fig-regnet-fig"><span class="std std-numref">Fig. 8.8.2</span></a>,
+respectively.</p>
+</div>
+<div class="section" id="regnet">
+<h2><span class="section-number">8.8.3. </span>RegNet<a class="headerlink" href="#regnet" title="Permalink to this heading">¶</a></h2>
+<p>The resulting <span class="math notranslate nohighlight">\(\textrm{AnyNetX}_E\)</span> design space consists of simple
+networks following easy-to-interpret design principles:</p>
+<ul class="simple">
+<li><p>Share the bottleneck ratio <span class="math notranslate nohighlight">\(k_i = k\)</span> for all stages <span class="math notranslate nohighlight">\(i\)</span>;</p></li>
+<li><p>Share the group width <span class="math notranslate nohighlight">\(g_i = g\)</span> for all stages <span class="math notranslate nohighlight">\(i\)</span>;</p></li>
+<li><p>Increase network width across stages: <span class="math notranslate nohighlight">\(c_{i} \leq c_{i+1}\)</span>;</p></li>
+<li><p>Increase network depth across stages: <span class="math notranslate nohighlight">\(d_{i} \leq d_{i+1}\)</span>.</p></li>
+</ul>
+<p>This leaves us with a final set of choices: how to pick the specific
+values for the above parameters of the eventual
+<span class="math notranslate nohighlight">\(\textrm{AnyNetX}_E\)</span> design space. By studying the best-performing
+networks from the distribution in <span class="math notranslate nohighlight">\(\textrm{AnyNetX}_E\)</span> one can
+observe the following: the width of the network ideally increases
+linearly with the block index across the network, i.e.,
+<span class="math notranslate nohighlight">\(c_j \approx c_0 + c_a j\)</span>, where <span class="math notranslate nohighlight">\(j\)</span> is the block index and
+slope <span class="math notranslate nohighlight">\(c_a &gt; 0\)</span>. Given that we get to choose a different block
+width only per stage, we arrive at a piecewise constant function,
+engineered to match this dependence. Furthermore, experiments also show
+that a bottleneck ratio of <span class="math notranslate nohighlight">\(k = 1\)</span> performs best, i.e., we are
+advised not to use bottlenecks at all.</p>
+<p>We recommend the interested reader reviews further details in the design
+of specific networks for different amounts of computation by perusing
+<span id="id11">Radosavovic <em>et al.</em> (<a class="reference internal" href="../chapter_references/zreferences.html#id225" title="Radosavovic, I., Kosaraju, R. P., Girshick, R., He, K., &amp; Dollár, P. (2020). Designing network design spaces. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (pp. 10428–10436).">2020</a>)</span>. For instance, an
+effective 32-layer RegNetX variant is given by <span class="math notranslate nohighlight">\(k = 1\)</span> (no
+bottleneck), <span class="math notranslate nohighlight">\(g = 16\)</span> (group width is 16), <span class="math notranslate nohighlight">\(c_1 = 32\)</span> and
+<span class="math notranslate nohighlight">\(c_2 = 80\)</span> channels for the first and second stage, respectively,
+chosen to be <span class="math notranslate nohighlight">\(d_1=4\)</span> and <span class="math notranslate nohighlight">\(d_2=6\)</span> blocks deep. The
+astonishing insight from the design is that it still applies, even when
+investigating networks at a larger scale. Even better, it even holds for
+Squeeze-and-Excitation (SE) network designs (RegNetY) that have a global
+channel activation <span id="id12">(<a class="reference internal" href="../chapter_references/zreferences.html#id126" title="Hu, J., Shen, L., &amp; Sun, G. (2018). Squeeze-and-excitation networks. Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 7132–7141).">Hu <em>et al.</em>, 2018</a>)</span>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-9-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-9-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RegNetX32</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">stem_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="n">depths</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">depths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">),</span>
+             <span class="p">(</span><span class="n">depths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">channels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">)),</span>
+            <span class="n">stem_channels</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RegNetX32</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">stem_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="n">depths</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">depths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">),</span>
+             <span class="p">(</span><span class="n">depths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">channels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">)),</span>
+            <span class="n">stem_channels</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-9-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RegNetX32</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">):</span>
+    <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">stem_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">arch</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-9-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RegNetX32</span><span class="p">(</span><span class="n">AnyNet</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">stem_channels</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="n">depths</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="p">((</span><span class="n">depths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">),</span>
+             <span class="p">(</span><span class="n">depths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">channels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">groups</span><span class="p">,</span> <span class="n">bot_mul</span><span class="p">)),</span>
+            <span class="n">stem_channels</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>We can see that each RegNetX stage progressively reduces resolution and
+increases output channels.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-11-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-11-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RegNetX32</span><span class="p">()</span><span class="o">.</span><span class="n">layer_summary</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RegNetX32</span><span class="p">()</span><span class="o">.</span><span class="n">layer_summary</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-11-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RegNetX32</span><span class="p">(</span><span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">layer_summary</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-11-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RegNetX32</span><span class="p">()</span><span class="o">.</span><span class="n">layer_summary</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="training">
+<h2><span class="section-number">8.8.4. </span>Training<a class="headerlink" href="#training" title="Permalink to this heading">¶</a></h2>
+<p>Training the 32-layer RegNetX on the Fashion-MNIST dataset is just like
+before.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-13-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-13-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">RegNetX32</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">))</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">RegNetX32</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">))</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-13-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">RegNetX32</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">))</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">d2l</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">))</span>
+<span class="k">with</span> <span class="n">d2l</span><span class="o">.</span><span class="n">try_gpu</span><span class="p">():</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RegNetX32</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div></div>
+<div class="section" id="discussion">
+<h2><span class="section-number">8.8.5. </span>Discussion<a class="headerlink" href="#discussion" title="Permalink to this heading">¶</a></h2>
+<p>With desirable inductive biases (assumptions or preferences) like
+locality and translation invariance (<a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html#sec-why-conv"><span class="std std-numref">Section 7.1</span></a>) for
+vision, CNNs have been the dominant architectures in this area. This
+remained the case from LeNet up until Transformers
+(<a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html#sec-transformer"><span class="std std-numref">Section 11.7</span></a>)
+<span id="id13">(<a class="reference internal" href="../chapter_references/zreferences.html#id59" title="Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., … et al. (2021). An image is worth 16 x 16 words: transformers for image recognition at scale. International Conference on Learning Representations.">Dosovitskiy <em>et al.</em>, 2021</a>, <a class="reference internal" href="../chapter_references/zreferences.html#id366" title="Touvron, H., Cord, M., Douze, M., Massa, F., Sablayrolles, A., &amp; Jégou, H. (2021). Training data-efficient image transformers &amp; distillation through attention. International Conference on Machine Learning (pp. 10347–10357).">Touvron <em>et al.</em>, 2021</a>)</span>
+started surpassing CNNs in terms of accuracy. While much of the recent
+progress in terms of vision Transformers <em>can</em> be backported into CNNs
+<span id="id14">(<a class="reference internal" href="../chapter_references/zreferences.html#id362" title="Liu, Z., Mao, H., Wu, C.-Y., Feichtenhofer, C., Darrell, T., &amp; Xie, S. (2022). A convNet for the 2020s. ArXiv:2201.03545.">Liu <em>et al.</em>, 2022</a>)</span>, it is only possible at a higher computational
+cost. Just as importantly, recent hardware optimizations (NVIDIA Ampere
+and Hopper) have only widened the gap in favor of Transformers.</p>
+<p>It is worth noting that Transformers have a significantly lower degree
+of inductive bias towards locality and translation invariance than CNNs.
+That learned structures prevailed is due, not least, to the availability
+of large image collections, such as LAION-400m and LAION-5B
+<span id="id15">(<a class="reference internal" href="../chapter_references/zreferences.html#id421" title="Schuhmann, C., Beaumont, R., Vencu, R., Gordon, C., Wightman, R., Cherti, M., … et al. (2022). LAION-5B: an open large-scale dataset for training next generation image-text models. ArXiv:2210.08402.">Schuhmann <em>et al.</em>, 2022</a>)</span> with up to 5 billion images. Quite
+surprisingly, some of the more relevant work in this context even
+includes MLPs <span id="id16">(<a class="reference internal" href="../chapter_references/zreferences.html#id364" title="Tolstikhin, I. O., Houlsby, N., Kolesnikov, A., Beyer, L., Zhai, X., Unterthiner, T., … et al. (2021). MLP-mixer: an all-MLP architecture for vision. Advances in Neural Information Processing Systems, 34.">Tolstikhin <em>et al.</em>, 2021</a>)</span>.</p>
+<p>In sum, vision Transformers (<a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html#sec-vision-transformer"><span class="std std-numref">Section 11.8</span></a>) by now
+lead in terms of state-of-the-art performance in large-scale image
+classification, showing that <em>scalability trumps inductive biases</em>
+<span id="id17">(<a class="reference internal" href="../chapter_references/zreferences.html#id59" title="Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., … et al. (2021). An image is worth 16 x 16 words: transformers for image recognition at scale. International Conference on Learning Representations.">Dosovitskiy <em>et al.</em>, 2021</a>)</span>. This includes
+pretraining large-scale Transformers
+(<a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html#sec-large-pretraining-transformers"><span class="std std-numref">Section 11.9</span></a>) with multi-head
+self-attention (<a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html#sec-multihead-attention"><span class="std std-numref">Section 11.5</span></a>). We invite the
+readers to dive into these chapters for a much more detailed discussion.</p>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">8.8.6. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Increase the number of stages to four. Can you design a deeper
+RegNetX that performs better?</p></li>
+<li><p>De-ResNeXt-ify RegNets by replacing the ResNeXt block with the ResNet
+block. How does your new model perform?</p></li>
+<li><p>Implement multiple instances of a “VioNet” family by <em>violating</em> the
+design principles of RegNetX. How do they perform? Which of
+(<span class="math notranslate nohighlight">\(d_i\)</span>, <span class="math notranslate nohighlight">\(c_i\)</span>, <span class="math notranslate nohighlight">\(g_i\)</span>, <span class="math notranslate nohighlight">\(b_i\)</span>) is the most
+important factor?</p></li>
+<li><p>Your goal is to design the “perfect” MLP. Can you use the design
+principles introduced above to find good architectures? Is it
+possible to extrapolate from small to large networks?</p></li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-15-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-15-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-15-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-15-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-15-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/7463">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-15-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/7462">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="jax-15-2"><p><a class="reference external" href="https://discuss.d2l.ai/t/18009">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="tensorflow-15-3"><p><a class="reference external" href="https://discuss.d2l.ai/t/8738">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">8.8. Designing Convolution Network Architectures</a><ul>
+<li><a class="reference internal" href="#the-anynet-design-space">8.8.1. The AnyNet Design Space</a></li>
+<li><a class="reference internal" href="#distributions-and-parameters-of-design-spaces">8.8.2. Distributions and Parameters of Design Spaces</a></li>
+<li><a class="reference internal" href="#regnet">8.8.3. RegNet</a></li>
+<li><a class="reference internal" href="#training">8.8.4. Training</a></li>
+<li><a class="reference internal" href="#discussion">8.8.5. Discussion</a></li>
+<li><a class="reference internal" href="#exercises">8.8.6. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="densenet.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>8.7. Densely Connected Networks (DenseNet)</div>
+         </div>
+     </a>
+     <a id="button-next" href="../chapter_recurrent-neural-networks/index.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>9. Recurrent Neural Networks</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>

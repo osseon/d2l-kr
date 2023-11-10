@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <title>3.1. Linear Regression &#8212; Dive into Deep Learning 1.0.3 documentation</title>
+
+    <link rel="stylesheet" href="../_static/material-design-lite-1.3.0/material.blue-deep_orange.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx_materialdesign_theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fontawesome/all.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/fonts.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/d2l.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/d2l.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.2. Object-Oriented Design for Implementation" href="oo-design.html" />
+    <link rel="prev" title="3. Linear Neural Networks for Regression" href="index.html" /> 
+  </head>
+<body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer"><header class="mdl-layout__header mdl-layout__header--waterfall ">
+    <div class="mdl-layout__header-row">
+        
+        <nav class="mdl-navigation breadcrumb">
+            <a class="mdl-navigation__link" href="index.html"><span class="section-number">3. </span>Linear Neural Networks for Regression</a><i class="material-icons">navigate_next</i>
+            <a class="mdl-navigation__link is-active"><span class="section-number">3.1. </span>Linear Regression</a>
+        </nav>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+        
+<form class="form-inline pull-sm-right" action="../search.html" method="get">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right">
+        <label id="quick-search-icon" class="mdl-button mdl-js-button mdl-button--icon"  for="waterfall-exp">
+          <i class="material-icons">search</i>
+        </label>
+        <div class="mdl-textfield__expandable-holder">
+          <input class="mdl-textfield__input" type="text" name="q"  id="waterfall-exp" placeholder="Search" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </div>
+      </div>
+      <div class="mdl-tooltip" data-mdl-for="quick-search-icon">
+      Quick search
+      </div>
+</form>
+        
+<a id="button-show-source"
+    class="mdl-button mdl-js-button mdl-button--icon"
+    href="../_sources/chapter_linear-regression/linear-regression.rst.txt" rel="nofollow">
+  <i class="material-icons">code</i>
+</a>
+<div class="mdl-tooltip" data-mdl-for="button-show-source">
+Show Source
+</div>
+        </nav>
+    </div>
+    <div class="mdl-layout__header-row header-links">
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+          
+              <a  class="mdl-navigation__link" href="http://preview.d2l.ai/d2l-en/master">
+                  <i class="fas fa-book"></i>
+                  Preview Version
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  PyTorch
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en-mxnet.pdf">
+                  <i class="fas fa-file-pdf"></i>
+                  MXNet
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://d2l.ai/d2l-en.zip">
+                  <i class="fab fa-python"></i>
+                  Notebooks
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://courses.d2l.ai">
+                  <i class="fas fa-user-graduate"></i>
+                  Courses
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://github.com/d2l-ai/d2l-en">
+                  <i class="fab fa-github"></i>
+                  GitHub
+              </a>
+          
+              <a  class="mdl-navigation__link" href="https://zh.d2l.ai">
+                  <i class="fas fa-external-link-alt"></i>
+                  中文版
+              </a>
+      </nav>
+    </div>
+</header><header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3. Linear Neural Networks for Regression</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+        <main class="mdl-layout__content" tabIndex="0">
+
+	<script type="text/javascript" src="../_static/sphinx_materialdesign_theme.js "></script>
+    <header class="mdl-layout__drawer">
+    
+          <!-- Title -->
+      <span class="mdl-layout-title">
+          <a class="title" href="../index.html">
+              <img class="logo" src="../_static/logo-with-text.png" alt="Dive into Deep Learning"/>
+          </a>
+      </span>
+    
+    
+      <div class="globaltoc">
+        <span class="mdl-layout-title toc">Table Of Contents</span>
+        
+        
+            
+            <nav class="mdl-navigation">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preface/index.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_notation/index.html">Notation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapter_introduction/index.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_preliminaries/index.html">2. Preliminaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/ndarray.html">2.1. Data Manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/pandas.html">2.2. Data Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/linear-algebra.html">2.3. Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/calculus.html">2.4. Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/autograd.html">2.5. Automatic Differentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/probability.html">2.6. Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_preliminaries/lookup-api.html">2.7. Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3. Linear Neural Networks for Regression</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.1. Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oo-design.html">3.2. Object-Oriented Design for Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synthetic-regression-data.html">3.3. Synthetic Regression Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-regression-scratch.html">3.4. Linear Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-regression-concise.html">3.5. Concise Implementation of Linear Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generalization.html">3.6. Generalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weight-decay.html">3.7. Weight Decay</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_linear-classification/index.html">4. Linear Neural Networks for Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression.html">4.1. Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/image-classification-dataset.html">4.2. The Image Classification Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/classification.html">4.3. The Base Classification Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-scratch.html">4.4. Softmax Regression Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/softmax-regression-concise.html">4.5. Concise Implementation of Softmax Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/generalization-classification.html">4.6. Generalization in Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_linear-classification/environment-and-distribution-shift.html">4.7. Environment and Distribution Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_multilayer-perceptrons/index.html">5. Multilayer Perceptrons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp.html">5.1. Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/mlp-implementation.html">5.2. Implementation of Multilayer Perceptrons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/backprop.html">5.3. Forward Propagation, Backward Propagation, and Computational Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/numerical-stability-and-init.html">5.4. Numerical Stability and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/generalization-deep.html">5.5. Generalization in Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/dropout.html">5.6. Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_multilayer-perceptrons/kaggle-house-price.html">5.7. Predicting House Prices on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_builders-guide/index.html">6. Builders’ Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/model-construction.html">6.1. Layers and Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/parameters.html">6.2. Parameter Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/init-param.html">6.3. Parameter Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/lazy-init.html">6.4. Lazy Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/custom-layer.html">6.5. Custom Layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/read-write.html">6.6. File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_builders-guide/use-gpu.html">6.7. GPUs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-neural-networks/index.html">7. Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/why-conv.html">7.1. From Fully Connected Layers to Convolutions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/conv-layer.html">7.2. Convolutions for Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/padding-and-strides.html">7.3. Padding and Stride</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/channels.html">7.4. Multiple Input and Multiple Output Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/pooling.html">7.5. Pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-neural-networks/lenet.html">7.6. Convolutional Neural Networks (LeNet)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_convolutional-modern/index.html">8. Modern Convolutional Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/alexnet.html">8.1. Deep Convolutional Neural Networks (AlexNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/vgg.html">8.2. Networks Using Blocks (VGG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/nin.html">8.3. Network in Network (NiN)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/googlenet.html">8.4. Multi-Branch Networks (GoogLeNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html">8.5. Batch Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/resnet.html">8.6. Residual Networks (ResNet) and ResNeXt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/densenet.html">8.7. Densely Connected Networks (DenseNet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_convolutional-modern/cnn-design.html">8.8. Designing Convolution Network Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-neural-networks/index.html">9. Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/sequence.html">9.1. Working with Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/text-sequence.html">9.2. Converting Raw Text into Sequence Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/language-model.html">9.3. Language Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn.html">9.4. Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-scratch.html">9.5. Recurrent Neural Network Implementation from Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/rnn-concise.html">9.6. Concise Implementation of Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-neural-networks/bptt.html">9.7. Backpropagation Through Time</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recurrent-modern/index.html">10. Modern Recurrent Neural Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/lstm.html">10.1. Long Short-Term Memory (LSTM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/deep-rnn.html">10.3. Deep Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/bi-rnn.html">10.4. Bidirectional Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/machine-translation-and-dataset.html">10.5. Machine Translation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/encoder-decoder.html">10.6. The Encoder–Decoder Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/seq2seq.html">10.7. Sequence-to-Sequence Learning for Machine Translation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recurrent-modern/beam-search.html">10.8. Beam Search</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/index.html">11. Attention Mechanisms and Transformers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/queries-keys-values.html">11.1. Queries, Keys, and Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-pooling.html">11.2. Attention Pooling by Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/attention-scoring-functions.html">11.3. Attention Scoring Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/bahdanau-attention.html">11.4. The Bahdanau Attention Mechanism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/multihead-attention.html">11.5. Multi-Head Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/self-attention-and-positional-encoding.html">11.6. Self-Attention and Positional Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/transformer.html">11.7. The Transformer Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/vision-transformer.html">11.8. Transformers for Vision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_attention-mechanisms-and-transformers/large-pretraining-transformers.html">11.9. Large-Scale Pretraining with Transformers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_optimization/index.html">12. Optimization Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/optimization-intro.html">12.1. Optimization and Deep Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/convexity.html">12.2. Convexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/gd.html">12.3. Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/sgd.html">12.4. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/minibatch-sgd.html">12.5. Minibatch Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/momentum.html">12.6. Momentum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adagrad.html">12.7. Adagrad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/rmsprop.html">12.8. RMSProp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adadelta.html">12.9. Adadelta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/adam.html">12.10. Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_optimization/lr-scheduler.html">12.11. Learning Rate Scheduling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computational-performance/index.html">13. Computational Performance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hybridize.html">13.1. Compilers and Interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/async-computation.html">13.2. Asynchronous Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/auto-parallelism.html">13.3. Automatic Parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/hardware.html">13.4. Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus.html">13.5. Training on Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/multiple-gpus-concise.html">13.6. Concise Implementation for Multiple GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computational-performance/parameterserver.html">13.7. Parameter Servers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_computer-vision/index.html">14. Computer Vision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/image-augmentation.html">14.1. Image Augmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fine-tuning.html">14.2. Fine-Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/bounding-box.html">14.3. Object Detection and Bounding Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/anchor.html">14.4. Anchor Boxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/multiscale-object-detection.html">14.5. Multiscale Object Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/object-detection-dataset.html">14.6. The Object Detection Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/ssd.html">14.7. Single Shot Multibox Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/rcnn.html">14.8. Region-based CNNs (R-CNNs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/semantic-segmentation-and-dataset.html">14.9. Semantic Segmentation and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/transposed-conv.html">14.10. Transposed Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/fcn.html">14.11. Fully Convolutional Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/neural-style.html">14.12. Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-cifar10.html">14.13. Image Classification (CIFAR-10) on Kaggle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_computer-vision/kaggle-dog.html">14.14. Dog Breed Identification (ImageNet Dogs) on Kaggle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/index.html">15. Natural Language Processing: Pretraining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec.html">15.1. Word Embedding (word2vec)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/approx-training.html">15.2. Approximate Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word-embedding-dataset.html">15.3. The Dataset for Pretraining Word Embeddings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/word2vec-pretraining.html">15.4. Pretraining word2vec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/glove.html">15.5. Word Embedding with Global Vectors (GloVe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/subword-embedding.html">15.6. Subword Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/similarity-analogy.html">15.7. Word Similarity and Analogy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert.html">15.8. Bidirectional Encoder Representations from Transformers (BERT)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-dataset.html">15.9. The Dataset for Pretraining BERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-pretraining/bert-pretraining.html">15.10. Pretraining BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_natural-language-processing-applications/index.html">16. Natural Language Processing: Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-and-dataset.html">16.1. Sentiment Analysis and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-rnn.html">16.2. Sentiment Analysis: Using Recurrent Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/sentiment-analysis-cnn.html">16.3. Sentiment Analysis: Using Convolutional Neural Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-and-dataset.html">16.4. Natural Language Inference and the Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-attention.html">16.5. Natural Language Inference: Using Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/finetuning-bert.html">16.6. Fine-Tuning BERT for Sequence-Level and Token-Level Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_natural-language-processing-applications/natural-language-inference-bert.html">16.7. Natural Language Inference: Fine-Tuning BERT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_reinforcement-learning/index.html">17. Reinforcement Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/mdp.html">17.1. Markov Decision Process (MDP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/value-iter.html">17.2. Value Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_reinforcement-learning/qlearning.html">17.3. Q-Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_gaussian-processes/index.html">18. Gaussian Processes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-intro.html">18.1. Introduction to Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-priors.html">18.2. Gaussian Process Priors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_gaussian-processes/gp-inference.html">18.3. Gaussian Process Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_hyperparameter-optimization/index.html">19. Hyperparameter Optimization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-intro.html">19.1. What Is Hyperparameter Optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/hyperopt-api.html">19.2. Hyperparameter Optimization API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/rs-async.html">19.3. Asynchronous Random Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-intro.html">19.4. Multi-Fidelity Hyperparameter Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_hyperparameter-optimization/sh-async.html">19.5. Asynchronous Successive Halving</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_generative-adversarial-networks/index.html">20. Generative Adversarial Networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/gan.html">20.1. Generative Adversarial Networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_generative-adversarial-networks/dcgan.html">20.2. Deep Convolutional Generative Adversarial Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_recommender-systems/index.html">21. Recommender Systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/recsys-intro.html">21.1. Overview of Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/movielens.html">21.2. The MovieLens Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/mf.html">21.3. Matrix Factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/autorec.html">21.4. AutoRec: Rating Prediction with Autoencoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ranking.html">21.5. Personalized Ranking for Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/neumf.html">21.6. Neural Collaborative Filtering for Personalized Ranking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/seqrec.html">21.7. Sequence-Aware Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/ctr.html">21.8. Feature-Rich Recommender Systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/fm.html">21.9. Factorization Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_recommender-systems/deepfm.html">21.10. Deep Factorization Machines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/index.html">22. Appendix: Mathematics for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/geometry-linear-algebraic-ops.html">22.1. Geometry and Linear Algebraic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/eigendecomposition.html">22.2. Eigendecompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/single-variable-calculus.html">22.3. Single Variable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/multivariable-calculus.html">22.4. Multivariable Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/integral-calculus.html">22.5. Integral Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/random-variables.html">22.6. Random Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/maximum-likelihood.html">22.7. Maximum Likelihood</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/distributions.html">22.8. Distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/naive-bayes.html">22.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/statistics.html">22.10. Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-mathematics-for-deep-learning/information-theory.html">22.11. Information Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/index.html">23. Appendix: Tools for Deep Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/jupyter.html">23.1. Using Jupyter Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/sagemaker.html">23.2. Using Amazon SageMaker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/aws.html">23.3. Using AWS EC2 Instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/colab.html">23.4. Using Google Colab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/selecting-servers-gpus.html">23.5. Selecting Servers and GPUs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/contributing.html">23.6. Contributing to This Book</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/utils.html">23.7. Utility Functions and Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapter_appendix-tools-for-deep-learning/d2l.html">23.8. The <code class="docutils literal notranslate"><span class="pre">d2l</span></code> API Document</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter_references/zreferences.html">References</a></li>
+</ul>
+
+            </nav>
+        
+        </div>
+    
+</header>
+
+    <div class="document">
+        <div class="page-content" role="main">
+        
+  <div class="section" id="linear-regression">
+<span id="sec-linear-regression"></span><h1><span class="section-number">3.1. </span>Linear Regression<a class="headerlink" href="#linear-regression" title="Permalink to this heading">¶</a><div class="d2l-tabs" style="float:right"><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_linear-regression/linear-regression.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-pytorch-colab/blob/master/chapter_linear-regression/linear-regression.ipynb'); return false;"> <button style="float:right", id="Colab_[pytorch]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [pytorch] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[pytorch]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_linear-regression/linear-regression.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-en-colab/blob/master/chapter_linear-regression/linear-regression.ipynb'); return false;"> <button style="float:right", id="Colab_[mxnet]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [mxnet] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[mxnet]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_linear-regression/linear-regression.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-jax-colab/blob/master/chapter_linear-regression/linear-regression.ipynb'); return false;"> <button style="float:right", id="Colab_[jax]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [jax] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[jax]"> Open the notebook in Colab</div></div><div class="d2l-tabs__tab"><a href="https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_linear-regression/linear-regression.ipynb" onclick="captureOutboundLink('https://colab.research.google.com/github/d2l-ai/d2l-tensorflow-colab/blob/master/chapter_linear-regression/linear-regression.ipynb'); return false;"> <button style="float:right", id="Colab_[tensorflow]" class="mdl-button mdl-js-button mdl-button--primary mdl-js-ripple-effect"> <i class=" fas fa-external-link-alt"></i> Colab [tensorflow] </button></a><div class="mdl-tooltip" data-mdl-for="Colab_[tensorflow]"> Open the notebook in Colab</div></div></div></h1>
+<p><em>Regression</em> problems pop up whenever we want to predict a numerical
+value. Common examples include predicting prices (of homes, stocks,
+etc.), predicting the length of stay (for patients in the hospital),
+forecasting demand (for retail sales), among numerous others. Not every
+prediction problem is one of classical regression. Later on, we will
+introduce classification problems, where the goal is to predict
+membership among a set of categories.</p>
+<p>As a running example, suppose that we wish to estimate the prices of
+houses (in dollars) based on their area (in square feet) and age (in
+years). To develop a model for predicting house prices, we need to get
+our hands on data, including the sales price, area, and age for each
+home. In the terminology of machine learning, the dataset is called a
+<em>training dataset</em> or <em>training set</em>, and each row (containing the data
+corresponding to one sale) is called an <em>example</em> (or <em>data point</em>,
+<em>instance</em>, <em>sample</em>). The thing we are trying to predict (price) is
+called a <em>label</em> (or <em>target</em>). The variables (age and area) upon which
+the predictions are based are called <em>features</em> (or <em>covariates</em>).</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-1-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-1-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-1-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-1-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-1-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">torch</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-1-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">mxnet</span> <span class="kn">import</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">mxnet</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-1-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">jnp</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">jax</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-1-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">d2l</span> <span class="kn">import</span> <span class="n">tensorflow</span> <span class="k">as</span> <span class="n">d2l</span>
+</pre></div>
+</div>
+</div></div><div class="section" id="basics">
+<h2><span class="section-number">3.1.1. </span>Basics<a class="headerlink" href="#basics" title="Permalink to this heading">¶</a></h2>
+<p><em>Linear regression</em> is both the simplest and most popular among the
+standard tools for tackling regression problems. Dating back to the dawn
+of the 19th century <span id="id1">(<a class="reference internal" href="../chapter_references/zreferences.html#id80" title="Gauss, C. F. (1809). Theoria motus corporum coelestum. Werke. Königlich Preussische Akademie der Wissenschaften.">Gauss, 1809</a>, <a class="reference internal" href="../chapter_references/zreferences.html#id164" title="Legendre, A. M. (1805). Mémoire sur les Opérations Trigonométriques: dont les Résultats Dépendent de la Figure de la Terre. F. Didot.">Legendre, 1805</a>)</span>, linear
+regression flows from a few simple assumptions. First, we assume that
+the relationship between features <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> and target
+<span class="math notranslate nohighlight">\(y\)</span> is approximately linear, i.e., that the conditional mean
+<span class="math notranslate nohighlight">\(E[Y \mid X=\mathbf{x}]\)</span> can be expressed as a weighted sum of the
+features <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>. This setup allows that the target value may
+still deviate from its expected value on account of observation noise.
+Next, we can impose the assumption that any such noise is well behaved,
+following a Gaussian distribution. Typically, we will use <span class="math notranslate nohighlight">\(n\)</span> to
+denote the number of examples in our dataset. We use superscripts to
+enumerate samples and targets, and subscripts to index coordinates. More
+concretely, <span class="math notranslate nohighlight">\(\mathbf{x}^{(i)}\)</span> denotes the <span class="math notranslate nohighlight">\(i^{\textrm{th}}\)</span>
+sample and <span class="math notranslate nohighlight">\(x_j^{(i)}\)</span> denotes its <span class="math notranslate nohighlight">\(j^{\textrm{th}}\)</span>
+coordinate.</p>
+<div class="section" id="model">
+<span id="subsec-linear-model"></span><h3><span class="section-number">3.1.1.1. </span>Model<a class="headerlink" href="#model" title="Permalink to this heading">¶</a></h3>
+<p>At the heart of every solution is a model that describes how features
+can be transformed into an estimate of the target. The assumption of
+linearity means that the expected value of the target (price) can be
+expressed as a weighted sum of the features (area and age):</p>
+<div class="math notranslate nohighlight" id="equation-eq-price-area">
+<span class="eqno">(3.1.1)<a class="headerlink" href="#equation-eq-price-area" title="Permalink to this equation">¶</a></span>\[\textrm{price} = w_{\textrm{area}} \cdot \textrm{area} + w_{\textrm{age}} \cdot \textrm{age} + b.\]</div>
+<p>Here <span class="math notranslate nohighlight">\(w_{\textrm{area}}\)</span> and <span class="math notranslate nohighlight">\(w_{\textrm{age}}\)</span> are called
+<em>weights</em>, and <span class="math notranslate nohighlight">\(b\)</span> is called a <em>bias</em> (or <em>offset</em> or
+<em>intercept</em>). The weights determine the influence of each feature on our
+prediction. The bias determines the value of the estimate when all
+features are zero. Even though we will never see any newly-built homes
+with precisely zero area, we still need the bias because it allows us to
+express all linear functions of our features (rather than restricting us
+to lines that pass through the origin). Strictly speaking,
+<a class="reference internal" href="#equation-eq-price-area">(3.1.1)</a> is an <em>affine transformation</em> of input
+features, which is characterized by a <em>linear transformation</em> of
+features via a weighted sum, combined with a <em>translation</em> via the added
+bias. Given a dataset, our goal is to choose the weights
+<span class="math notranslate nohighlight">\(\mathbf{w}\)</span> and the bias <span class="math notranslate nohighlight">\(b\)</span> that, on average, make our
+model’s predictions fit the true prices observed in the data as closely
+as possible.</p>
+<p>In disciplines where it is common to focus on datasets with just a few
+features, explicitly expressing models long-form, as in
+<a class="reference internal" href="#equation-eq-price-area">(3.1.1)</a>, is common. In machine learning, we usually
+work with high-dimensional datasets, where it is more convenient to
+employ compact linear algebra notation. When our inputs consist of
+<span class="math notranslate nohighlight">\(d\)</span> features, we can assign each an index (between <span class="math notranslate nohighlight">\(1\)</span> and
+<span class="math notranslate nohighlight">\(d\)</span>) and express our prediction <span class="math notranslate nohighlight">\(\hat{y}\)</span> (in general the
+“hat” symbol denotes an estimate) as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-0">
+<span class="eqno">(3.1.2)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-0" title="Permalink to this equation">¶</a></span>\[\hat{y} = w_1  x_1 + \cdots + w_d  x_d + b.\]</div>
+<p>Collecting all features into a vector
+<span class="math notranslate nohighlight">\(\mathbf{x} \in \mathbb{R}^d\)</span> and all weights into a vector
+<span class="math notranslate nohighlight">\(\mathbf{w} \in \mathbb{R}^d\)</span>, we can express our model compactly
+via the dot product between <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq-linreg-y">
+<span class="eqno">(3.1.3)<a class="headerlink" href="#equation-eq-linreg-y" title="Permalink to this equation">¶</a></span>\[\hat{y} = \mathbf{w}^\top \mathbf{x} + b.\]</div>
+<p>In <a class="reference internal" href="#equation-eq-linreg-y">(3.1.3)</a>, the vector <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> corresponds to
+the features of a single example. We will often find it convenient to
+refer to features of our entire dataset of <span class="math notranslate nohighlight">\(n\)</span> examples via the
+<em>design matrix</em> <span class="math notranslate nohighlight">\(\mathbf{X} \in \mathbb{R}^{n \times d}\)</span>. Here,
+<span class="math notranslate nohighlight">\(\mathbf{X}\)</span> contains one row for every example and one column for
+every feature. For a collection of features <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>, the
+predictions <span class="math notranslate nohighlight">\(\hat{\mathbf{y}} \in \mathbb{R}^n\)</span> can be expressed
+via the matrix–vector product:</p>
+<div class="math notranslate nohighlight" id="equation-eq-linreg-y-vec">
+<span class="eqno">(3.1.4)<a class="headerlink" href="#equation-eq-linreg-y-vec" title="Permalink to this equation">¶</a></span>\[{\hat{\mathbf{y}}} = \mathbf{X} \mathbf{w} + b,\]</div>
+<p>where broadcasting (<a class="reference internal" href="../chapter_preliminaries/ndarray.html#subsec-broadcasting"><span class="std std-numref">Section 2.1.4</span></a>) is applied during
+the summation. Given features of a training dataset <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>
+and corresponding (known) labels <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>, the goal of linear
+regression is to find the weight vector <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> and the bias
+term <span class="math notranslate nohighlight">\(b\)</span> such that, given features of a new data example sampled
+from the same distribution as <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>, the new example’s
+label will (in expectation) be predicted with the smallest error.</p>
+<p>Even if we believe that the best model for predicting <span class="math notranslate nohighlight">\(y\)</span> given
+<span class="math notranslate nohighlight">\(\mathbf{x}\)</span> is linear, we would not expect to find a real-world
+dataset of <span class="math notranslate nohighlight">\(n\)</span> examples where <span class="math notranslate nohighlight">\(y^{(i)}\)</span> exactly equals
+<span class="math notranslate nohighlight">\(\mathbf{w}^\top \mathbf{x}^{(i)}+b\)</span> for all
+<span class="math notranslate nohighlight">\(1 \leq i \leq n\)</span>. For example, whatever instruments we use to
+observe the features <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> and labels <span class="math notranslate nohighlight">\(\mathbf{y}\)</span>,
+there might be a small amount of measurement error. Thus, even when we
+are confident that the underlying relationship is linear, we will
+incorporate a noise term to account for such errors.</p>
+<p>Before we can go about searching for the best <em>parameters</em> (or <em>model
+parameters</em>) <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, we will need two more
+things: (i) a measure of the quality of some given model; and (ii) a
+procedure for updating the model to improve its quality.</p>
+</div>
+<div class="section" id="loss-function">
+<span id="subsec-linear-regression-loss-function"></span><h3><span class="section-number">3.1.1.2. </span>Loss Function<a class="headerlink" href="#loss-function" title="Permalink to this heading">¶</a></h3>
+<p>Naturally, fitting our model to the data requires that we agree on some
+measure of <em>fitness</em> (or, equivalently, of <em>unfitness</em>). <em>Loss
+functions</em> quantify the distance between the <em>real</em> and <em>predicted</em>
+values of the target. The loss will usually be a nonnegative number
+where smaller values are better and perfect predictions incur a loss of
+0. For regression problems, the most common loss function is the squared
+error. When our prediction for an example <span class="math notranslate nohighlight">\(i\)</span> is
+<span class="math notranslate nohighlight">\(\hat{y}^{(i)}\)</span> and the corresponding true label is
+<span class="math notranslate nohighlight">\(y^{(i)}\)</span>, the <em>squared error</em> is given by:</p>
+<div class="math notranslate nohighlight" id="equation-eq-mse">
+<span class="eqno">(3.1.5)<a class="headerlink" href="#equation-eq-mse" title="Permalink to this equation">¶</a></span>\[l^{(i)}(\mathbf{w}, b) = \frac{1}{2} \left(\hat{y}^{(i)} - y^{(i)}\right)^2.\]</div>
+<p>The constant <span class="math notranslate nohighlight">\(\frac{1}{2}\)</span> makes no real difference but proves to
+be notationally convenient, since it cancels out when we take the
+derivative of the loss. Because the training dataset is given to us, and
+thus is out of our control, the empirical error is only a function of
+the model parameters. In <a class="reference internal" href="#fig-fit-linreg"><span class="std std-numref">Fig. 3.1.1</span></a>, we visualize the
+fit of a linear regression model in a problem with one-dimensional
+inputs.</p>
+<div class="figure align-default" id="id10">
+<span id="fig-fit-linreg"></span><img alt="../_images/fit-linreg.svg" src="../_images/fit-linreg.svg" /><p class="caption"><span class="caption-number">Fig. 3.1.1 </span><span class="caption-text">Fitting a linear regression model to one-dimensional data.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+<p>Note that large differences between estimates <span class="math notranslate nohighlight">\(\hat{y}^{(i)}\)</span> and
+targets <span class="math notranslate nohighlight">\(y^{(i)}\)</span> lead to even larger contributions to the loss,
+due to its quadratic form (this quadraticity can be a double-edge sword;
+while it encourages the model to avoid large errors it can also lead to
+excessive sensitivity to anomalous data). To measure the quality of a
+model on the entire dataset of <span class="math notranslate nohighlight">\(n\)</span> examples, we simply average (or
+equivalently, sum) the losses on the training set:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-1">
+<span class="eqno">(3.1.6)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-1" title="Permalink to this equation">¶</a></span>\[L(\mathbf{w}, b) =\frac{1}{n}\sum_{i=1}^n l^{(i)}(\mathbf{w}, b) =\frac{1}{n} \sum_{i=1}^n \frac{1}{2}\left(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\right)^2.\]</div>
+<p>When training the model, we seek parameters (<span class="math notranslate nohighlight">\(\mathbf{w}^*, b^*\)</span>)
+that minimize the total loss across all training examples:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-2">
+<span class="eqno">(3.1.7)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-2" title="Permalink to this equation">¶</a></span>\[\mathbf{w}^*, b^* = \operatorname*{argmin}_{\mathbf{w}, b}\  L(\mathbf{w}, b).\]</div>
+</div>
+<div class="section" id="analytic-solution">
+<h3><span class="section-number">3.1.1.3. </span>Analytic Solution<a class="headerlink" href="#analytic-solution" title="Permalink to this heading">¶</a></h3>
+<p>Unlike most of the models that we will cover, linear regression presents
+us with a surprisingly easy optimization problem. In particular, we can
+find the optimal parameters (as assessed on the training data)
+analytically by applying a simple formula as follows. First, we can
+subsume the bias <span class="math notranslate nohighlight">\(b\)</span> into the parameter <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> by
+appending a column to the design matrix consisting of all 1s. Then our
+prediction problem is to minimize
+<span class="math notranslate nohighlight">\(\|\mathbf{y} - \mathbf{X}\mathbf{w}\|^2\)</span>. As long as the design
+matrix <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> has full rank (no feature is linearly
+dependent on the others), then there will be just one critical point on
+the loss surface and it corresponds to the minimum of the loss over the
+entire domain. Taking the derivative of the loss with respect to
+<span class="math notranslate nohighlight">\(\mathbf{w}\)</span> and setting it equal to zero yields:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-3">
+<span class="eqno">(3.1.8)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-3" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+    \partial_{\mathbf{w}} \|\mathbf{y} - \mathbf{X}\mathbf{w}\|^2 =
+    2 \mathbf{X}^\top (\mathbf{X} \mathbf{w} - \mathbf{y}) = 0
+    \textrm{ and hence }
+    \mathbf{X}^\top \mathbf{y} = \mathbf{X}^\top \mathbf{X} \mathbf{w}.
+\end{aligned}\]</div>
+<p>Solving for <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> provides us with the optimal solution for
+the optimization problem. Note that this solution</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-4">
+<span class="eqno">(3.1.9)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-4" title="Permalink to this equation">¶</a></span>\[\mathbf{w}^* = (\mathbf X^\top \mathbf X)^{-1}\mathbf X^\top \mathbf{y}\]</div>
+<p>will only be unique when the matrix <span class="math notranslate nohighlight">\(\mathbf X^\top \mathbf X\)</span> is
+invertible, i.e., when the columns of the design matrix are linearly
+independent <span id="id2">(<a class="reference internal" href="../chapter_references/zreferences.html#id89" title="Golub, G. H., &amp; Van Loan, C. F. (1996). Matrix Computations. Johns Hopkins University Press.">Golub and Van Loan, 1996</a>)</span>.</p>
+<p>While simple problems like linear regression may admit analytic
+solutions, you should not get used to such good fortune. Although
+analytic solutions allow for nice mathematical analysis, the requirement
+of an analytic solution is so restrictive that it would exclude almost
+all exciting aspects of deep learning.</p>
+</div>
+<div class="section" id="minibatch-stochastic-gradient-descent">
+<h3><span class="section-number">3.1.1.4. </span>Minibatch Stochastic Gradient Descent<a class="headerlink" href="#minibatch-stochastic-gradient-descent" title="Permalink to this heading">¶</a></h3>
+<p>Fortunately, even in cases where we cannot solve the models
+analytically, we can still often train models effectively in practice.
+Moreover, for many tasks, those hard-to-optimize models turn out to be
+so much better that figuring out how to train them ends up being well
+worth the trouble.</p>
+<p>The key technique for optimizing nearly every deep learning model, and
+which we will call upon throughout this book, consists of iteratively
+reducing the error by updating the parameters in the direction that
+incrementally lowers the loss function. This algorithm is called
+<em>gradient descent</em>.</p>
+<p>The most naive application of gradient descent consists of taking the
+derivative of the loss function, which is an average of the losses
+computed on every single example in the dataset. In practice, this can
+be extremely slow: we must pass over the entire dataset before making a
+single update, even if the update steps might be very powerful
+<span id="id3">(<a class="reference internal" href="../chapter_references/zreferences.html#id176" title="Liu, D. C., &amp; Nocedal, J. (1989). On the limited memory BFGS method for large scale optimization. Mathematical Programming, 45(1), 503–528.">Liu and Nocedal, 1989</a>)</span>. Even worse, if there is a lot of redundancy
+in the training data, the benefit of a full update is limited.</p>
+<p>The other extreme is to consider only a single example at a time and to
+take update steps based on one observation at a time. The resulting
+algorithm, <em>stochastic gradient descent</em> (SGD) can be an effective
+strategy <span id="id4">(<a class="reference internal" href="../chapter_references/zreferences.html#id23" title="Bottou, L. (2010). Large-scale machine learning with stochastic gradient descent. Proceedings of COMPSTAT'2010 (pp. 177–186). Springer.">Bottou, 2010</a>)</span>, even for large datasets. Unfortunately,
+SGD has drawbacks, both computational and statistical. One problem
+arises from the fact that processors are a lot faster multiplying and
+adding numbers than they are at moving data from main memory to
+processor cache. It is up to an order of magnitude more efficient to
+perform a matrix–vector multiplication than a corresponding number of
+vector–vector operations. This means that it can take a lot longer to
+process one sample at a time compared to a full batch. A second problem
+is that some of the layers, such as batch normalization (to be described
+in <a class="reference internal" href="../chapter_convolutional-modern/batch-norm.html#sec-batch-norm"><span class="std std-numref">Section 8.5</span></a>), only work well when we have access to
+more than one observation at a time.</p>
+<p>The solution to both problems is to pick an intermediate strategy:
+rather than taking a full batch or only a single sample at a time, we
+take a <em>minibatch</em> of observations <span id="id5">(<a class="reference internal" href="../chapter_references/zreferences.html#id167" title="Li, M., Zhang, T., Chen, Y., &amp; Smola, A. J. (2014). Efficient mini-batch training for stochastic optimization. Proceedings of the 20th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (pp. 661–670).">Li <em>et al.</em>, 2014</a>)</span>. The
+specific choice of the size of the said minibatch depends on many
+factors, such as the amount of memory, the number of accelerators, the
+choice of layers, and the total dataset size. Despite all that, a number
+between 32 and 256, preferably a multiple of a large power of <span class="math notranslate nohighlight">\(2\)</span>,
+is a good start. This leads us to <em>minibatch stochastic gradient
+descent</em>.</p>
+<p>In its most basic form, in each iteration <span class="math notranslate nohighlight">\(t\)</span>, we first randomly
+sample a minibatch <span class="math notranslate nohighlight">\(\mathcal{B}_t\)</span> consisting of a fixed number
+<span class="math notranslate nohighlight">\(|\mathcal{B}|\)</span> of training examples. We then compute the
+derivative (gradient) of the average loss on the minibatch with respect
+to the model parameters. Finally, we multiply the gradient by a
+predetermined small positive value <span class="math notranslate nohighlight">\(\eta\)</span>, called the <em>learning
+rate</em>, and subtract the resulting term from the current parameter
+values. We can express the update as follows:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-5">
+<span class="eqno">(3.1.10)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-5" title="Permalink to this equation">¶</a></span>\[(\mathbf{w},b) \leftarrow (\mathbf{w},b) - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}_t} \partial_{(\mathbf{w},b)} l^{(i)}(\mathbf{w},b).\]</div>
+<p>In summary, minibatch SGD proceeds as follows: (i) initialize the values
+of the model parameters, typically at random; (ii) iteratively sample
+random minibatches from the data, updating the parameters in the
+direction of the negative gradient. For quadratic losses and affine
+transformations, this has a closed-form expansion:</p>
+<div class="math notranslate nohighlight" id="equation-eq-linreg-batch-update">
+<span class="eqno">(3.1.11)<a class="headerlink" href="#equation-eq-linreg-batch-update" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned} \mathbf{w} &amp; \leftarrow \mathbf{w} - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}_t} \partial_{\mathbf{w}} l^{(i)}(\mathbf{w}, b) &amp;&amp; = \mathbf{w} - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}_t} \mathbf{x}^{(i)} \left(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\right)\\ b &amp;\leftarrow b -  \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}_t} \partial_b l^{(i)}(\mathbf{w}, b) &amp;&amp;  = b - \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}_t} \left(\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}\right). \end{aligned}\end{split}\]</div>
+<p>Since we pick a minibatch <span class="math notranslate nohighlight">\(\mathcal{B}\)</span> we need to normalize by
+its size <span class="math notranslate nohighlight">\(|\mathcal{B}|\)</span>. Frequently minibatch size and learning
+rate are user-defined. Such tunable parameters that are not updated in
+the training loop are called <em>hyperparameters</em>. They can be tuned
+automatically by a number of techniques, such as Bayesian optimization
+<span id="id6">(<a class="reference internal" href="../chapter_references/zreferences.html#id72" title="Frazier, P. I. (2018). A tutorial on Bayesian optimization. ArXiv:1807.02811.">Frazier, 2018</a>)</span>. In the end, the quality of the solution is
+typically assessed on a separate <em>validation dataset</em> (or <em>validation
+set</em>).</p>
+<p>After training for some predetermined number of iterations (or until
+some other stopping criterion is met), we record the estimated model
+parameters, denoted <span class="math notranslate nohighlight">\(\hat{\mathbf{w}}, \hat{b}\)</span>. Note that even if
+our function is truly linear and noiseless, these parameters will not be
+the exact minimizers of the loss, nor even deterministic. Although the
+algorithm converges slowly towards the minimizers it typically will not
+find them exactly in a finite number of steps. Moreover, the minibatches
+<span class="math notranslate nohighlight">\(\mathcal{B}\)</span> used for updating the parameters are chosen at
+random. This breaks determinism.</p>
+<p>Linear regression happens to be a learning problem with a global minimum
+(whenever <span class="math notranslate nohighlight">\(\mathbf{X}\)</span> is full rank, or equivalently, whenever
+<span class="math notranslate nohighlight">\(\mathbf{X}^\top \mathbf{X}\)</span> is invertible). However, the loss
+surfaces for deep networks contain many saddle points and minima.
+Fortunately, we typically do not care about finding an exact set of
+parameters but merely any set of parameters that leads to accurate
+predictions (and thus low loss). In practice, deep learning
+practitioners seldom struggle to find parameters that minimize the loss
+<em>on training sets</em>
+<span id="id7">(<a class="reference internal" href="../chapter_references/zreferences.html#id71" title="Frankle, J., &amp; Carbin, M. (2018). The lottery ticket hypothesis: finding sparse, trainable neural networks. ArXiv:1803.03635.">Frankle and Carbin, 2018</a>, <a class="reference internal" href="../chapter_references/zreferences.html#id134" title="Izmailov, P., Podoprikhin, D., Garipov, T., Vetrov, D., &amp; Wilson, A. G. (2018). Averaging weights leads to wider optima and better generalization. ArXiv:1803.05407.">Izmailov <em>et al.</em>, 2018</a>)</span>. The
+more formidable task is to find parameters that lead to accurate
+predictions on previously unseen data, a challenge called
+<em>generalization</em>. We return to these topics throughout the book.</p>
+</div>
+<div class="section" id="predictions">
+<h3><span class="section-number">3.1.1.5. </span>Predictions<a class="headerlink" href="#predictions" title="Permalink to this heading">¶</a></h3>
+<p>Given the model <span class="math notranslate nohighlight">\(\hat{\mathbf{w}}^\top \mathbf{x} + \hat{b}\)</span>, we
+can now make <em>predictions</em> for a new example, e.g., predicting the sales
+price of a previously unseen house given its area <span class="math notranslate nohighlight">\(x_1\)</span> and age
+<span class="math notranslate nohighlight">\(x_2\)</span>. Deep learning practitioners have taken to calling the
+prediction phase <em>inference</em> but this is a bit of a misnomer—<em>inference</em>
+refers broadly to any conclusion reached on the basis of evidence,
+including both the values of the parameters and the likely label for an
+unseen instance. If anything, in the statistics literature <em>inference</em>
+more often denotes parameter inference and this overloading of
+terminology creates unnecessary confusion when deep learning
+practitioners talk to statisticians. In the following we will stick to
+<em>prediction</em> whenever possible.</p>
+</div>
+</div>
+<div class="section" id="vectorization-for-speed">
+<h2><span class="section-number">3.1.2. </span>Vectorization for Speed<a class="headerlink" href="#vectorization-for-speed" title="Permalink to this heading">¶</a></h2>
+<p>When training our models, we typically want to process whole minibatches
+of examples simultaneously. Doing this efficiently requires that we
+vectorize the calculations and leverage fast linear algebra libraries
+rather than writing costly for-loops in Python.</p>
+<p>To see why this matters so much, let’s consider two methods for adding
+vectors. To start, we instantiate two 10,000-dimensional vectors
+containing all 1s. In the first method, we loop over the vectors with a
+Python for-loop. In the second, we rely on a single call to <code class="docutils literal notranslate"><span class="pre">+</span></code>.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-3-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-3-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-3-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-3-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-3-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-3-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-3-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-3-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>Now we can benchmark the workloads. First, we add them, one coordinate
+at a time, using a for-loop.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-5-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-5-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-5-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-5-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-5-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1"> sec&#39;</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-5-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1"> sec&#39;</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-5-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># JAX arrays are immutable, meaning that once created their contents</span>
+<span class="c1"># cannot be changed. For updating individual elements, JAX provides</span>
+<span class="c1"># an indexed update syntax that returns an updated copy</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1"> sec&#39;</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-5-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1"> sec&#39;</span>
+</pre></div>
+</div>
+</div></div><p>Alternatively, we rely on the reloaded <code class="docutils literal notranslate"><span class="pre">+</span></code> operator to compute the
+elementwise sum.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1"> sec&#39;</span>
+</pre></div>
+</div>
+<p>The second method is dramatically faster than the first. Vectorizing
+code often yields order-of-magnitude speedups. Moreover, we push more of
+the mathematics to the library so we do not have to write as many
+calculations ourselves, reducing the potential for errors and increasing
+portability of the code.</p>
+</div>
+<div class="section" id="the-normal-distribution-and-squared-loss">
+<span id="subsec-normal-distribution-and-squared-loss"></span><h2><span class="section-number">3.1.3. </span>The Normal Distribution and Squared Loss<a class="headerlink" href="#the-normal-distribution-and-squared-loss" title="Permalink to this heading">¶</a></h2>
+<p>So far we have given a fairly functional motivation of the squared loss
+objective: the optimal parameters return the conditional expectation
+<span class="math notranslate nohighlight">\(E[Y\mid X]\)</span> whenever the underlying pattern is truly linear, and
+the loss assigns large penalties for outliers. We can also provide a
+more formal motivation for the squared loss objective by making
+probabilistic assumptions about the distribution of noise.</p>
+<p>Linear regression was invented at the turn of the 19th century. While it
+has long been debated whether Gauss or Legendre first thought up the
+idea, it was Gauss who also discovered the normal distribution (also
+called the <em>Gaussian</em>). It turns out that the normal distribution and
+linear regression with squared loss share a deeper connection than
+common parentage.</p>
+<p>To begin, recall that a normal distribution with mean <span class="math notranslate nohighlight">\(\mu\)</span> and
+variance <span class="math notranslate nohighlight">\(\sigma^2\)</span> (standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>) is given
+as</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-6">
+<span class="eqno">(3.1.12)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-6" title="Permalink to this equation">¶</a></span>\[p(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\left(-\frac{1}{2 \sigma^2} (x - \mu)^2\right).\]</div>
+<p>Below we define a function to compute the normal distribution.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-9-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-9-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-9-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-9-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-9-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-9-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-9-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-9-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div><p>We can now visualize the normal distributions.</p>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar code"><a href="#pytorch-11-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-11-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#jax-11-2" onclick="tagClick('jax'); return false;" class="mdl-tabs__tab ">jax</a><a href="#tensorflow-11-3" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-11-0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use NumPy again for visualization</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># Mean and standard deviation pairs</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="n">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;p(x)&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;mean </span><span class="si">{</span><span class="n">mu</span><span class="si">}</span><span class="s1">, std </span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="mxnet-11-1"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use NumPy again for visualization</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># Mean and standard deviation pairs</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">(),</span> <span class="p">[</span><span class="n">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;p(x)&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;mean </span><span class="si">{</span><span class="n">mu</span><span class="si">}</span><span class="s1">, std </span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="jax-11-2"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use JAX NumPy for visualization</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="c1"># Mean and standard deviation pairs</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="n">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;p(x)&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;mean </span><span class="si">{</span><span class="n">mu</span><span class="si">}</span><span class="s1">, std </span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
+</pre></div>
+</div>
+</div><div class="mdl-tabs__panel " id="tensorflow-11-3"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use NumPy again for visualization</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># Mean and standard deviation pairs</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="n">d2l</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="n">normal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+         <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;p(x)&#39;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+         <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;mean </span><span class="si">{</span><span class="n">mu</span><span class="si">}</span><span class="s1">, std </span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
+</pre></div>
+</div>
+</div></div><p>Note that changing the mean corresponds to a shift along the
+<span class="math notranslate nohighlight">\(x\)</span>-axis, and increasing the variance spreads the distribution
+out, lowering its peak.</p>
+<p>One way to motivate linear regression with squared loss is to assume
+that observations arise from noisy measurements, where the noise
+<span class="math notranslate nohighlight">\(\epsilon\)</span> follows the normal distribution
+<span class="math notranslate nohighlight">\(\mathcal{N}(0, \sigma^2)\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-7">
+<span class="eqno">(3.1.13)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-7" title="Permalink to this equation">¶</a></span>\[y = \mathbf{w}^\top \mathbf{x} + b + \epsilon \textrm{ where } \epsilon \sim \mathcal{N}(0, \sigma^2).\]</div>
+<p>Thus, we can now write out the <em>likelihood</em> of seeing a particular
+<span class="math notranslate nohighlight">\(y\)</span> for a given <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> via</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-8">
+<span class="eqno">(3.1.14)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-8" title="Permalink to this equation">¶</a></span>\[P(y \mid \mathbf{x}) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\left(-\frac{1}{2 \sigma^2} (y - \mathbf{w}^\top \mathbf{x} - b)^2\right).\]</div>
+<p>As such, the likelihood factorizes. According to <em>the principle of
+maximum likelihood</em>, the best values of parameters <span class="math notranslate nohighlight">\(\mathbf{w}\)</span>
+and <span class="math notranslate nohighlight">\(b\)</span> are those that maximize the <em>likelihood</em> of the entire
+dataset:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-9">
+<span class="eqno">(3.1.15)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-9" title="Permalink to this equation">¶</a></span>\[P(\mathbf y \mid \mathbf X) = \prod_{i=1}^{n} p(y^{(i)} \mid \mathbf{x}^{(i)}).\]</div>
+<p>The equality follows since all pairs <span class="math notranslate nohighlight">\((\mathbf{x}^{(i)}, y^{(i)})\)</span>
+were drawn independently of each other. Estimators chosen according to
+the principle of maximum likelihood are called <em>maximum likelihood
+estimators</em>. While, maximizing the product of many exponential
+functions, might look difficult, we can simplify things significantly,
+without changing the objective, by maximizing the logarithm of the
+likelihood instead. For historical reasons, optimizations are more often
+expressed as minimization rather than maximization. So, without changing
+anything, we can <em>minimize</em> the <em>negative log-likelihood</em>, which we can
+express as follows:</p>
+<div class="math notranslate nohighlight" id="equation-chapter-linear-regression-linear-regression-10">
+<span class="eqno">(3.1.16)<a class="headerlink" href="#equation-chapter-linear-regression-linear-regression-10" title="Permalink to this equation">¶</a></span>\[-\log P(\mathbf y \mid \mathbf X) = \sum_{i=1}^n \frac{1}{2} \log(2 \pi \sigma^2) + \frac{1}{2 \sigma^2} \left(y^{(i)} - \mathbf{w}^\top \mathbf{x}^{(i)} - b\right)^2.\]</div>
+<p>If we assume that <span class="math notranslate nohighlight">\(\sigma\)</span> is fixed, we can ignore the first term,
+because it does not depend on <span class="math notranslate nohighlight">\(\mathbf{w}\)</span> or <span class="math notranslate nohighlight">\(b\)</span>. The
+second term is identical to the squared error loss introduced earlier,
+except for the multiplicative constant <span class="math notranslate nohighlight">\(\frac{1}{\sigma^2}\)</span>.
+Fortunately, the solution does not depend on <span class="math notranslate nohighlight">\(\sigma\)</span> either. It
+follows that minimizing the mean squared error is equivalent to the
+maximum likelihood estimation of a linear model under the assumption of
+additive Gaussian noise.</p>
+</div>
+<div class="section" id="linear-regression-as-a-neural-network">
+<h2><span class="section-number">3.1.4. </span>Linear Regression as a Neural Network<a class="headerlink" href="#linear-regression-as-a-neural-network" title="Permalink to this heading">¶</a></h2>
+<p>While linear models are not sufficiently rich to express the many
+complicated networks that we will introduce in this book, (artificial)
+neural networks are rich enough to subsume linear models as networks in
+which every feature is represented by an input neuron, all of which are
+connected directly to the output.</p>
+<p><a class="reference internal" href="#fig-single-neuron"><span class="std std-numref">Fig. 3.1.2</span></a> depicts linear regression as a neural
+network. The diagram highlights the connectivity pattern, such as how
+each input is connected to the output, but not the specific values taken
+by the weights or biases.</p>
+<div class="figure align-default" id="id11">
+<span id="fig-single-neuron"></span><img alt="../_images/singleneuron.svg" src="../_images/singleneuron.svg" /><p class="caption"><span class="caption-number">Fig. 3.1.2 </span><span class="caption-text">Linear regression is a single-layer neural network.</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</div>
+<p>The inputs are <span class="math notranslate nohighlight">\(x_1, \ldots, x_d\)</span>. We refer to <span class="math notranslate nohighlight">\(d\)</span> as the
+<em>number of inputs</em> or the <em>feature dimensionality</em> in the input layer.
+The output of the network is <span class="math notranslate nohighlight">\(o_1\)</span>. Because we are just trying to
+predict a single numerical value, we have only one output neuron. Note
+that the input values are all <em>given</em>. There is just a single <em>computed</em>
+neuron. In summary, we can think of linear regression as a single-layer
+fully connected neural network. We will encounter networks with far more
+layers in later chapters.</p>
+<div class="section" id="biology">
+<h3><span class="section-number">3.1.4.1. </span>Biology<a class="headerlink" href="#biology" title="Permalink to this heading">¶</a></h3>
+<p>Because linear regression predates computational neuroscience, it might
+seem anachronistic to describe linear regression in terms of neural
+networks. Nonetheless, they were a natural place to start when the
+cyberneticists and neurophysiologists Warren McCulloch and Walter Pitts
+began to develop models of artificial neurons. Consider the cartoonish
+picture of a biological neuron in <a class="reference internal" href="#fig-neuron"><span class="std std-numref">Fig. 3.1.3</span></a>, consisting of
+<em>dendrites</em> (input terminals), the <em>nucleus</em> (CPU), the <em>axon</em> (output
+wire), and the <em>axon terminals</em> (output terminals), enabling connections
+to other neurons via <em>synapses</em>.</p>
+<div class="figure align-default" id="id12">
+<span id="fig-neuron"></span><img alt="../_images/neuron.svg" src="../_images/neuron.svg" /><p class="caption"><span class="caption-number">Fig. 3.1.3 </span><span class="caption-text">The real neuron (source: “Anatomy and Physiology” by the US National
+Cancer Institute’s Surveillance, Epidemiology and End Results (SEER)
+Program).</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</div>
+<p>Information <span class="math notranslate nohighlight">\(x_i\)</span> arriving from other neurons (or environmental
+sensors) is received in the dendrites. In particular, that information
+is weighted by <em>synaptic weights</em> <span class="math notranslate nohighlight">\(w_i\)</span>, determining the effect of
+the inputs, e.g., activation or inhibition via the product
+<span class="math notranslate nohighlight">\(x_i w_i\)</span>. The weighted inputs arriving from multiple sources are
+aggregated in the nucleus as a weighted sum
+<span class="math notranslate nohighlight">\(y = \sum_i x_i w_i + b\)</span>, possibly subject to some nonlinear
+postprocessing via a function <span class="math notranslate nohighlight">\(\sigma(y)\)</span>. This information is
+then sent via the axon to the axon terminals, where it reaches its
+destination (e.g., an actuator such as a muscle) or it is fed into
+another neuron via its dendrites.</p>
+<p>Certainly, the high-level idea that many such units could be combined,
+provided they have the correct connectivity and learning algorithm, to
+produce far more interesting and complex behavior than any one neuron
+alone could express arises from our study of real biological neural
+systems. At the same time, most research in deep learning today draws
+inspiration from a much wider source. We invoke
+<span id="id8">Russell and Norvig (<a class="reference internal" href="../chapter_references/zreferences.html#id244" title="Russell, S. J., &amp; Norvig, P. (2016). Artificial Intelligence: A Modern Approach. Pearson Education Limited.">2016</a>)</span> who pointed out that although airplanes
+might have been <em>inspired</em> by birds, ornithology has not been the
+primary driver of aeronautics innovation for some centuries. Likewise,
+inspiration in deep learning these days comes in equal or greater
+measure from mathematics, linguistics, psychology, statistics, computer
+science, and many other fields.</p>
+</div>
+</div>
+<div class="section" id="summary">
+<h2><span class="section-number">3.1.5. </span>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<p>In this section, we introduced traditional linear regression, where the
+parameters of a linear function are chosen to minimize squared loss on
+the training set. We also motivated this choice of objective both via
+some practical considerations and through an interpretation of linear
+regression as maximimum likelihood estimation under an assumption of
+linearity and Gaussian noise. After discussing both computational
+considerations and connections to statistics, we showed how such linear
+models could be expressed as simple neural networks where the inputs are
+directly wired to the output(s). While we will soon move past linear
+models altogether, they are sufficient to introduce most of the
+components that all of our models require: parametric forms,
+differentiable objectives, optimization via minibatch stochastic
+gradient descent, and ultimately, evaluation on previously unseen data.</p>
+</div>
+<div class="section" id="exercises">
+<h2><span class="section-number">3.1.6. </span>Exercises<a class="headerlink" href="#exercises" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Assume that we have some data
+<span class="math notranslate nohighlight">\(x_1, \ldots, x_n \in \mathbb{R}\)</span>. Our goal is to find a
+constant <span class="math notranslate nohighlight">\(b\)</span> such that <span class="math notranslate nohighlight">\(\sum_i (x_i - b)^2\)</span> is minimized.</p>
+<ol class="arabic simple">
+<li><p>Find an analytic solution for the optimal value of <span class="math notranslate nohighlight">\(b\)</span>.</p></li>
+<li><p>How does this problem and its solution relate to the normal
+distribution?</p></li>
+<li><p>What if we change the loss from <span class="math notranslate nohighlight">\(\sum_i (x_i - b)^2\)</span> to
+<span class="math notranslate nohighlight">\(\sum_i |x_i-b|\)</span>? Can you find the optimal solution for
+<span class="math notranslate nohighlight">\(b\)</span>?</p></li>
+</ol>
+</li>
+<li><p>Prove that the affine functions that can be expressed by
+<span class="math notranslate nohighlight">\(\mathbf{x}^\top \mathbf{w} + b\)</span> are equivalent to linear
+functions on <span class="math notranslate nohighlight">\((\mathbf{x}, 1)\)</span>.</p></li>
+<li><p>Assume that you want to find quadratic functions of
+<span class="math notranslate nohighlight">\(\mathbf{x}\)</span>, i.e.,
+<span class="math notranslate nohighlight">\(f(\mathbf{x}) = b + \sum_i w_i x_i + \sum_{j \leq i} w_{ij} x_{i} x_{j}\)</span>.
+How would you formulate this in a deep network?</p></li>
+<li><p>Recall that one of the conditions for the linear regression problem
+to be solvable was that the design matrix
+<span class="math notranslate nohighlight">\(\mathbf{X}^\top \mathbf{X}\)</span> has full rank.</p>
+<ol class="arabic simple">
+<li><p>What happens if this is not the case?</p></li>
+<li><p>How could you fix it? What happens if you add a small amount of
+coordinate-wise independent Gaussian noise to all entries of
+<span class="math notranslate nohighlight">\(\mathbf{X}\)</span>?</p></li>
+<li><p>What is the expected value of the design matrix
+<span class="math notranslate nohighlight">\(\mathbf{X}^\top \mathbf{X}\)</span> in this case?</p></li>
+<li><p>What happens with stochastic gradient descent when
+<span class="math notranslate nohighlight">\(\mathbf{X}^\top \mathbf{X}\)</span> does not have full rank?</p></li>
+</ol>
+</li>
+<li><p>Assume that the noise model governing the additive noise
+<span class="math notranslate nohighlight">\(\epsilon\)</span> is the exponential distribution. That is,
+<span class="math notranslate nohighlight">\(p(\epsilon) = \frac{1}{2} \exp(-|\epsilon|)\)</span>.</p>
+<ol class="arabic simple">
+<li><p>Write out the negative log-likelihood of the data under the model
+<span class="math notranslate nohighlight">\(-\log P(\mathbf y \mid \mathbf X)\)</span>.</p></li>
+<li><p>Can you find a closed form solution?</p></li>
+<li><p>Suggest a minibatch stochastic gradient descent algorithm to solve
+this problem. What could possibly go wrong (hint: what happens
+near the stationary point as we keep on updating the parameters)?
+Can you fix this?</p></li>
+</ol>
+</li>
+<li><p>Assume that we want to design a neural network with two layers by
+composing two linear layers. That is, the output of the first layer
+becomes the input of the second layer. Why would such a naive
+composition not work?</p></li>
+<li><p>What happens if you want to use regression for realistic price
+estimation of houses or stock prices?</p>
+<ol class="arabic simple">
+<li><p>Show that the additive Gaussian noise assumption is not
+appropriate. Hint: can we have negative prices? What about
+fluctuations?</p></li>
+<li><p>Why would regression to the logarithm of the price be much better,
+i.e., <span class="math notranslate nohighlight">\(y = \log \textrm{price}\)</span>?</p></li>
+<li><p>What do you need to worry about when dealing with pennystock,
+i.e., stock with very low prices? Hint: can you trade at all
+possible prices? Why is this a bigger problem for cheap stock? For
+more information review the celebrated Black–Scholes model for
+option pricing <span id="id9">(<a class="reference internal" href="../chapter_references/zreferences.html#id19" title="Black, F., &amp; Scholes, M. (1973). The pricing of options and corporate liabilities. Journal of Political Economy, 81, 637–654.">Black and Scholes, 1973</a>)</span>.</p></li>
+</ol>
+</li>
+<li><p>Suppose we want to use regression to estimate the <em>number</em> of apples
+sold in a grocery store.</p>
+<ol class="arabic simple">
+<li><p>What are the problems with a Gaussian additive noise model? Hint:
+you are selling apples, not oil.</p></li>
+<li><p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson
+distribution</a>
+captures distributions over counts. It is given by
+<span class="math notranslate nohighlight">\(p(k \mid \lambda) = \lambda^k e^{-\lambda}/k!\)</span>. Here
+<span class="math notranslate nohighlight">\(\lambda\)</span> is the rate function and <span class="math notranslate nohighlight">\(k\)</span> is the number
+of events you see. Prove that <span class="math notranslate nohighlight">\(\lambda\)</span> is the expected
+value of counts <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
+<li><p>Design a loss function associated with the Poisson distribution.</p></li>
+<li><p>Design a loss function for estimating <span class="math notranslate nohighlight">\(\log \lambda\)</span>
+instead.</p></li>
+</ol>
+</li>
+</ol>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"><div class="mdl-tabs__tab-bar text"><a href="#pytorch-13-0" onclick="tagClick('pytorch'); return false;" class="mdl-tabs__tab is-active">pytorch</a><a href="#mxnet-13-1" onclick="tagClick('mxnet'); return false;" class="mdl-tabs__tab ">mxnet</a><a href="#tensorflow-13-2" onclick="tagClick('tensorflow'); return false;" class="mdl-tabs__tab ">tensorflow</a></div><div class="mdl-tabs__panel is-active" id="pytorch-13-0"><p><a class="reference external" href="https://discuss.d2l.ai/t/258">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="mxnet-13-1"><p><a class="reference external" href="https://discuss.d2l.ai/t/40">Discussions</a></p>
+</div><div class="mdl-tabs__panel " id="tensorflow-13-2"><p><a class="reference external" href="https://discuss.d2l.ai/t/259">Discussions</a></p>
+</div></div></div>
+</div>
+
+
+        </div>
+        <div class="side-doc-outline">
+            <div class="side-doc-outline--content"> 
+<div class="localtoc">
+    <p class="caption">
+      <span class="caption-text">Table Of Contents</span>
+    </p>
+    <ul>
+<li><a class="reference internal" href="#">3.1. Linear Regression</a><ul>
+<li><a class="reference internal" href="#basics">3.1.1. Basics</a><ul>
+<li><a class="reference internal" href="#model">3.1.1.1. Model</a></li>
+<li><a class="reference internal" href="#loss-function">3.1.1.2. Loss Function</a></li>
+<li><a class="reference internal" href="#analytic-solution">3.1.1.3. Analytic Solution</a></li>
+<li><a class="reference internal" href="#minibatch-stochastic-gradient-descent">3.1.1.4. Minibatch Stochastic Gradient Descent</a></li>
+<li><a class="reference internal" href="#predictions">3.1.1.5. Predictions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#vectorization-for-speed">3.1.2. Vectorization for Speed</a></li>
+<li><a class="reference internal" href="#the-normal-distribution-and-squared-loss">3.1.3. The Normal Distribution and Squared Loss</a></li>
+<li><a class="reference internal" href="#linear-regression-as-a-neural-network">3.1.4. Linear Regression as a Neural Network</a><ul>
+<li><a class="reference internal" href="#biology">3.1.4.1. Biology</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#summary">3.1.5. Summary</a></li>
+<li><a class="reference internal" href="#exercises">3.1.6. Exercises</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+            </div>
+        </div>
+
+      <div class="clearer"></div>
+    </div><div class="pagenation">
+     <a id="button-prev" href="index.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="P">
+         <i class="pagenation-arrow-L fas fa-arrow-left fa-lg"></i>
+         <div class="pagenation-text">
+            <span class="pagenation-direction">Previous</span>
+            <div>3. Linear Neural Networks for Regression</div>
+         </div>
+     </a>
+     <a id="button-next" href="oo-design.html" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" role="botton" accesskey="N">
+         <i class="pagenation-arrow-R fas fa-arrow-right fa-lg"></i>
+        <div class="pagenation-text">
+            <span class="pagenation-direction">Next</span>
+            <div>3.2. Object-Oriented Design for Implementation</div>
+        </div>
+     </a>
+  </div>
+        
+        </main>
+    </div>
+  </body>
+</html>
